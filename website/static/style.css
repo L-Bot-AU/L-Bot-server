@@ -26,7 +26,7 @@ This is used for shared values like interface sizing, and fonts*/
 }
 
 .theme-dark {
-	--bg-primary-col: #121212;
+	--bg-primary-col: #283035;
 	--bg-second-col: #000000;
 	--bg-third-col: #393F4D;
     /* --bg-nav-col-2: #393F4D; */
@@ -53,7 +53,7 @@ a:hover {
     color: var(--a-hover-col);
 }
 
-p, div, ul {
+p, div, ul, progress {
     transition-duration: 1s;
     color: var(--txt-col);
 }

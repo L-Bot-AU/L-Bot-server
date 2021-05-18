@@ -20,19 +20,19 @@
 		.tabwrapper {
 			width: 180vw;
 			position: absolute;
-			transition-duration: 0.5s;
+			transition-duration: 0.8s;
 			transform: translate(0%);
 			margin-top: 40px;
 		}
 		.jnrtab {
 			width: 90vw;
 			opacity: 1;
-			transition:opacity 0.5s linear;
+			transition:opacity 0.8s linear;
 		}
 		.snrtab {
 			width: 90vw;
 			opacity: 0;
-			transition:opacity 0.5s linear;
+			transition:opacity 0.8s linear;
 		}
 		.tabline {
 			position: absolute;
@@ -47,11 +47,11 @@
 		}
 		.focusright .jnrtab {
 			opacity: 0;
-			transition:opacity 0.5s linear;
+			transition:opacity 0.8s linear;
 		}
 		.focusright .snrtab {
 			opacity: 1;
-			transition:opacity 0.5s linear;
+			transition:opacity 0.8s linear;
 		}
 		.focusright .tabline {
 			left: calc(50% + 8px);
@@ -78,7 +78,22 @@
 		.closebtn:hover {
 		  color: black;
 		}
-
+		
+		.progress {
+			margin: 20px 0px 20px 0px;
+			height: 80px;
+			border-radius: 20px;
+			font-size: 30px;
+			border: 2px solid var(--border-colour);
+			background-color: var(--bg-primary-col);
+		}
+		
+		.progress-bar {
+			padding-left: 15px;
+			color: var(--txt-col);
+			background-color: var(--nav-primary-col);
+		}
+		
 		.status {
 			font-size: 40px;
 			text-align: center;
@@ -99,20 +114,22 @@
 			<th class="{{ lib }}tab">
 				<div class="alert" id="{{ lib }}Alert">
 					<span>⚠</span>
-					<span id="{{ lib }}Alerttext">Junior library overtaken by wild animals! Keep out!</span>
+					<span id="{{ lib }}Alerttext">...</span>
 					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 				</div>
 				<div class="status">
-					<span id="{{ lib }}Status">Not busy:</span>
-					~
-					<span id="{{ lib }}Remaining">70</span>
+					<span id="{{ lib }}Status">...:</span>
+					~<span id="{{ lib }}Remaining">...</span>
 					spots remaining
 				</div>
-				<div id="{{ lib }}Fullness"></div>
+				<div class="progress">
+					<div id="{{ lib }}Fullness" class="progress-bar" style="width: 70%">70% full</div>
+				</div>
 				<div class="title">TODAY</div>
 				{{ homedata.today(lib) }}
 				
 				<div class="title">PAST TRENDS</div>
+				<p>Click on a day to see the average usage of the library.</p>
 				{{ homedata.pasttrends(lib) }}
 			</th>
 			{% endfor %}

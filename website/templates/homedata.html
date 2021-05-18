@@ -1,34 +1,29 @@
 {% macro today(libname) -%}
 	<!-- TODO -->
-    <img src="static/img.jpg" width=800>
+    <canvas id="{{ libname }}Predictions" width="400" height="200"></canvas>
 {%- endmacro %}
 
 {% macro pasttrends(libname) -%}
-	<!-- TODO -->
 	<script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
 	<style>
-		.graphSelect {
-			border: 3px solid var(--txt-primary-col);
-			border-radius: 25px;
-			width: inherit;
-			margin-bottom: 10px;
-			background-color: var(--bg-library-col);
-			color: var(--txt-primary-col);
-			transition-duration: 1s;
+		.selected {
+		    text-underline-offset: 8px;
+			text-decoration: underline;
 		}
 	</style>
-	<p>Click on a day to see the predictions for the expected number of users through the day.</p>
-
 	<!-- indexing: [n/a, mon, tues, wed, thurs, fri]-->
 	{% for i, day in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (3, "Thu"), (4, "Fri")] %}
-		<button class="focusbtn" onclick="displayGraph('{{ libname }}', {{ i }})">{{ day }}</button>
+		<button class="focusbtn {{ libname }}daybtn" onclick="displayGraph(`{{ libname }}`, {{ i }})">{{ day }}</button>
 	{% endfor %}
-	<div class="col-lg-8">
-		<canvas id="{{ libname }}Chart" width="400" height="200"></canvas>
-	</div>
+	<canvas id="{{ libname }}Trends"></canvas>
 	
 	<script>
 		function displayGraph(libname, update){
+			for (let i = 0; i < 5; i++) {
+				var curr = document.getElementsByClassName(libname + "daybtn")[i];
+				if (i === update) curr.classList.add("selected");
+				else curr.classList.remove("selected");
+			}
 			window.trends[libname].data.datasets = [];
 			window.trends[libname].data.datasets.push(dataset(libname,update));
 			window.trends[libname].update();
@@ -36,14 +31,14 @@
 		
 		function dataset(libname, index){
 			var data = {
-				label: ["Mon", "Tues", "Wed", "Thurs", "Fri"][index],
-				data: graphData[libname]["data"][index],
+				//label: ["Mon", "Tue", "Wed", "Thu", "Fri"][index],
+				data: trendsData[libname]["data"][index],
 				pointHitRadius: 5,
 				HoverBackgroundColor: [
 					// "rgba(0, 0, 0, 0)",
 					"rgba(255, 99, 132, 1)",
 					"rgba(54, 162, 235, 1)",
-					"rgba(255, 206, 86, 1)",
+					"rgba(85, 214, 64, 1)",
 					"rgba(75, 192, 192, 1)",
 					"rgba(153, 102, 255, 1)",
 					"rgba(255, 159, 64, 1)"
@@ -52,7 +47,7 @@
 					// "rgba(0, 0, 0, 0)",
 					"rgba(255, 99, 132, 0.2)",
 					"rgba(54, 162, 235, 0.2)",
-					"rgba(255, 206, 86, 0.2)",
+					"rgba(85, 214, 64, 0.2)",
 					"rgba(75, 192, 192, 0.2)",
 					"rgba(153, 102, 255, 0.2)",
 					"rgba(255, 159, 64, 0.2)"
@@ -61,7 +56,7 @@
 					// "rgba(0, 0, 0, 0)",
 					"rgba(255, 99, 132, 1)",
 					"rgba(54, 162, 235, 1)",
-					"rgba(255, 206, 86, 1)",
+					"rgba(85, 214, 64, 1)",
 					"rgba(75, 192, 192, 1)",
 					"rgba(153, 102, 255, 1)",
 					"rgba(255, 159, 64, 1)"
@@ -103,17 +98,17 @@
 				document.getElementById(libname + "Status").innerHTML = "Very busy";
 			}
 			
-			document.getElementById(libname + "Fullness").innerHTML = percentageFull;
-			// TODO: edit barfullness
+			document.getElementById(libname + "Fullness").innerHTML = percentageFull + "% full";
+			document.getElementById(libname + "Fullness").style.width = percentageFull + "%";
 		}
-
-		function genGraph(libname, data) {
-			var ctx = document.getElementById(libname + "Chart").getContext("2d");
-			window.graphData[libname] = data["predictions"];
-			window.trends[libname] = new Chart(ctx, {
+		
+		function genPredictions(libname, data) {
+			// TODO, using data["predictions"];
+			var ctx = document.getElementById(libname + "Predictions").getContext("2d");
+			/*new Chart(ctx, {
 				type: "bar",
 				data: {
-					labels: window.graphData[libname]["labels"]
+					labels: ?
 				},
 				options: {
 					scales: {
@@ -125,10 +120,34 @@
 						}]
 					}
 				}
+			});*/
+		}
+		
+		function genTrends(libname, data) {
+			var ctx = document.getElementById(libname + "Trends").getContext("2d");
+			window.trendsData[libname] = data["trends"];
+			window.trends[libname] = new Chart(ctx, {
+				type: "bar",
+				data: {
+					labels: window.trendsData[libname]["labels"],
+				},
+				options: {
+					legend: {
+						display: false,
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true,
+								max: 100,
+							}
+						}]
+					}
+				}
 			});
 		}
 		
-		window.graphData = {};
+		window.trendsData = {};
 		window.trends = {};
 		getReq("home", function (data) {
 			console.log(data);
@@ -136,7 +155,8 @@
 				genAlert(libname, data[libname]);
 				genRemaining(libname, data[libname]);
 				genFullness(libname, data[libname]);
-				genGraph(libname, data[libname]);
+				genPredictions(libname, data[libname]);
+				genTrends(libname, data[libname]);
 			})
 		});
 		

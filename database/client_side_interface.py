@@ -69,13 +69,15 @@ async def client_help(websocket, path):
             "jnr": {
                 "count": count("jnr"),
                 "max": JNRMAX,
-                "predictions": get_predictions("jnr"),
+                "predictions": None, # TODO
+                "trends": get_trends("jnr"),
                 "alert": "Junior library overtaken by wild animals, keep out!", # or ""
             },
             "snr": {
                 "count": count("jnr"),
                 "max": SNRMAX,
-                "predictions": get_predictions("jnr"),
+                "predictions": None, # TODO
+                "trends": get_trends("jnr"),
                 "alert": "", # or "SHOUTING!"
             }
         }),
@@ -324,23 +326,23 @@ def count(lib):
         return session.query(Count).first().jnrvalue
 
 
-def get_predictions(lib):
+def get_trends(lib):
     Session = sessionmaker(bind=engine)
     session = Session()
-    predictions = {}
-    predictions["labels"] = times
-    predictions["data"] = [] 
+    trends = {}
+    trends["labels"] = times
+    trends["data"] = [] 
     for day in days:
-        day_predictions = []
+        day_trends = []
         for time in times:
             data = session.query(Data).filter_by(day=day, time=time).first()
             if lib == "snr":
                 pred = data.snr_expected
             else:
                 pred = data.jnr_expected
-            day_predictions.append(pred)
-        predictions["data"].append(day_predictions)
-    return predictions
+            day_trends.append(pred)
+        trends["data"].append(day_trends)
+    return trends
 
 """
 @app.route("/<lib>Events")
