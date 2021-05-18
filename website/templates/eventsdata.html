@@ -1,0 +1,19 @@
+{% macro scripts() %}
+	<script>
+		function genMsgs(data) {
+			data.forEach(function (value) {
+				var ul = document.getElementById("list");
+				var li = document.createElement("li");
+				li.appendChild(document.createTextNode(value["text"]));
+				li.setAttribute("class", value["impact"] + "impact");
+				ul.appendChild(li);
+			});
+		}
+		
+		getReq("events", function (data) {
+			console.log(data);
+			genMsgs(data);
+		});
+		
+	</script>
+{% endmacro %}

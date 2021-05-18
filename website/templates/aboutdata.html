@@ -1,0 +1,32 @@
+{% macro scripts() %}
+	<script>
+		function genOpening(libname, data) {
+			["mon", "tue", "wed", "thu", "fri"].forEach(function (day) {
+				document.getElementById(libname + day).innerHTML = data[day];
+			});
+		}
+		
+		function genMax(libname, data) {
+			document.getElementById(libname + "max").innerHTML = data["max"];
+		}
+		
+		function genLibrarians(libname, data) {
+			data["librarians"].forEach(function (librarian) {
+				var ul = document.getElementById(libname + "librarians");
+				var li = document.createElement("li");
+				li.appendChild(document.createTextNode(librarian));
+				ul.appendChild(li);
+			});
+		}
+		
+		getReq("about", function (data) {
+			console.log(data);
+			["jnr", "snr"].forEach(function(libname) {
+				genOpening(libname, data[libname]);
+				genMax(libname, data[libname]);
+				genLibrarians(libname, data[libname]);
+			})
+		});
+		
+	</script>
+{% endmacro %}

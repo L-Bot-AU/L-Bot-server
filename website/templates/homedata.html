@@ -1,0 +1,144 @@
+{% macro today(libname) -%}
+	<!-- TODO -->
+    <img src="static/img.jpg" width=800>
+{%- endmacro %}
+
+{% macro pasttrends(libname) -%}
+	<!-- TODO -->
+	<script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
+	<style>
+		.graphSelect {
+			border: 3px solid var(--txt-primary-col);
+			border-radius: 25px;
+			width: inherit;
+			margin-bottom: 10px;
+			background-color: var(--bg-library-col);
+			color: var(--txt-primary-col);
+			transition-duration: 1s;
+		}
+	</style>
+	<p>Click on a day to see the predictions for the expected number of users through the day.</p>
+
+	<!-- indexing: [n/a, mon, tues, wed, thurs, fri]-->
+	{% for i, day in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (3, "Thu"), (4, "Fri")] %}
+		<button class="focusbtn" onclick="displayGraph('{{ libname }}', {{ i }})">{{ day }}</button>
+	{% endfor %}
+	<div class="col-lg-8">
+		<canvas id="{{ libname }}Chart" width="400" height="200"></canvas>
+	</div>
+	
+	<script>
+		function displayGraph(libname, update){
+			window.trends[libname].data.datasets = [];
+			window.trends[libname].data.datasets.push(dataset(libname,update));
+			window.trends[libname].update();
+		}
+		
+		function dataset(libname, index){
+			var data = {
+				label: ["Mon", "Tues", "Wed", "Thurs", "Fri"][index],
+				data: graphData[libname]["data"][index],
+				pointHitRadius: 5,
+				HoverBackgroundColor: [
+					// "rgba(0, 0, 0, 0)",
+					"rgba(255, 99, 132, 1)",
+					"rgba(54, 162, 235, 1)",
+					"rgba(255, 206, 86, 1)",
+					"rgba(75, 192, 192, 1)",
+					"rgba(153, 102, 255, 1)",
+					"rgba(255, 159, 64, 1)"
+				][index],
+				backgroundColor: [
+					// "rgba(0, 0, 0, 0)",
+					"rgba(255, 99, 132, 0.2)",
+					"rgba(54, 162, 235, 0.2)",
+					"rgba(255, 206, 86, 0.2)",
+					"rgba(75, 192, 192, 0.2)",
+					"rgba(153, 102, 255, 0.2)",
+					"rgba(255, 159, 64, 0.2)"
+				][index],
+				borderColor: [
+					// "rgba(0, 0, 0, 0)",
+					"rgba(255, 99, 132, 1)",
+					"rgba(54, 162, 235, 1)",
+					"rgba(255, 206, 86, 1)",
+					"rgba(75, 192, 192, 1)",
+					"rgba(153, 102, 255, 1)",
+					"rgba(255, 159, 64, 1)"
+				][index],
+				borderWidth: 3
+			}
+			return data;
+		}
+	</script>
+{%- endmacro %}
+
+{% macro scripts() %}
+	<script>
+		function genAlert(libname, data) {
+			if (data["alert"] !== "") {
+				// nonzero alert
+				document.getElementById(libname + "Alert").style.display = "visible";
+				document.getElementById(libname + "Alerttext").innerHTML = data["alert"];
+			}
+			else {
+				document.getElementById(libname + "Alert").style.display = "none";
+			}
+		}
+		
+		function genRemaining(libname, data) {
+			document.getElementById(libname + "Remaining").innerHTML = data["max"] - data["count"];
+		}
+
+		function genFullness(libname, data) {
+			let percentageFull = Math.round(data["count"] / data["max"] * 100);
+			
+			if (percentageFull <= 30) {
+				document.getElementById(libname + "Status").innerHTML = "Not busy";
+			}
+			else if (percentageFull <= 70) {
+				document.getElementById(libname + "Status").innerHTML = "Busy";
+			}
+			else {
+				document.getElementById(libname + "Status").innerHTML = "Very busy";
+			}
+			
+			document.getElementById(libname + "Fullness").innerHTML = percentageFull;
+			// TODO: edit barfullness
+		}
+
+		function genGraph(libname, data) {
+			var ctx = document.getElementById(libname + "Chart").getContext("2d");
+			window.graphData[libname] = data["predictions"];
+			window.trends[libname] = new Chart(ctx, {
+				type: "bar",
+				data: {
+					labels: window.graphData[libname]["labels"]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true,
+								max: 100
+							}
+						}]
+					}
+				}
+			});
+		}
+		
+		window.graphData = {};
+		window.trends = {};
+		getReq("home", function (data) {
+			console.log(data);
+			["jnr", "snr"].forEach(function(libname) {
+				genAlert(libname, data[libname]);
+				genRemaining(libname, data[libname]);
+				genFullness(libname, data[libname]);
+				genGraph(libname, data[libname]);
+			})
+		});
+		
+	</script>
+{% endmacro %}

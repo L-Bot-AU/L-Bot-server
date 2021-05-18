@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');
+
+/*Both the light and dark themes inherit all values in this.
+This is used for shared values like interface sizing, and fonts*/
+[class*="theme-"] {
+    --navbarheadersize: 35px;
+    --border-rad: 25px;
+    --primary-font: 'Carme';
+    --secondary-font: 'Roboto';
+}
+
+.theme-light {
+    --bg-primary-col: #DCDCDC;
+    --bg-second-col: #FFFFFF;
+    --bg-third-col: #FCFCFC;
+    /*--bg-nav-col-2: #393F4D;*/
+    --bg-library-col: #DCDCDC;
+	--border-colour: #000000;
+
+    --txt-primary-col: #1E90FF;
+    --nav-primary-col: #1E90FF;
+    --a-hover-col: #1E90FF;
+    --txt-col: #000000;
+
+    --toggle-box-text: "Light";
+}
+
+.theme-dark {
+	--bg-primary-col: #121212;
+	--bg-second-col: #000000;
+	--bg-third-col: #393F4D;
+    /* --bg-nav-col-2: #393F4D; */
+    --bg-library-col: #283142;
+	--border-colour: #EEEEEE;
+
+	--txt-primary-col: #4DD0E1;
+	--nav-primary-col: #1E90FF;
+	--a-hover-col: #FF5A09;
+    --txt-col: #FFFFFF;
+    --toggle-box-text: "Dark";
+}
+
+a, h1, h2, h3, h4, h5, h6, i, button, #setting-content-wrapper {
+    font-family: var(--primary-font), sans-serif !important;
+    color: var(--txt-primary-col);
+}
+
+hr {
+	background: var(--txt-primary-col);
+}
+
+a:hover {
+    color: var(--a-hover-col);
+}
+
+p, div, ul {
+    transition-duration: 1s;
+    color: var(--txt-col);
+}
+
+.navbar a {
+    color: var(--nav-primary-col);
+}
+
+.body p {
+    font-size: 15px;
+    font-family: var(--secondary-font), sans-serif;
+}
+
+.header-size {
+    font-size: var(--navbarheadersize);
+}
+
+body {
+    transition-duration: 1s;
+    padding: 0;
+    margin: 0;
+    background-color: var(--bg-primary-col);
+    position: absolute;
+    width: 100%;
+    top: 0px; /* how much you want to shift entire body down */
+}
+
+body > * {
+    transition-duration: 1s;
+}
+
+a {
+    text-decoration: None !important;
+}
+
+table td, table td * {
+    vertical-align: top;
+}
+
+.bold-this{
+    font-weight: bold;
+}
+
+/*For late use*/
+
+.update{
+	
+}
