@@ -1,9 +1,4 @@
 {% macro today(libname) -%}
-	<!-- TODO -->
-    <canvas id="{{ libname }}Predictions" width="400" height="200"></canvas>
-{%- endmacro %}
-
-{% macro pasttrends(libname) -%}
 	<script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
 	<style>
 		.selected {
@@ -11,61 +6,7 @@
 			text-decoration: underline;
 		}
 	</style>
-	<!-- indexing: [n/a, mon, tues, wed, thurs, fri]-->
-	{% for i, day in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (3, "Thu"), (4, "Fri")] %}
-		<button class="focusbtn {{ libname }}daybtn" onclick="displayGraph(`{{ libname }}`, {{ i }})">{{ day }}</button>
-	{% endfor %}
 	<canvas id="{{ libname }}Trends"></canvas>
-	
-	<script>
-		function displayGraph(libname, update){
-			for (let i = 0; i < 5; i++) {
-				var curr = document.getElementsByClassName(libname + "daybtn")[i];
-				if (i === update) curr.classList.add("selected");
-				else curr.classList.remove("selected");
-			}
-			window.trends[libname].data.datasets = [];
-			window.trends[libname].data.datasets.push(dataset(libname,update));
-			window.trends[libname].update();
-		}
-		
-		function dataset(libname, index){
-			var data = {
-				//label: ["Mon", "Tue", "Wed", "Thu", "Fri"][index],
-				data: trendsData[libname]["data"][index],
-				pointHitRadius: 5,
-				HoverBackgroundColor: [
-					// "rgba(0, 0, 0, 0)",
-					"rgba(255, 99, 132, 1)",
-					"rgba(54, 162, 235, 1)",
-					"rgba(85, 214, 64, 1)",
-					"rgba(75, 192, 192, 1)",
-					"rgba(153, 102, 255, 1)",
-					"rgba(255, 159, 64, 1)"
-				][index],
-				backgroundColor: [
-					// "rgba(0, 0, 0, 0)",
-					"rgba(255, 99, 132, 0.2)",
-					"rgba(54, 162, 235, 0.2)",
-					"rgba(85, 214, 64, 0.2)",
-					"rgba(75, 192, 192, 0.2)",
-					"rgba(153, 102, 255, 0.2)",
-					"rgba(255, 159, 64, 0.2)"
-				][index],
-				borderColor: [
-					// "rgba(0, 0, 0, 0)",
-					"rgba(255, 99, 132, 1)",
-					"rgba(54, 162, 235, 1)",
-					"rgba(85, 214, 64, 1)",
-					"rgba(75, 192, 192, 1)",
-					"rgba(153, 102, 255, 1)",
-					"rgba(255, 159, 64, 1)"
-				][index],
-				borderWidth: 3
-			}
-			return data;
-		}
-	</script>
 {%- endmacro %}
 
 {% macro scripts() %}
@@ -102,34 +43,44 @@
 			document.getElementById(libname + "Fullness").style.width = percentageFull + "%";
 		}
 		
-		function genPredictions(libname, data) {
-			// TODO, using data["predictions"];
-			var ctx = document.getElementById(libname + "Predictions").getContext("2d");
-			/*new Chart(ctx, {
-				type: "bar",
-				data: {
-					labels: ?
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: true,
-								max: 100
-							}
-						}]
-					}
-				}
-			});*/
-		}
-		
-		function genTrends(libname, data) {
+		function genToday(libname, data) {
+			var day = new Date().getDay() - 1;
+			console.log(data["trends"]["data"][day]);
 			var ctx = document.getElementById(libname + "Trends").getContext("2d");
-			window.trendsData[libname] = data["trends"];
-			window.trends[libname] = new Chart(ctx, {
+			window.todayGraph[libname] = new Chart(ctx, {
 				type: "bar",
+				label: "mon",
 				data: {
-					labels: window.trendsData[libname]["labels"],
+					labels: data["trends"]["labels"],
+					datasets: {
+						data: data["trends"]["data"][day],
+						pointHitRadius: 5,
+						HoverBackgroundColor: [
+							"rgba(255, 99, 132, 1)",
+							"rgba(54, 162, 235, 1)",
+							"rgba(85, 214, 64, 1)",
+							"rgba(75, 192, 192, 1)",
+							"rgba(153, 102, 255, 1)",
+							"rgba(255, 159, 64, 1)"
+						][day],
+						backgroundColor: [
+							"rgba(255, 99, 132, 0.2)",
+							"rgba(54, 162, 235, 0.2)",
+							"rgba(85, 214, 64, 0.2)",
+							"rgba(75, 192, 192, 0.2)",
+							"rgba(153, 102, 255, 0.2)",
+							"rgba(255, 159, 64, 0.2)"
+						][day],
+						borderColor: [
+							"rgba(255, 99, 132, 1)",
+							"rgba(54, 162, 235, 1)",
+							"rgba(85, 214, 64, 1)",
+							"rgba(75, 192, 192, 1)",
+							"rgba(153, 102, 255, 1)",
+							"rgba(255, 159, 64, 1)"
+						][day],
+						borderWidth: 3
+					},
 				},
 				options: {
 					legend: {
@@ -147,16 +98,14 @@
 			});
 		}
 		
-		window.trendsData = {};
-		window.trends = {};
+		window.todayGraph = {};
 		getReq("home", function (data) {
 			console.log(data);
 			["jnr", "snr"].forEach(function(libname) {
 				genAlert(libname, data[libname]);
 				genRemaining(libname, data[libname]);
 				genFullness(libname, data[libname]);
-				genPredictions(libname, data[libname]);
-				genTrends(libname, data[libname]);
+				genToday(libname, data[libname]);
 			})
 		});
 		
