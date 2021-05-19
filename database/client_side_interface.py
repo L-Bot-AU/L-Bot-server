@@ -74,10 +74,10 @@ async def client_help(websocket, path):
                 "alert": "Junior library overtaken by wild animals, keep out!", # or ""
             },
             "snr": {
-                "count": count("jnr"),
+                "count": count("snr"),
                 "max": SNRMAX,
                 "predictions": None, # TODO
-                "trends": get_trends("jnr"),
+                "trends": get_trends("snr"),
                 "alert": "", # or "SHOUTING!"
             }
         }),
@@ -130,7 +130,6 @@ def jnr_updater():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("0.0.0.0", JNRCOUNTER_PORT))
     sock.listen(10)
-
     while True:
         # wait for connection
         client, address = sock.accept()
@@ -141,7 +140,7 @@ def jnr_updater():
         print(f"Connection from {address[0]} on jnr port")
 
         # TODO: replace this verification system with SSL
-        # create random string of bytes for verification
+        # create random string of bytes for verification        
         plaintext = bytes([random.randint(0, 0xff) for _ in range(16)])
 
         # send encrypted verification string
@@ -150,27 +149,29 @@ def jnr_updater():
         try:
             # receive new string and check if the connecting client can decrypt it
             msg = client.recv(16)
-            if msg == plaintext:
-                print("Verification succeeded")
+            if msg == KEY:
+                print("Verification succeeded")-
                 while True:
                     # once verification has succeeded, no time limit is required
                     sock.settimeout(None)
 
-                    # receive the update to the number of people in the junior library (+x or -x)
+                    # receive the update to the number of people in the senior library (+x or -x)
                     print("Recieving message")
                     msg = client.recv(1024)
                     print(msg)
-                    inc = eval(msg + b"+0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
+                    inc = eval(msg + b"0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
                     print(inc)
 
-                    # update the count in the junior library
+                    # update the count in the senior library
                     session.query(Count).first().jnrvalue += inc
                     session.commit()
+                    with open("blehjnr.txt", "a") as f:
+                        # if verification is failed, raise an error and let the try/except statement catch it
+                        f.write(f"{session.query(Count).first().jnrvalue} {datetime.datetime.now()}\n")
             else:
-                # if verification is failed, raise an error and let the try/except statement catch it
                 raise Exception("Verification failed")
         except Exception as e:
-            socket.settimeout(None)
+            sock.settimeout(None)
             # print the error (due to verification taking too long, verification being unsuccessful, client closing the connection or some other unknown error
             print(repr(e), "(recieved from jnr port)")
         client.close()
