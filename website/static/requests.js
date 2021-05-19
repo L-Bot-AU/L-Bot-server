@@ -1,4 +1,5 @@
-const host = "127.0.0.1";
+const host = "sr8137wxs02.win.sydneyboys-h.schools.nsw.edu.au";
+// const host = "127.0.0.1";
 // const host = "10.219.218.62";
 // const host = "192.168.137.1";
 const port = 2910;
