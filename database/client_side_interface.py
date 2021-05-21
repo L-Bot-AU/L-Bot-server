@@ -150,7 +150,7 @@ def jnr_updater():
             # receive new string and check if the connecting client can decrypt it
             msg = client.recv(16)
             if msg == KEY:
-                print("Verification succeeded")-
+                print("Verification succeeded")
                 while True:
                     # once verification has succeeded, no time limit is required
                     sock.settimeout(None)
