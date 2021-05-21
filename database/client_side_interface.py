@@ -14,7 +14,7 @@ import json
 import os
 
 
-#os.remove("library_usage.db")
+os.remove("library_usage.db")
 engine = create_engine("sqlite:///library_usage.db", echo=False)
 Base = declarative_base()
 
@@ -44,13 +44,13 @@ def getOpeningTime(): # currently a stub
 
 
 def getClosingTime():
+    global clos
     try:
-	return clos.hour, clos.minute
+        return clos.hour, clos.minute
     except:
-	global clos
-	today = datetime.datetime.now()
-	clos = today.replace(minute=today.minute+1)
-	return clos.hour, clos.minute
+        today = datetime.datetime.now()
+        clos = today.replace(minute=today.minute+1)
+        return clos.hour, clos.minute
 
 
 def restartdb():
@@ -260,8 +260,7 @@ def wait_for_morning():
     # call function that gets predictions after that many seconds
     # threading.Timer(secs, get_new_predictions)
     print("getting new predictions")
-    threading.Timer(0, get_new_predictions)
-
+    threading.Timer(0, get_new_predictions).start()
 
 # called once every day
 def get_new_predictions():
@@ -289,13 +288,13 @@ def get_new_predictions():
     opening_hour, opening_minute = getOpeningTime()
     opening = today.replace(hour=opening_hour, minute=opening_minute)
     secs = (opening - today).total_seconds()
-    print(opening)
+    print("opening time:", opening)
     # call function that updates past data every minute
     threading.Timer(secs, update_loop).start()
 
 
 def update_loop():
-    print("updating now")
+    print("entering update loop")
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -324,16 +323,17 @@ def update_loop():
     closing_hour, closing_minute = getClosingTime()
     if today.hour >= closing_hour and today.minute >= closing_minute: # if the library is closed, wait until morning to start loop again
         print("waiting for morning")
-	threading.Timer(0, wait_for_morning)
+        t = threading.Timer(0, wait_for_morning)
     else: # otherwise, run update_loop again after another minute
-	print("looping for another  minute")
+        print("looping for another  minute")
         today = datetime.datetime.now()
         if today.minute == 59:
             nextTime = today.replace(hour=today.hour + 1, minute=0, second=0)
         else:
             nextTime = today.replace(minute = today.minute + 1, second=0)
         secs = (nextTime - today).total_seconds()
-        threading.Timer(secs, update_loop)
+        t = threading.Timer(secs, update_loop)
+    t.start()
 
 
 class Data(Base):
@@ -383,7 +383,7 @@ class Count(Base):
 
 
 class PastData(Base):
-    __tablename__ = "date"
+    __tablename__ = "pastdata"
 
     id = Column(Integer, primary_key=True)
     day = Column(Integer, nullable=False)
@@ -392,8 +392,8 @@ class PastData(Base):
     term = Column(Integer, nullable=False)
     week = Column(Integer, nullable=False)
     time = Column(String(10), nullable=False)
-    jnrcount = Column(Integer, primary_key=True)
-    snrcount = Column(Integer, primary_key=True)
+    jnrcount = Column(Integer, nullable=False)
+    snrcount = Column(Integer, nullable=False)
 
 
 def count(lib):
