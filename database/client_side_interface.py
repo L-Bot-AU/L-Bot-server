@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine, DateTime
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import validates, sessionmaker
 from Crypto.Cipher import AES
@@ -101,7 +101,7 @@ async def client_help(websocket, path):
                 "mon": "7:30am - 3:30pm",
                 "tue": "7:30am - 3:30pm",
                 "wed": "7:30am - 3:30pm",
-                "thu": "7:30am - 3:30pm (closed at lunch)",
+                "thu": "7:30am - 3:30pm",
                 "fri": "7:30am - 3:30pm",
                 "max": JNRMAX,
                 "librarians": ["Ms Crothers"],
@@ -110,7 +110,7 @@ async def client_help(websocket, path):
                 "mon": "8:00am - 2:30pm",
                 "tue": "8:00am - 2:30pm",
                 "wed": "8:00am - 12:30pm",
-                "thu": "8:00am - 2:30pm",
+                "thu": "8:00am - 3:15pm",
                 "fri": "8:00am - 2:30pm",
                 "max": SNRMAX,
                 "librarians": ["Mr Wiramhardja", "Ms Meredith"],
@@ -233,9 +233,20 @@ def snr_updater():
             print(repr(e), "(recieved from snr port)")
         client.close()
 
+# waits until it's 1am
+def wait_for_morning():
+    # get number of seconds until midnight
+    # code from https://stackoverflow.com/questions/45986035/seconds-until-end-of-day-in-python (takes into account daylight savings as well)
+    today = datetime.datetime.now()
+    tomorrow = today + datetime.timedelta(days=1)
+    secs = (datetime.datetime.combine(tomorrow, datetime.time.min) - today).total_seconds()
+
+    # call function that gets predictions after that many seconds
+    threading.Timer(secs, get_new_predictions)
+
 
 # called once every day
-def daily_update_loop():
+def get_new_predictions():
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -254,13 +265,52 @@ def daily_update_loop():
 
     session.commit()
 
-    # find next time until update
-    current = datetime.datetime.now()
-    new = current.replace(day=current.day, hour=1, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
-    secs = (new - current).total_seconds()
+    # get number of seconds until library opens
+    today = datetime.datetime.now()
+    opening_hour, opening_minute = getOpeningTime()
+    opening = today.replace(hour=opening_hour, minute=opening_minute)
+    secs = (opening - today).total_seconds()
 
-    # wait for that difference in time
-    threading.Timer(secs, daily_update_loop).start()
+    # call function that updates past data every minute
+    threading.Timer(secs, update_loop).start()
+
+
+def update_loop():
+    # start session with database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # get information today
+    today = datetime.datetime.now()
+    term = 1 # TODO: find way of getting week of term from date
+    week = 1 # TODO: find way of getting term today
+
+    # add new record to past data
+    new_data = PastData(
+        day=today.day,
+        month=today.month,
+        year=today.year,
+        term=term,
+        week=week,
+        time=today.strftime("%H:%M"),
+        jnrcount=session.query(Count).first().jnrvalue,
+        snrcount=session.query(Count).first().snrvalue
+    )
+    session.add(new_data)
+    session.commit()
+
+    # check if library has closed
+    closing_hour, closing_minute = getClosingTime()
+    if today.hour >= closing_hour and today.minute >= closing_minute: # if the library is closed, wait until morning to start loop again
+        threading.Timer(0, wait_for_morning)
+    else: # otherwise, run update_loop again after another minute
+        today = datetime.datetime.now()
+        if today.minute == 59:
+            nextTime = today.replace(hour=today.hour + 1, minute=0, second=0)
+        else:
+            nextTime = today.replace(minute = today.minute + 1, second=0)
+        secs = (nextTime - today).total_seconds()
+        threading.Timer(secs, update_loop)
 
 
 class Data(Base):
@@ -309,13 +359,18 @@ class Count(Base):
         return count
 
 
-class Date(Base):
+class PastData(Base):
     __tablename__ = "date"
 
     id = Column(Integer, primary_key=True)
-    date = Column(DateTime, default=datetime.datetime.now)
+    day = Column(Integer, nullable=False)
+    month = Column(Integer, nullable=False)
+    year = Column(Integer, nullable=False)
+    term = Column(Integer, nullable=False)
+    week = Column(Integer, nullable=False)
     time = Column(String(10), nullable=False)
-    count = Column(Integer, primary_key=True)
+    jnrcount = Column(Integer, primary_key=True)
+    snrcount = Column(Integer, primary_key=True)
 
 
 def count(lib):
@@ -378,7 +433,7 @@ def money(lib):
 
 restartdb()
 
-threading.Timer(0, daily_update_loop).start()
+threading.Timer(0, wait_for_morning).start()
 """
 threading.Timer(5, plot_data).start()
 """
