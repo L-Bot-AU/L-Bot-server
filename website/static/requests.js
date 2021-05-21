@@ -1,5 +1,5 @@
 // const host = "sr8137wxs02.win.sydneyboys-h.schools.nsw.edu.au";
-const host = window.origin.substr(7); // assuming it is http
+const host = window.origin.substring(7); // assuming it is http
 // const host = "10.219.218.62";
 // const host = "192.168.137.1";
 const port = 2910;
