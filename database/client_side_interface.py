@@ -37,6 +37,22 @@ SNRCOUNTER_PORT = 11498 # for senior library count updates
 JNRMAX = 108
 SNRMAX = 84
 
+def getOpeningTime(): # currently a stub
+    today = datetime.datetime.now()
+    today = today.replace(minute=today.minute+1)
+    return today.hour, today.minute
+
+
+def getClosingTime():
+    try:
+	return clos.hour, clos.minute
+    except:
+	global clos
+	today = datetime.datetime.now()
+	clos = today.replace(minute=today.minute+1)
+	return clos.hour, clos.minute
+
+
 def restartdb():
     Session = sessionmaker(bind=engine)
     begsession = Session()
@@ -242,15 +258,18 @@ def wait_for_morning():
     secs = (datetime.datetime.combine(tomorrow, datetime.time.min) - today).total_seconds()
 
     # call function that gets predictions after that many seconds
-    threading.Timer(secs, get_new_predictions)
+    # threading.Timer(secs, get_new_predictions)
+    print("getting new predictions")
+    threading.Timer(0, get_new_predictions)
 
 
 # called once every day
 def get_new_predictions():
+    print("got predictions")
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
-    
+
     week = 1 # TODO: find way of getting week of term from date
     term = 1 # TODO: find way of getting term today
 
@@ -270,12 +289,13 @@ def get_new_predictions():
     opening_hour, opening_minute = getOpeningTime()
     opening = today.replace(hour=opening_hour, minute=opening_minute)
     secs = (opening - today).total_seconds()
-
+    print(opening)
     # call function that updates past data every minute
     threading.Timer(secs, update_loop).start()
 
 
 def update_loop():
+    print("updating now")
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -300,10 +320,13 @@ def update_loop():
     session.commit()
 
     # check if library has closed
+    print("getting closing time")
     closing_hour, closing_minute = getClosingTime()
     if today.hour >= closing_hour and today.minute >= closing_minute: # if the library is closed, wait until morning to start loop again
-        threading.Timer(0, wait_for_morning)
+        print("waiting for morning")
+	threading.Timer(0, wait_for_morning)
     else: # otherwise, run update_loop again after another minute
+	print("looping for another  minute")
         today = datetime.datetime.now()
         if today.minute == 59:
             nextTime = today.replace(hour=today.hour + 1, minute=0, second=0)
