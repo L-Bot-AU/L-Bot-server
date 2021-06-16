@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, create_engine, DateTime
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import validates, sessionmaker
 from Crypto.Cipher import AES
-from getData import getData
+from predictions.getData import getData
 import websockets
 import threading
 import datetime
@@ -14,7 +14,7 @@ import json
 import os
 
 
-# os.remove("library_usage.db")
+#os.remove("library_usage.db")
 engine = create_engine("sqlite:///library_usage.db", echo=False)
 Base = declarative_base()
 
@@ -33,6 +33,9 @@ CLIENT_PORT = 2910 # for library overview website
 JNRCOUNTER_PORT = 9482 # for junior library count updates
 SNRCOUNTER_PORT = 11498 # for senior library count updates
 
+# TODO: move these values into data files instead (shouldnt be defined through code)
+JNRMAX = 108
+SNRMAX = 84
 
 def restartdb():
     Session = sessionmaker(bind=engine)
@@ -40,7 +43,7 @@ def restartdb():
 
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    
+
     for day in days:
         for time in times:
             d = Data(day=day, time=time)
@@ -61,10 +64,57 @@ async def client_help(websocket, path):
     """
     print(f"Connection received from {websocket} at {path}")
     options = {
-        "/snrCount": lambda:str(count("snr")), # return number of people in the senior library
-        "/jnrCount": lambda:str(count("jnr")), # return number of people in the junior library
-        "/jnrPredictions": lambda:get_predictions("jnr"), # return predicted number of people in junior library
-        "/snrPredictions": lambda:get_predictions("snr")  # return predicted number of people in senior library
+        "/home": lambda: json.dumps({
+            "jnr": {
+                "count": count("jnr"),
+                "max": JNRMAX,
+                "predictions": None, # TODO
+                "trends": get_trends("jnr"),
+                "alert": "Junior library overtaken by wild animals, keep out!", # or ""
+            },
+            "snr": {
+                "count": count("snr"),
+                "max": SNRMAX,
+                "predictions": None, # TODO
+                "trends": get_trends("snr"),
+                "alert": "", # or "SHOUTING!"
+            }
+        }),
+
+        # TODO: currently the values are hard coded
+        "/events": lambda: json.dumps([
+            {"text": "Cyril stupid!!!", "impact": "high"},
+            {"text": "Cyril stupid!!!", "impact": "high"},
+            {"text": "Cyril stupid!!!", "impact": "high"},
+            {"text": "Cyril stupid!!", "impact": "moderate"},
+            {"text": "Cyril stupid!!", "impact": "moderate"},
+            {"text": "Cyril stupid!", "impact": "low"},
+            {"text": "Cyril stupid!", "impact": "low"},
+            {"text": "Cyril stupid!", "impact": "low"},
+            {"text": "Cyril stupid!", "impact": "low"},
+        ]),
+
+        # TODO: move these values into data files instead (shouldnt be defined through code)
+        "/about": lambda: json.dumps({
+            "jnr": {
+                "mon": "7:30am - 3:30pm",
+                "tue": "7:30am - 3:30pm",
+                "wed": "7:30am - 3:30pm",
+                "thu": "7:30am - 3:30pm",
+                "fri": "7:30am - 3:30pm",
+                "max": JNRMAX,
+                "librarians": ["Ms Crothers"],
+            },
+            "snr": {
+                "mon": "8:00am - 2:30pm",
+                "tue": "8:00am - 2:30pm",
+                "wed": "8:00am - 12:30pm",
+                "thu": "8:00am - 3:15pm",
+                "fri": "8:00am - 2:30pm",
+                "max": SNRMAX,
+                "librarians": ["Mr Wiramhardja", "Ms Meredith"],
+            }
+        })
     }
     await websocket.send(options.get(path, lambda:"Could not recognise action")())
 
@@ -79,7 +129,6 @@ def jnr_updater():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("0.0.0.0", JNRCOUNTER_PORT))
     sock.listen(10)
-
     while True:
         # wait for connection
         client, address = sock.accept()
@@ -90,7 +139,7 @@ def jnr_updater():
         print(f"Connection from {address[0]} on jnr port")
 
         # TODO: replace this verification system with SSL
-        # create random string of bytes for verification
+        # create random string of bytes for verification        
         plaintext = bytes([random.randint(0, 0xff) for _ in range(16)])
 
         # send encrypted verification string
@@ -99,27 +148,29 @@ def jnr_updater():
         try:
             # receive new string and check if the connecting client can decrypt it
             msg = client.recv(16)
-            if msg == plaintext:
-                print("Verification succeeded")
+            if msg == KEY:
+                print("Verification succeeded")-
                 while True:
                     # once verification has succeeded, no time limit is required
                     sock.settimeout(None)
 
-                    # receive the update to the number of people in the junior library (+x or -x)
+                    # receive the update to the number of people in the senior library (+x or -x)
                     print("Recieving message")
                     msg = client.recv(1024)
                     print(msg)
-                    inc = eval(msg + b"+0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
+                    inc = eval(msg + b"0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
                     print(inc)
 
-                    # update the count in the junior library
+                    # update the count in the senior library
                     session.query(Count).first().jnrvalue += inc
                     session.commit()
+                    with open("blehjnr.txt", "a") as f:
+                        # if verification is failed, raise an error and let the try/except statement catch it
+                        f.write(f"{session.query(Count).first().jnrvalue} {datetime.datetime.now()}\n")
             else:
-                # if verification is failed, raise an error and let the try/except statement catch it
                 raise Exception("Verification failed")
         except Exception as e:
-            socket.settimeout(None)
+            sock.settimeout(None)
             # print the error (due to verification taking too long, verification being unsuccessful, client closing the connection or some other unknown error
             print(repr(e), "(recieved from jnr port)")
         client.close()
@@ -181,13 +232,24 @@ def snr_updater():
             print(repr(e), "(recieved from snr port)")
         client.close()
 
+# waits until it's 1am
+def wait_for_morning():
+    # get number of seconds until midnight
+    # code from https://stackoverflow.com/questions/45986035/seconds-until-end-of-day-in-python (takes into account daylight savings as well)
+    today = datetime.datetime.now()
+    tomorrow = today + datetime.timedelta(days=1)
+    secs = (datetime.datetime.combine(tomorrow, datetime.time.min) - today).total_seconds()
+
+    # call function that gets predictions after that many seconds
+    threading.Timer(secs, get_new_predictions)
+
 
 # called once every day
-def daily_update_loop():
+def get_new_predictions():
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
-    
+
     week = 1 # TODO: find way of getting week of term from date
     term = 1 # TODO: find way of getting term today
 
@@ -202,13 +264,52 @@ def daily_update_loop():
 
     session.commit()
 
-    # find next time until update
-    current = datetime.datetime.now()
-    new = current.replace(day=current.day, hour=1, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
-    secs = (new - current).total_seconds()
+    # get number of seconds until library opens
+    today = datetime.datetime.now()
+    opening_hour, opening_minute = getOpeningTime()
+    opening = today.replace(hour=opening_hour, minute=opening_minute)
+    secs = (opening - today).total_seconds()
 
-    # wait for that difference in time
-    threading.Timer(secs, daily_update_loop).start()
+    # call function that updates past data every minute
+    threading.Timer(secs, update_loop).start()
+
+
+def update_loop():
+    # start session with database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # get information today
+    today = datetime.datetime.now()
+    term = 1 # TODO: find way of getting week of term from date
+    week = 1 # TODO: find way of getting term today
+
+    # add new record to past data
+    new_data = PastData(
+        day=today.day,
+        month=today.month,
+        year=today.year,
+        term=term,
+        week=week,
+        time=today.strftime("%H:%M"),
+        jnrcount=session.query(Count).first().jnrvalue,
+        snrcount=session.query(Count).first().snrvalue
+    )
+    session.add(new_data)
+    session.commit()
+
+    # check if library has closed
+    closing_hour, closing_minute = getClosingTime()
+    if today.hour >= closing_hour and today.minute >= closing_minute: # if the library is closed, wait until morning to start loop again
+        threading.Timer(0, wait_for_morning)
+    else: # otherwise, run update_loop again after another minute
+        today = datetime.datetime.now()
+        if today.minute == 59:
+            nextTime = today.replace(hour=today.hour + 1, minute=0, second=0)
+        else:
+            nextTime = today.replace(minute = today.minute + 1, second=0)
+        secs = (nextTime - today).total_seconds()
+        threading.Timer(secs, update_loop)
 
 
 class Data(Base):
@@ -257,13 +358,18 @@ class Count(Base):
         return count
 
 
-class Date(Base):
+class PastData(Base):
     __tablename__ = "date"
 
     id = Column(Integer, primary_key=True)
-    date = Column(DateTime, default=datetime.datetime.now)
+    day = Column(Integer, nullable=False)
+    month = Column(Integer, nullable=False)
+    year = Column(Integer, nullable=False)
+    term = Column(Integer, nullable=False)
+    week = Column(Integer, nullable=False)
     time = Column(String(10), nullable=False)
-    count = Column(Integer, primary_key=True)
+    jnrcount = Column(Integer, primary_key=True)
+    snrcount = Column(Integer, primary_key=True)
 
 
 def count(lib):
@@ -275,23 +381,23 @@ def count(lib):
         return session.query(Count).first().jnrvalue
 
 
-def get_predictions(lib):
+def get_trends(lib):
     Session = sessionmaker(bind=engine)
     session = Session()
-    predictions = {}
-    predictions["labels"] = times
-    predictions["data"] = [] 
+    trends = {}
+    trends["labels"] = times
+    trends["data"] = [] 
     for day in days:
-        day_predictions = []
+        day_trends = []
         for time in times:
             data = session.query(Data).filter_by(day=day, time=time).first()
             if lib == "snr":
                 pred = data.snr_expected
             else:
                 pred = data.jnr_expected
-            day_predictions.append(pred)
-        predictions["data"].append(day_predictions)
-    return json.dumps(predictions)
+            day_trends.append(pred)
+        trends["data"].append(day_trends)
+    return trends
 
 """
 @app.route("/<lib>Events")
@@ -314,9 +420,9 @@ def money(lib):
     return "WE ARE NOT CRIMINAKLS!!!!!"
 """
 
-#restartdb()
+restartdb()
 
-threading.Timer(0, daily_update_loop).start()
+threading.Timer(0, wait_for_morning).start()
 """
 threading.Timer(5, plot_data).start()
 """
