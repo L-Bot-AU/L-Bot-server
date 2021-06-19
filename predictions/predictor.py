@@ -7,7 +7,7 @@ def callData(term, week, day):
     max_year_snr = 2019
 
     days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-    f = open("prediction/calcData.json")
+    f = open("predictions/calcData.json")
     calcData = {}
     calcData = json.load(f)
     f.close()
@@ -25,9 +25,6 @@ def callData(term, week, day):
         jnr_b2 = working["b2"]["m"]*week + working["b2"]["b"]
         jnr_count +=1
         return_dict["Jnr"][year] = [jnr_bs,jnr_b1,jnr_b2]
-    # jnr_bs = jnr_bs/jnr_count
-    # jnr_b1 = jnr_b1/jnr_count
-    # jnr_b2 = jnr_b2/jnr_count
 
     snr_count = 0
     snr_bs = 0
@@ -40,9 +37,5 @@ def callData(term, week, day):
         snr_b2 = working["b2"]["m"]*week + working["b2"]["b"]
         snr_count +=1
         return_dict["Snr"][year] = [snr_bs,snr_b1,snr_b2]
-    # snr_bs = snr_bs/snr_count
-    # snr_b1 = snr_b1/snr_count
-    # snr_b2 = snr_b2/snr_count
-
     
     return return_dict
