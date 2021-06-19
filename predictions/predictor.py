@@ -7,7 +7,7 @@ def callData(term, week, day):
     max_year_snr = 2019
 
     days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-    f = open("calcData.json")
+    f = open("prediction/calcData.json")
     calcData = {}
     calcData = json.load(f)
     f.close()
