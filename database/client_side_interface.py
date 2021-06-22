@@ -37,6 +37,14 @@ SNRCOUNTER_PORT = 11498 # for senior library count updates
 JNRMAX = 108
 SNRMAX = 84
 
+
+def print(*args):
+    logfile = open("serverlog.log", "a")
+    logfile.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {' '.join(map(str, args))}\n")
+    logfile.close()
+print("a")
+
+
 def getOpeningTime(): # currently a stub
     today = datetime.datetime.now()
     today = today.replace(minute=today.minute+1)
@@ -330,6 +338,7 @@ def update_loop():
         if today.minute == 59:
             nextTime = today.replace(hour=today.hour + 1, minute=0, second=0)
         else:
+            print(today.minute)
             nextTime = today.replace(minute = today.minute + 1, second=0)
         secs = (nextTime - today).total_seconds()
         t = threading.Timer(secs, update_loop)

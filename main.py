@@ -23,4 +23,5 @@ else:
     # start website in seperate thread
     t.start()
     # start database in main thread
+    print("loading in client side")
     from database import client_side_interface
