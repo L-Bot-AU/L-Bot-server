@@ -13,4 +13,4 @@ Displays data about library (current usage, predictions) using data from cyril.
 - Add tab for past trends
 - progress bar case bashing
 - more css to file for each tab
-
+- librarian email address in about page
