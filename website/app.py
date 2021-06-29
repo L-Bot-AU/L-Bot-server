@@ -7,10 +7,10 @@
 
 from flask import Flask, render_template, request, jsonify
 import requests
-from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 import urllib.request, json
 from datetime import datetime
+from login_form import LoginForm
 
 
 app = Flask(__name__)
@@ -36,6 +36,16 @@ def events():
 @app.route("/test")
 def test():
     return render_template("testing.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def librarian_login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(dir(form))
+    else:
+        print("normal page")
+    return render_template("login.html", form=form)
 
 
 @app.errorhandler(404)
