@@ -89,7 +89,8 @@ def __init__(engine, Base, Data, Count, PastData):
         get_new_predictions(engine, Base, Data, Count, PastData)
         
         # wait until the library is open
-        time.sleep((getOpeningTime() - datetime.datetime.now()).total_seconds())
+        secsUntilOpening = (getOpeningTime() - datetime.datetime.now()).total_seconds()
+        time.sleep(max(0, secsUntilOpening))
         
         while libraryOpen():
             print(__name__, "Entering update loop")

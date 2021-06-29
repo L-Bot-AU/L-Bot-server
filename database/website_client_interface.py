@@ -7,7 +7,7 @@ import eventlet
 CLIENT_PORT = 2910
 
 # number of seconds before each dynamic data update
-TIMEOUT = 2.0
+TIMEOUT = 10.0
 
 # TODO: move these values into data files instead (shouldnt be defined through code)
 JNR_MAX = 108
@@ -62,12 +62,12 @@ def update(engine, Base, Data, Count, PastData):
         sio.emit("jnrAlert", get_alert(engine, "jnr"))
         sio.emit("jnrRemaining", JNR_MAX - get_count(engine, Count, "jnr"))
         sio.emit("jnrFullness", round(get_count(engine, Count, "jnr")/JNR_MAX, 1))
-        #sio.emit("jnrTrends", get_trends(engine, Data, "jnr"))
+        sio.emit("jnrTrends", get_trends(engine, Data, "jnr"))
         
         sio.emit("snrAlert", get_alert(engine, "snr"))
         sio.emit("snrRemaining", SNR_MAX - get_count(engine, Count, "snr"))
         sio.emit("snrFullness", round(get_count(engine, Count, "snr")/SNR_MAX, 1))
-        #sio.emit("snrTrends", get_trends(engine, Data, "snr"))
+        sio.emit("snrTrends", get_trends(engine, Data, "snr"))
         
         sio.sleep(TIMEOUT)
 

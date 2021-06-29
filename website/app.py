@@ -10,7 +10,7 @@ import requests
 from flask_bootstrap import Bootstrap
 import urllib.request, json
 from datetime import datetime
-from login_form import LoginForm
+from website.login_form import LoginForm
 
 
 app = Flask(__name__)
