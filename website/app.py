@@ -33,19 +33,29 @@ def about():
 def events():
     return render_template("events.html")
 
-@app.route("/test")
-def test():
-    return render_template("testing.html")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
     form = LoginForm()
-    if form.validate_on_submit():
-        print(dir(form))
-    else:
-        print("normal page")
+    if request.method == "POST":
+        if form.validate_on_submit():
+            required_password = "slb"  # todo put in .env
+            # print(dir(form)) # wait umm what does this do?
+            password = request.form["password"]
+            print(password)
+            if password == required_password:
+                return render_template("librarian.html")
+            else:
+                return render_template("login.html",form=form, incorrect_password=True)
+        else:
+            print("normal page")
+            # return render_template("login.html", form=form)
     return render_template("login.html", form=form)
+
+
+@app.route("/test")
+def test():
+    return render_template("testing.html")
 
 
 @app.errorhandler(404)

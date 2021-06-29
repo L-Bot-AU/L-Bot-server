@@ -9,3 +9,4 @@ class LoginForm(FlaskForm):
                              validators=[DataRequired(message="This field cannot be empty"),
                                          ]
                              )
+    submit = SubmitField()

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Login{% endblock %}
+
+{% block page_content %}
+        <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <h3>Password:</h3>
+        <p>
+            {{ form.password(size = 20) }}<br>
+            {% if form.password.errors %}
+            <font style="color: red">* This field is required.</font><br> {# todo make this colour a variable, so it appears nice in dark mode #}
+            {% endif %}
+            {% if incorrect_password == True %}
+                <font style="color: red">Incorrect password.</font><br> {# todo likewise #}
+            {% endif %}
+        </p>
+        <p>
+            {{form.submit() }}
+        </p>
+    </form>
+{% endblock %}
