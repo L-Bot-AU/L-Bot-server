@@ -1,0 +1,15 @@
+{% macro scripts() %}
+	<script>
+		sio.on("events", data => {
+			//console.log(data);
+			data.forEach(function (value) {
+				var ul = document.getElementById("list");
+				var li = document.createElement("li");
+				li.appendChild(document.createTextNode(value["text"]));
+				li.setAttribute("class", value["impact"] + "impact");
+				ul.appendChild(li);
+			});
+		});
+		
+	</script>
+{% endmacro %}

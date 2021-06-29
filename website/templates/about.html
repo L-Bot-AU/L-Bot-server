@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block page_title %}About{% endblock %}
+
+{% block page_content %}
+	{% import "aboutdata.html" as aboutdata %}
+	<style>
+		.des {
+			width: 100%;
+		}
+		.librarydes {
+			width: 50%;
+			text-align: left;
+		}
+		.indent {
+			margin-left: 40px;
+		}
+	</style>
+	<h1>How to use the website</h1>
+	<p>lorem ipsum dolor sit amet, consectetuer adispiscing edit. yes.</p>
+	<table class="des">
+		<tr>
+			{% for libdisplay, lib in [("JUNIOR", "jnr"), ("SENIOR", "snr")] %}
+			<th class="librarydes">
+				<h2>{{ libdisplay }} LIBRARY</h2>
+
+				<h3>Normal Opening hours</h3>
+				<table class="indent">
+					{% for daydisplay, day in [('Mon', 'mon'), ('Tue', 'tue'), ('Wed', 'wed'), ('Thu', 'thu'), ('Fri', 'fri')] %}
+						<tr>
+							<td style="width: 50px">{{ daydisplay }}</td>
+							<td id='{{ lib }}{{ day }}'>...am - ...pm</td>
+						</tr>
+					{% endfor %}
+				</table>
+				<br>
+				
+				<h3>Total seats</h3>
+				<div class="indent" id="{{ lib }}max">...</div>
+				<br>
+				
+				<h3>Librarians</h3>
+				<ul id="{{ lib }}librarians">
+				</ul>
+			</th>
+			{% endfor %}
+		</tr>
+	</table>
+	{{ aboutdata.scripts() }}
+{% endblock %}

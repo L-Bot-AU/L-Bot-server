@@ -1,0 +1,105 @@
+{% macro today(lib) -%}
+	<script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
+	<style>
+		.selected {
+		    text-underline-offset: 8px;
+			text-decoration: underline;
+		}
+	</style>
+	<canvas id="{{ lib }}Trends"></canvas>
+{%- endmacro %}
+
+{% macro scripts() %}
+	<script>
+		["jnr", "snr"].forEach(function(lib) {
+			sio.on(lib + "Alert", data => {
+				//console.log(data);
+				if (data !== "") {
+					// nonzero alert
+					document.getElementById(lib + "Alert").style.display = "visible";
+					document.getElementById(lib + "Alerttext").innerHTML = data;
+				}
+				else {
+					document.getElementById(lib + "Alert").style.display = "none";
+				}
+			});
+			
+			sio.on(lib + "Remaining", data => {
+				//console.log(data);
+				document.getElementById(lib + "Remaining").innerHTML = data;
+			});
+			
+			sio.on(lib + "Fullness", data => {
+				//console.log(data);
+				if (data <= 30) {
+					document.getElementById(lib + "Status").innerHTML = "Not busy:";
+				}
+				else if (data <= 70) {
+					document.getElementById(lib + "Status").innerHTML = "Busy:";
+				}
+				else {
+					document.getElementById(lib + "Status").innerHTML = "Very busy:";
+				}
+				
+				document.getElementById(lib + "Fullness").innerHTML = data + "% full";
+				document.getElementById(lib + "Fullness").style.width = data + "%";
+			});
+			
+			sio.on(lib + "Trends", data => {
+				//console.log(data);
+				var day = new Date().getDay() - 1;
+				var ctx = document.getElementById(lib + "Trends").getContext("2d");
+				window.todayGraph[lib] = new Chart(ctx, {
+					type: "bar",
+					label: "mon",
+					data: {
+						labels: data["labels"],
+						datasets: {
+							data: data["data"][day],
+							pointHitRadius: 5,
+							HoverBackgroundColor: [
+								"rgba(255, 99, 132, 1)",
+								"rgba(54, 162, 235, 1)",
+								"rgba(85, 214, 64, 1)",
+								"rgba(75, 192, 192, 1)",
+								"rgba(153, 102, 255, 1)",
+								"rgba(255, 159, 64, 1)"
+							][day],
+							backgroundColor: [
+								"rgba(255, 99, 132, 0.2)",
+								"rgba(54, 162, 235, 0.2)",
+								"rgba(85, 214, 64, 0.2)",
+								"rgba(75, 192, 192, 0.2)",
+								"rgba(153, 102, 255, 0.2)",
+								"rgba(255, 159, 64, 0.2)"
+							][day],
+							borderColor: [
+								"rgba(255, 99, 132, 1)",
+								"rgba(54, 162, 235, 1)",
+								"rgba(85, 214, 64, 1)",
+								"rgba(75, 192, 192, 1)",
+								"rgba(153, 102, 255, 1)",
+								"rgba(255, 159, 64, 1)"
+							][day],
+							borderWidth: 3
+						},
+					},
+					options: {
+						legend: {
+							display: false,
+						},
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true,
+									max: 100,
+								}
+							}]
+						}
+					}
+				});
+			});
+		});
+		
+	</script>
+{% endmacro %}
