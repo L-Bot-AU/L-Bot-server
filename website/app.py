@@ -39,17 +39,18 @@ def librarian_login():
     form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            required_password = "slb"  # todo put in .env
+            required_password = {"Junior": "jlb",
+                                 "Senior": "slb"}  # todo put in .env
             # print(dir(form)) # wait umm what does this do?
+            library = request.form["library"]
             password = request.form["password"]
-            print(password)
-            if password == required_password:
-                return render_template("librarian.html")
+            print(library, password)
+            if password == required_password[library]:
+                return render_template("librarian.html", library=library)
             else:
-                return render_template("login.html",form=form, incorrect_password=True)
+                return render_template("login.html", form=form, incorrect_password=True)
         else:
-            print("normal page")
-            # return render_template("login.html", form=form)
+            print("login failed")
     return render_template("login.html", form=form)
 
 
