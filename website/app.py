@@ -5,7 +5,7 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import requests
 from flask_bootstrap import Bootstrap
 import urllib.request, json
@@ -36,6 +36,8 @@ def events():
 
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
+    if "librarian" in session:
+        return librarian_interface(session["librarian"])
     form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
@@ -46,12 +48,25 @@ def librarian_login():
             password = request.form["password"]
             print(library, password)
             if password == required_password[library]:
-                return render_template("librarian.html", library=library)
+                session["librarian"] = library
+                return librarian_interface(library)
             else:
                 return render_template("login.html", form=form, incorrect_password=True)
         else:
             print("login failed")
     return render_template("login.html", form=form)
+
+
+@app.route("/logout")
+def logout():
+    if "librarian" in session:
+        session.pop("librarian")
+    return home()
+
+
+@app.route("/librarian")
+def librarian_interface(library):
+    return render_template("librarian.html", library=library)
 
 
 @app.route("/test")
