@@ -59,8 +59,7 @@ def librarian_login():
 
 @app.route("/logout")
 def logout():
-    if "librarian" in session:
-        session.pop("librarian")
+    session.pop("librarian", None)
     return home()
 
 
