@@ -5,11 +5,11 @@
 {% block page_content %}
         <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <h3>Library:</h3>
+        <h3>Librarian login:</h3>
         <p>
-            {{ form.library() }}<br>
-            {% if form.library.errors %}
-            <font style="color: red">Please select a library.</font><br> {# todo read below #}
+            {{ form.librarian() }}<br>
+            {% if form.librarian.errors %}
+            <font style="color: red">Please select a librarian type.</font><br> {# todo read below #}
             {% endif %}
         </p>
         <h3>Password:</h3>

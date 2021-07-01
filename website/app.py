@@ -5,7 +5,7 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect
 import requests
 from flask_bootstrap import Bootstrap
 import urllib.request, json
@@ -37,35 +37,34 @@ def events():
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
     if "librarian" in session:
-        return librarian_interface(session["librarian"])
+        return redirect("/librarian")
     form = LoginForm()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            required_password = {"Junior": "jlb",
-                                 "Senior": "slb"}  # todo put in .env
-            # print(dir(form)) # wait umm what does this do?
-            library = request.form["library"]
-            password = request.form["password"]
-            print(library, password)
-            if password == required_password[library]:
-                session["librarian"] = library
-                return librarian_interface(library)
-            else:
-                return render_template("login.html", form=form, incorrect_password=True)
+    if form.validate_on_submit():
+        required_password = {"Junior": "jlb",
+                             "Senior": "slb"}  #TODO: put in .env
+        librarian = request.form.get("librarian")
+        password = request.form.get("password")
+        print("PASSWORD:", password)
+        if password and password == required_password.get(librarian): # ensures librarian and passwords fields are not both empty
+            session["librarian"] = librarian
+            return redirect("/librarian")
         else:
-            print("login failed")
+            return render_template("login.html", form=form, incorrect_password=True)
     return render_template("login.html", form=form)
 
 
 @app.route("/logout")
 def logout():
     session.pop("librarian", None)
-    return home()
+    return redirect("/")
 
 
 @app.route("/librarian")
-def librarian_interface(library):
-    return render_template("librarian.html", library=library)
+def librarian_interface():
+    if "librarian" in session:
+        return render_template("librarian.html", librarian=session["librarian"])
+    else:
+        return redirect("/")
 
 
 @app.route("/test")

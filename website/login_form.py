@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length, Email, ValidationError
 
 
 class LoginForm(FlaskForm):
-    library = RadioField("Library",
+    librarian = RadioField("Librarian",
                          validators=[DataRequired()],
                          choices=[("Junior", "Junior"),
                                   ("Senior", "Senior")]
