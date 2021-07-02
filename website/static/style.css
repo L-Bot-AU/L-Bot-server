@@ -16,6 +16,7 @@ This is used for shared values like interface sizing, and fonts*/
     /*--bg-nav-col-2: #393F4D;*/
     --bg-library-col: #DCDCDC;
 	--border-colour: #000000;
+	--bg-form-col: rgba(0, 0, 0, 0.1);
 
     --txt-primary-col: #1E90FF;
     --nav-primary-col: #1E90FF;
@@ -31,6 +32,7 @@ This is used for shared values like interface sizing, and fonts*/
 	--bg-third-col: #393F4D;
     /* --bg-nav-col-2: #393F4D; */
     --bg-library-col: #283142;
+	--bg-form-col: rgba(255, 255, 255, 0.1);
 	--border-colour: #EEEEEE;
 
 	--txt-primary-col: #4DD0E1;
@@ -93,12 +95,42 @@ table td, table td * {
     vertical-align: top;
 }
 
-.bold-this{
+.bold-this {
     font-weight: bold;
 }
 
-/*For late use*/
+.auth_form {
+	margin: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	height: fit-content;
+	width: 30%;
+	background-color: var(--bg-form-col);
+	padding: 20px;
+	border-radius: 20px;
+}
 
-.update{
+.form-label {
+	width: 27%;
+}
+
+.form-control {
+	width: 73% !important;
+}
+
+.form-inline label {
+	justify-content: left;
+}
+
+.feedback {
+	text-align: left;
+}
+
+/*For later use*/
+
+.update {
 	
 }

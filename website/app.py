@@ -5,7 +5,7 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify, session, redirect
+from flask import Flask, render_template, request, jsonify, session, redirect, flash
 import requests
 from flask_bootstrap import Bootstrap
 import urllib.request, json
@@ -14,7 +14,7 @@ from website.login_form import LoginForm
 
 
 app = Flask(__name__)
-app.secret_key = "super secret"
+app.secret_key = "super secret" #TOOD: Store secret key in .env
 bootstrap = Bootstrap(app)
 
 
@@ -41,15 +41,15 @@ def librarian_login():
     form = LoginForm()
     if form.validate_on_submit():
         required_password = {"Junior": "jlb",
-                             "Senior": "slb"}  #TODO: put in .env
-        librarian = request.form.get("librarian")
-        password = request.form.get("password")
-        print("PASSWORD:", password)
-        if password and password == required_password.get(librarian): # ensures librarian and passwords fields are not both empty
+                             "Senior": "slb"}   #TODO: put passwords in .env
+                                                #TODO: consider functionality to reset passwords (or just have them verify with their email e.g. OAuth)
+        librarian = request.form["librarian"]
+        password = request.form["password"]
+        if password == required_password[librarian]:
             session["librarian"] = librarian
             return redirect("/librarian")
         else:
-            return render_template("login.html", form=form, incorrect_password=True)
+            form.password.errors.append("Incorrect password")
     return render_template("login.html", form=form)
 
 
@@ -64,7 +64,7 @@ def librarian_interface():
     if "librarian" in session:
         return render_template("librarian.html", librarian=session["librarian"])
     else:
-        return redirect("/")
+        return redirect("/login")
 
 
 @app.route("/test")

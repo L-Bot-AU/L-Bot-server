@@ -3,27 +3,45 @@
 {% block page_title %}Login{% endblock %}
 
 {% block page_content %}
-        <form action="" method="post" novalidate>
+    <form class="auth_form" action="" method="post" novalidate onsubmit='localStorage["librarian"] = this.librarian.value'>
         {{ form.hidden_tag() }}
         <h3>Librarian login:</h3>
         <p>
-            {{ form.librarian() }}<br>
+			<div class="form-inline">
+				{{ form.librarian.label(class_="form-label bold-this") }} {{ form.librarian(class_="form-control") }}<br>
+			</div>
             {% if form.librarian.errors %}
-            <font style="color: red">Please select a librarian type.</font><br> {# todo read below #}
+				<ul>
+				{% for error in form.librarian.errors %}
+					<li class="feedback text-danger"> {{ error }} </li>
+				{% endfor %}
+				</ul> {# todo read below #}
             {% endif %}
         </p>
-        <h3>Password:</h3>
         <p>
-            {{ form.password(size = 20) }}<br>
+			<div class="form-inline">
+				{{ form.password.label(class_="form-label bold-this") }} {{ form.password(class_="form-control", size=20) }}<br>
+			</div>
             {% if form.password.errors %}
-            <font style="color: red">* This field is required.</font><br> {# todo make this colour a variable, so it appears nice in dark mode #}
-            {% endif %}
-            {% if incorrect_password == True %}
-                <font style="color: red">Incorrect password.</font><br> {# todo likewise #}
+				<ul class="feedback">
+				{% for error in form.password.errors %}
+					<li class="text-danger"> {{ error }} </li>
+				{% endfor %}
+				</ul>
+            {# todo make this colour a variable, so it appears nice in dark mode #}
             {% endif %}
         </p>
-        <p>
-            {{ form.submit() }}
-        </p>
+        {{ form.submit() }}
     </form>
+	<script>
+		if (!("librarian" in localStorage)) {
+				localStorage["librarian"] = "Junior";
+		}
+		document.getElementById("librarian").value = localStorage["librarian"];
+	
+		function update_librarian(event) {
+			console.log(event);
+			console.log(this);
+		}
+	</script>
 {% endblock %}
