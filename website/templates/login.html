@@ -5,10 +5,10 @@
 {% block page_content %}
     <form class="auth_form" action="" method="post" novalidate onsubmit='localStorage["librarian"] = this.librarian.value'>
         {{ form.hidden_tag() }}
-        <h3>Librarian login:</h3>
+        <h3>Librarian Login</h3>
         <p>
 			<div class="form-inline">
-				{{ form.librarian.label(class_="form-label bold-this") }} {{ form.librarian(class_="form-control") }}<br>
+				{{ form.librarian.label(class_="form-label bold-this") }} {{ form.librarian(class_="form-control data-entry") }}<br>
 			</div>
             {% if form.librarian.errors %}
 				<ul>
@@ -20,7 +20,7 @@
         </p>
         <p>
 			<div class="form-inline">
-				{{ form.password.label(class_="form-label bold-this") }} {{ form.password(class_="form-control", size=20) }}<br>
+				{{ form.password.label(class_="form-label bold-this") }} {{ form.password(class_="form-control data-entry", size=20) }}<br>
 			</div>
             {% if form.password.errors %}
 				<ul class="feedback">
@@ -31,7 +31,7 @@
             {# todo make this colour a variable, so it appears nice in dark mode #}
             {% endif %}
         </p>
-        {{ form.submit() }}
+        {{ form.submit(class_="btn btn-primary submit-button") }}
     </form>
 	<script>
 		if (!("librarian" in localStorage)) {

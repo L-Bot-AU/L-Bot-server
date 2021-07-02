@@ -107,18 +107,18 @@ table td, table td * {
 	right: 0;
 	left: 0;
 	height: fit-content;
-	width: 30%;
+	width: fit-content;
 	background-color: var(--bg-form-col);
-	padding: 20px;
+	padding: 25px;
 	border-radius: 20px;
 }
 
 .form-label {
-	width: 27%;
+	width: 33%;
 }
 
-.form-control {
-	width: 73% !important;
+.data-entry {
+	width: 67% !important;
 }
 
 .form-inline label {
@@ -129,6 +129,14 @@ table td, table td * {
 	text-align: left;
 }
 
+.submit-button {
+	background-color: var(--nav-primary-col);
+	border: none;
+}
+
+.auth_form > p {
+	padding:0.2px;
+}
 /*For later use*/
 
 .update {
