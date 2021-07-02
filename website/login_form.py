@@ -5,10 +5,10 @@ from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
     librarian = SelectField("Library",
-                         validators=[DataRequired()],
-                         choices=[("Junior", "Junior"),
-                                  ("Senior", "Senior")]
-                         )
+                            validators=[DataRequired()],
+                            choices=[("Junior", "Junior"),
+                                    ("Senior", "Senior")]
+                            )
     password = PasswordField("Password",
                              render_kw={"placeholder": "Password"},
                              validators=[DataRequired()]
