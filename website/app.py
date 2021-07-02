@@ -50,6 +50,8 @@ def librarian_login():
             return redirect("/librarian")
         else:
             form.password.errors.append("Incorrect password")
+    elif request.method == "POST":
+        print("login failed")
     return render_template("login.html", form=form)
 
 
