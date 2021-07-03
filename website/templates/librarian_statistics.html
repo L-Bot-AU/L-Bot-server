@@ -9,26 +9,41 @@
             {{ form.hidden_tag() }}
             <p>
                 <div class="form-inline">
-                    {{ form.start_date.label(class_="form-label bold-this") }} {{ form.start_date(class_="form-control data-entry") }}<br>
+                    {{ form.start_date.label(class_="form-label bold-this") }}
+                    {{ form.start_date(class_="form-control data-entry") }}<br>
                 </div>
                 {% if form.start_date.errors %}
                     <ul>
                     {% for error in form.start_date.errors %}
                         <li class="feedback text-danger"> {{ error }} </li>
                     {% endfor %}
-                    </ul> {# todo read below #}
+                    </ul> {# todo fix up warning colour so it appears nice in light mode #}
                 {% endif %}
             </p>
             <p>
                 <div class="form-inline">
-                    {{ form.end_date.label(class_="form-label bold-this") }} {{ form.end_date(class_="form-control data-entry") }}<br>
+                    {{ form.end_date.label(class_="form-label bold-this") }}
+                    {{ form.end_date(class_="form-control data-entry") }}<br>
                 </div>
                 {% if form.end_date.errors %}
                     <ul>
                     {% for error in form.end_date.errors %}
                         <li class="feedback text-danger"> {{ error }} </li>
                     {% endfor %}
-                    </ul> {# todo read below #}
+                    </ul>
+                {% endif %}
+            </p>
+            <p>
+                <div class="form-inline">
+                    {{ form.data_frequency.label(class_="form-label bold-this") }}
+                    {{ form.data_frequency(class_="form-control data-entry") }}<br>
+                </div>
+                {% if form.data_frequency.errors %}
+                    <ul>
+                    {% for error in form.data_frequency.errors %}
+                        <li class="feedback text-danger"> {{ error }} </li>
+                    {% endfor %}
+                    </ul>
                 {% endif %}
             </p>
             <p>
@@ -44,7 +59,7 @@
                     {% for error in form.periods.errors %}
                         <li class="feedback text-danger"> {{ error }} </li>
                     {% endfor %}
-                    </ul> {# todo read below #}
+                    </ul>
                 {% endif %}
             </p>
 
@@ -52,6 +67,8 @@
         </form>
     </div>
     <div style="float: right; width: 50%">
-        graph goes here
+        Graph goes here
+{#        <script>#}
+{#        </script>#}
     </div>
 {% endblock %}
