@@ -57,7 +57,7 @@ def librarian_login():
 @app.route("/logout")
 def logout():
     session.pop("librarian", None)
-    return redirect("/")
+    return redirect("/login")
 
 
 @app.route("/librarian/statistics", methods=["GET", "POST"])

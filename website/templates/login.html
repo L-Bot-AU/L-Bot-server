@@ -9,20 +9,19 @@
         <p>
 			<div class="form-inline">
 				{{ form.librarian.label(class_="form-label bold-this") }} {{ form.librarian(class_="form-control data-entry") }}<br>
-			</div>
-            {% if form.librarian.errors %}
-				<ul>
+			{% if form.librarian.errors %}
+				<ul class="feedback">
 				{% for error in form.librarian.errors %}
-					<li class="feedback text-danger"> {{ error }} </li>
+					<li class="text-danger"> {{ error }} </li>
 				{% endfor %}
 				</ul> {# todo read below #}
             {% endif %}
+			</div>
         </p>
         <p>
 			<div class="form-inline">
 				{{ form.password.label(class_="form-label bold-this") }} {{ form.password(class_="form-control data-entry", size=20) }}<br>
-			</div>
-            {% if form.password.errors %}
+			{% if form.password.errors %}
 				<ul class="feedback">
 				{% for error in form.password.errors %}
 					<li class="text-danger"> {{ error }} </li>
@@ -30,6 +29,8 @@
 				</ul>
             {# todo make this colour a variable, so it appears nice in dark mode #}
             {% endif %}
+			</div>
+            
         </p>
         {{ form.submit(class_="btn btn-primary submit-button") }}
     </form>

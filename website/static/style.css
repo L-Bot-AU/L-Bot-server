@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');
-
 /*Both the light and dark themes inherit all values in this.
 This is used for shared values like interface sizing, and fonts*/
 [class*="theme-"] {
@@ -107,26 +106,31 @@ table td, table td * {
 	right: 0;
 	left: 0;
 	height: fit-content;
-	width: fit-content;
+	width: 400px;
 	background-color: var(--bg-form-col);
-	padding: 20px 5% 20px 5%;
+	padding: 20px;
 	border-radius: 20px;
 }
 
 .form-label {
-	width: 35%;
+	width: 24%;
 }
 
 .data-entry {
-	width: 65% !important;
+	width: 76% !important;
+}
+
+.form-inline {
+	margin-bottom: 20px;
 }
 
 .form-inline label {
-	justify-content: left;
+	justify-content: flex-end;
+	padding-right: 10px;
 }
 
 .feedback {
-	text-align: left;
+	margin-bottom: 0px;
 }
 
 .submit-button {

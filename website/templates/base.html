@@ -8,7 +8,8 @@
 	<link rel="shortcut icon" type="image/jpg" href="static/logo.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="/static/style.css" rel="stylesheet">
-    <script>
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+	<script>
 		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
         document.documentElement.hidden = true; 
     </script>
@@ -16,7 +17,8 @@
 <body>
 	<style>
 		.toggle-box {
-			text-align: right;
+			display: flex;
+			align-items: center;
 		}
 
 		.toggle-box input[type=checkbox], .toggle-box input[type=checkbox]:active {
@@ -78,6 +80,7 @@
 		}
 
 		.toggle-box label {
+			margin-bottom: 0px;
 			display: inline-block;
 			position: relative;
 			padding: 0;

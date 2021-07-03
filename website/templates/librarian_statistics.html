@@ -4,47 +4,47 @@
 
 {% block page_content %}
     <h3>Statistics</h3>
-    <div class="container-fluid" style="float: left; width: 50%; height: 326px">
-        <form class="auth_form" action="" method="post" novalidate>
+    <div style="float: left; width: 50%">
+        <form class="auth_form" style="position: relative; width: 500px" action="" method="post" novalidate>
             {{ form.hidden_tag() }}
             <p>
                 <div class="form-inline">
                     {{ form.start_date.label(class_="form-label bold-this") }}
                     {{ form.start_date(class_="form-control data-entry") }}<br>
-                </div>
-                {% if form.start_date.errors %}
-                    <ul>
+				{% if form.start_date.errors %}
+                    <ul class="feedback">
                     {% for error in form.start_date.errors %}
-                        <li class="feedback text-danger"> {{ error }} </li>
+                        <li class="text-danger"> {{ error }} </li>
                     {% endfor %}
                     </ul> {# todo make warning colour nice in both light and dark mode #}
                 {% endif %}
+                </div>
             </p>
             <p>
                 <div class="form-inline">
                     {{ form.end_date.label(class_="form-label bold-this") }}
                     {{ form.end_date(class_="form-control data-entry") }}<br>
-                </div>
-                {% if form.end_date.errors %}
-                    <ul>
+				{% if form.end_date.errors %}
+                    <ul class="feedback">
                     {% for error in form.end_date.errors %}
-                        <li class="feedback text-danger">{{ error }}</li>
+                        <li class="text-danger">{{ error }}</li>
                     {% endfor %}
                     </ul>
                 {% endif %}
+                </div>
             </p>
             <p>
                 <div class="form-inline">
                     {{ form.data_frequency.label(class_="form-label bold-this") }}
                     {{ form.data_frequency(class_="form-control data-entry") }}<br>
-                </div>
-                {% if form.data_frequency.errors %}
-                    <ul>
+				{% if form.data_frequency.errors %}
+                    <ul class="feedback">
                     {% for error in form.data_frequency.errors %}
-                        <li class="feedback text-danger"> {{ error }} </li>
+                        <li class="text-danger"> {{ error }} </li>
                     {% endfor %}
                     </ul>
                 {% endif %}
+                </div>
             </p>
             <p>
                 <div class="form-inline">
@@ -53,14 +53,14 @@
                     {{ form.morning() }} {{ form.morning.label(class_="bold-this") }}<br>
                     {{ form.lunch() }} {{ form.lunch.label(class_="bold-this") }}<br>
                     {{ form.recess() }} {{ form.recess.label(class_="bold-this") }}<br>
-                </div>
-                {% if form.periods.errors %} {# where periods actually refers to the checkboxes as a whole #}
-                    <ul>
+				{% if form.periods.errors %} {# where periods actually refers to the checkboxes as a whole #}
+                    <ul class="feedback">
                     {% for error in form.periods.errors %}
-                        <li class="feedback text-danger"> {{ error }} </li>
+                        <li class="text-danger"> {{ error }} </li>
                     {% endfor %}
                     </ul>
                 {% endif %}
+                </div>
             </p>
             {{ form.submit(class_="btn btn-primary submit-button") }}
         </form>
