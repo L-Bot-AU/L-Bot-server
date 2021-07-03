@@ -11,8 +11,7 @@ from flask_bootstrap import Bootstrap
 import urllib.request, json
 from datetime import datetime
 from website.login_form import LoginForm
-from website.download_form import DownloadForm
-from website.preview_form import PreviewForm
+from website.graph_form import GraphForm
 
 
 app = Flask(__name__)
@@ -39,7 +38,7 @@ def events():
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
     if "librarian" in session:
-        return redirect("/librarian/preview")
+        return redirect("/librarian/statistics")
     form = LoginForm()
     if form.validate_on_submit():
         required_password = {"Junior": "jlb",
@@ -61,11 +60,11 @@ def logout():
     return redirect("/")
 
 
-@app.route("/librarian/preview", methods=["GET", "POST"])
-def librarian_preview():
-    if "librarian" not in session:
+@app.route("/librarian/statistics", methods=["GET", "POST"])
+def librarian_statistics():
+    if session.get("librarian") is None:
         return redirect("/")
-    form = PreviewForm()
+    form = GraphForm()
     if form.validate_on_submit():
         session["start_date"] = request.form["start_date"] #is a string, should turn into datetime object
         session["end_date"] = request.form["end_date"]
@@ -76,35 +75,19 @@ def librarian_preview():
             return render_template("librarian_statistics.html", form=form)
         session["selection"] = selection
         # todo update chart.js
-    return render_template("librarian_preview.html", form=form)
-
-
-@app.route("/librarian/download", methods=["GET", "POST"])
-def librarian_download():
-    if "librarian" not in session:
-        return redirect("/")
-    form = DownloadForm()
-    if form.validate_on_submit():
-        start_date = request.form["start_date"] #is a string, should turn into datetime object
-        end_date = request.form["end_date"]
-        selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
-        print(start_date, end_date, selection)
-        if not selection:
-            form.periods.errors.append("Please select at least one option")
-        # todo update chart.js
-    return render_template("librarian_download.html", form=form)
+    return render_template("librarian_statistics.html", form=form)
 
 
 @app.route("/librarian/events", methods=["GET", "POST"])
 def librarian_events():
-    if "librarian" not in session:
+    if session.get("librarian") is None:
         return redirect("/")
     return render_template("librarian_events.html")
 
 
 @app.route("/librarian/about", methods=["GET", "POST"])
 def librarian_about():
-    if "librarian" not in session:
+    if session.get("librarian") is None:
         return redirect("/")
     return render_template("librarian_about.html")
 
