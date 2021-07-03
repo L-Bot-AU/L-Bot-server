@@ -14,6 +14,9 @@ class GraphForm(FlaskForm):
                          validators=[DataRequired()],
                          format='%d/%m/%y'
                          )
+    # data_frequency = SelectField("Data Frequency",
+    #                              validators=[DataRequired()],
+    #                              choices=[("")])
     periods = BooleanField("Periods")
     morning = BooleanField("Morning")
     lunch = BooleanField("Lunch")

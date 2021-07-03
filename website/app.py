@@ -60,17 +60,9 @@ def logout():
     return redirect("/")
 
 
-@app.route("/librarian")
-def librarian_interface():
-    if "librarian" in session:
-        return render_template("statistics.html")
-    else:
-        return redirect("/login")
-
-
 @app.route("/librarian/statistics", methods=["GET", "POST"])
-def generate():
-    if session.get("librarian") is None: #todo modularise verification of librarian login
+def librarian_statistics():
+    if session.get("librarian") is None:
         return redirect("/")
     form = GraphForm()
     if form.validate_on_submit():
@@ -80,23 +72,24 @@ def generate():
         print(session["start_date"], session["end_date"], selection)
         if not selection:
             form.periods.errors.append("Please select at least one option")
-            return render_template("graph_form.html", form=form)
+            return render_template("librarian_statistics.html", form=form)
         session["selection"] = selection
-        return redirect("/graph")
-    return render_template("statistics.html", form=form)
+        # todo update chart.js
+    return render_template("librarian_statistics.html", form=form)
 
 
-@app.route("/graph") # MERGE THIS WITH /librarian/statistics OR TURN INTO WEBSOCKETS
-def graph():
+@app.route("/librarian/events", methods=["GET", "POST"])
+def librarian_events():
     if session.get("librarian") is None:
         return redirect("/")
-    if None in [session.get("start_date"), session.get("end_date"), session.get("selection")]:
-        return redirect("/librarian/statistics")
-    start_date = session["start_date"] #they're still strings, not datetime objects yet
-    end_date = session["end_date"]
-    selection = session["selection"]
-    print(start_date, end_date, selection)
-    return render_template("graph.html")
+    return render_template("librarian_events.html")
+
+
+@app.route("/librarian/about", methods=["GET", "POST"])
+def librarian_about():
+    if session.get("librarian") is None:
+        return redirect("/")
+    return render_template("librarian_about.html")
 
 
 @app.route("/test")
