@@ -92,7 +92,7 @@ def graph():
         return redirect("/")
     if None in [session.get("start_date"), session.get("end_date"), session.get("selection")]:
         return redirect("/generate")
-    start_date = session["start_date"] #they're still strings, not dadtetime objects yet
+    start_date = session["start_date"] #they're still strings, not datetime objects yet
     end_date = session["end_date"]
     selection = session["selection"]
     print(start_date, end_date, selection)
