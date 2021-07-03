@@ -2,6 +2,19 @@
 
 {% block page_title %}Generate{% endblock %}
 
+{% block navbar_content %}
+<ul class="nav mr-auto">
+    <li class="nav-item"><a class="navbar-link" href="/librarian/statistics">Statistics</a></li>
+    <li class="nav-item"><a class="navbar-link" href="/librarian/events">Edit events</a></li>
+	<li class="nav-item"><a class="navbar-link" href="/librarian/about">About</a></li>
+    <li class="nav-item"><a class="navbar-link" href="/">Main page</a></li>
+</ul>
+
+<ul class="nav ml-auto">
+	<li class="nav-item"><a class="navbar-link text-danger" href="/logout">Logout </li>
+</ul>
+{% endblock %}
+
 {% block page_content %}
     <form class="auth_form" action="" method="post" novalidate>
         {{ form.hidden_tag() }}

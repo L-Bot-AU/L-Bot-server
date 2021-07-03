@@ -38,7 +38,7 @@ def events():
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
     if "librarian" in session:
-        return redirect("/librarian")
+        return redirect("/librarian/statistics")
     form = LoginForm()
     if form.validate_on_submit():
         required_password = {"Junior": "jlb",
@@ -48,7 +48,7 @@ def librarian_login():
         password = request.form["password"]
         if password == required_password[librarian]:
             session["librarian"] = librarian
-            return redirect("/librarian")
+            return redirect("/librarian/statistics")
         else:
             form.password.errors.append("Incorrect password")
     return render_template("login.html", form=form)
@@ -63,12 +63,12 @@ def logout():
 @app.route("/librarian")
 def librarian_interface():
     if "librarian" in session:
-        return render_template("librarian.html", librarian=session["librarian"])
+        return render_template("statistics.html")
     else:
         return redirect("/login")
 
 
-@app.route("/generate", methods=["GET", "POST"])
+@app.route("/librarian/statistics", methods=["GET", "POST"])
 def generate():
     if session.get("librarian") is None: #todo modularise verification of librarian login
         return redirect("/")
@@ -83,15 +83,15 @@ def generate():
             return render_template("graph_form.html", form=form)
         session["selection"] = selection
         return redirect("/graph")
-    return render_template("graph_form.html", form=form)
+    return render_template("statistics.html", form=form)
 
 
-@app.route("/graph")
+@app.route("/graph") # MERGE THIS WITH /librarian/statistics OR TURN INTO WEBSOCKETS
 def graph():
     if session.get("librarian") is None:
         return redirect("/")
     if None in [session.get("start_date"), session.get("end_date"), session.get("selection")]:
-        return redirect("/generate")
+        return redirect("/librarian/statistics")
     start_date = session["start_date"] #they're still strings, not datetime objects yet
     end_date = session["end_date"]
     selection = session["selection"]
