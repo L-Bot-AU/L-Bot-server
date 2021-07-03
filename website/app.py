@@ -48,7 +48,7 @@ def librarian_login():
         password = request.form["password"]
         if password == required_password[librarian]:
             session["librarian"] = librarian
-            return redirect("/librarian/preview")
+            return redirect("/librarian/statistics")
         else:
             form.password.errors.append("Incorrect password")
     return render_template("login.html", form=form)
@@ -62,32 +62,30 @@ def logout():
 
 @app.route("/librarian/statistics", methods=["GET", "POST"])
 def librarian_statistics():
-    if session.get("librarian") is None:
+    if "librarian" not in session:
         return redirect("/")
     form = GraphForm()
     if form.validate_on_submit():
-        session["start_date"] = request.form["start_date"] #is a string, should turn into datetime object
-        session["end_date"] = request.form["end_date"]
+        start_date = request.form["start_date"] #is a string, should turn into datetime object
+        end_date = request.form["end_date"]
         selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
-        print(session["start_date"], session["end_date"], selection)
+        print(start_date, end_date, selection)
         if not selection:
             form.periods.errors.append("Please select at least one option")
-            return render_template("librarian_statistics.html", form=form)
-        session["selection"] = selection
         # todo update chart.js
     return render_template("librarian_statistics.html", form=form)
 
 
 @app.route("/librarian/events", methods=["GET", "POST"])
 def librarian_events():
-    if session.get("librarian") is None:
+    if "librarian" not in session:
         return redirect("/")
     return render_template("librarian_events.html")
 
 
 @app.route("/librarian/about", methods=["GET", "POST"])
 def librarian_about():
-    if session.get("librarian") is None:
+    if "librarian" not in session:
         return redirect("/")
     return render_template("librarian_about.html")
 
