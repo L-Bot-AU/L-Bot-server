@@ -138,12 +138,14 @@
 				</a>
             </div>
 			
+			{% block navbar_content %}
             <ul class="nav mr-auto">
                 <li class="nav-item"><a class="navbar-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="navbar-link" href="/events">Events</a></li>
 				<li class="nav-item"><a class="navbar-link" href="/about">About</a></li>
                 <li class="nav-item"><a class="navbar-link" href="/login">Librarian</a></li>
             </ul>
+			{% endblock %}
             <div class="theme-switch">
                 <div class="toggle-box">
                     Theme:

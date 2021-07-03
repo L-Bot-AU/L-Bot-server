@@ -2,6 +2,19 @@
 
 {% block page_title %}Librarian{% endblock %}
 
+{% block navbar_content %}
+<ul class="nav mr-auto">
+	<li class="nav-item"><a class="navbar-link" href="/librarian/statistics">Past data</a></li>
+	<li class="nav-item"><a class="navbar-link" href="/librarian/events">Events</a></li>
+	<li class="nav-item"><a class="navbar-link" href="/librarian/about">About</a></li>
+	<li class="nav-item"><a class="navbar-link" href="/">Student</a></li>
+</ul>
+
+<ul class="nav ml-auto">
+	<li class="nav-item"><a class="navbar-link text-danger" href="/logout">Logout</a> </li>
+<ul>
+{% endblock %}
+
 {% block page_content %}
     Congratulations.<br>
     Welcome to the {{ librarian }} Librarian interface.<br>
