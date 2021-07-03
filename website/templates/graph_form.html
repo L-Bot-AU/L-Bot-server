@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Generate{% endblock %}
+
+{% block page_content %}
+    <form class="auth_form" action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+			<div class="form-inline">
+				{{ form.start_date.label(class_="form-label bold-this") }} {{ form.start_date(class_="form-control data-entry") }}<br>
+			</div>
+            {% if form.start_date.errors %}
+				<ul>
+				{% for error in form.start_date.errors %}
+					<li class="feedback text-danger"> {{ error }} </li>
+				{% endfor %}
+				</ul> {# todo read below #}
+            {% endif %}
+        </p>
+        <p>
+			<div class="form-inline">
+				{{ form.end_date.label(class_="form-label bold-this") }} {{ form.end_date(class_="form-control data-entry") }}<br>
+			</div>
+            {% if form.end_date.errors %}
+				<ul>
+				{% for error in form.end_date.errors %}
+					<li class="feedback text-danger"> {{ error }} </li>
+				{% endfor %}
+				</ul> {# todo read below #}
+            {% endif %}
+        </p>
+        <p>
+			<div class="form-inline">
+                <div class="form-label bold-this">Options</div><br>
+                {{ form.periods() }} {{ form.periods.label(class_="bold-this") }}<br>
+                {{ form.morning() }} {{ form.morning.label(class_="bold-this") }}<br>
+                {{ form.lunch() }} {{ form.lunch.label(class_="bold-this") }}<br>
+                {{ form.recess() }} {{ form.recess.label(class_="bold-this") }}<br>
+			</div>
+            {% if form.periods.errors %} {# where periods actually refers to the checkboxes as a whole #}
+				<ul>
+				{% for error in form.periods.errors %}
+					<li class="feedback text-danger"> {{ error }} </li>
+				{% endfor %}
+				</ul> {# todo read below #}
+            {% endif %}
+        </p>
+
+        {{ form.submit(class_="btn btn-primary submit-button") }}
+    </form>
+{% endblock %}

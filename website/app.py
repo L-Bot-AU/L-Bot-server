@@ -11,6 +11,7 @@ from flask_bootstrap import Bootstrap
 import urllib.request, json
 from datetime import datetime
 from website.login_form import LoginForm
+from website.graph_form import GraphForm
 
 
 app = Flask(__name__)
@@ -65,6 +66,37 @@ def librarian_interface():
         return render_template("librarian.html", librarian=session["librarian"])
     else:
         return redirect("/login")
+
+
+@app.route("/generate", methods=["GET", "POST"])
+def generate():
+    if session.get("librarian") is None: #todo modularise verification of librarian login
+        return redirect("/")
+    form = GraphForm()
+    if form.validate_on_submit():
+        session["start_date"] = request.form["start_date"] #is a string, should turn into datetime object
+        session["end_date"] = request.form["end_date"]
+        selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
+        print(session["start_date"], session["end_date"], selection)
+        if not selection:
+            form.periods.errors.append("Please select at least one option")
+            return render_template("graph_form.html", form=form)
+        session["selection"] = selection
+        return redirect("/graph")
+    return render_template("graph_form.html", form=form)
+
+
+@app.route("/graph")
+def graph():
+    if session.get("librarian") is None:
+        return redirect("/")
+    if None in [session.get("start_date"), session.get("end_date"), session.get("selection")]:
+        return redirect("/generate")
+    start_date = session["start_date"] #they're still strings, not datetime objects yet
+    end_date = session["end_date"]
+    selection = session["selection"]
+    print(start_date, end_date, selection)
+    return render_template("graph.html")
 
 
 @app.route("/test")
