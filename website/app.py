@@ -49,7 +49,7 @@ def librarian_login():
         password = request.form["password"]
         if password == required_password[librarian]:
             session["librarian"] = librarian
-            return redirect("/librarian/statistics")
+            return redirect("/librarian/preview")
         else:
             form.password.errors.append("Incorrect password")
     return render_template("login.html", form=form)
@@ -67,12 +67,14 @@ def librarian_preview():
         return redirect("/")
     form = PreviewForm()
     if form.validate_on_submit():
-        start_date = request.form["start_date"] #is a string, should turn into datetime object
-        end_date = request.form["end_date"]
+        session["start_date"] = request.form["start_date"] #is a string, should turn into datetime object
+        session["end_date"] = request.form["end_date"]
         selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
-        print(start_date, end_date, selection)
+        print(session["start_date"], session["end_date"], selection)
         if not selection:
             form.periods.errors.append("Please select at least one option")
+            return render_template("librarian_statistics.html", form=form)
+        session["selection"] = selection
         # todo update chart.js
     return render_template("librarian_preview.html", form=form)
 
