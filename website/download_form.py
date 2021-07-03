@@ -3,7 +3,7 @@ from wtforms import DateField, SelectField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class GraphForm(FlaskForm):
+class DownloadForm(FlaskForm):
     start_date = DateField("Start Date",
                            render_kw={"placeholder": "start date"},
                            validators=[DataRequired()],
@@ -14,7 +14,7 @@ class GraphForm(FlaskForm):
                          validators=[DataRequired()],
                          format='%d/%m/%y'
                          )
-    data_frequency = SelectField("Show Average Every:",
+    data_frequency = SelectField("Time Interval:",
                                  validators=[DataRequired()],
                                  choices=[("min1", "1 minute"),
                                           ("min15", "15 minutes"),
@@ -23,8 +23,4 @@ class GraphForm(FlaskForm):
                                           ("week", "week"),
                                           ("term", "term")]
                                  )
-    periods = BooleanField("Periods")
-    morning = BooleanField("Morning")
-    lunch = BooleanField("Lunch")
-    recess = BooleanField("Recess")
-    submit = SubmitField("Submit")
+    submit = SubmitField("Download")

@@ -1,0 +1,45 @@
+{% extends 'librarian_base.html' %}
+
+{% block page_title %} Preview Past Data {% endblock %}
+
+{% block page_content %}
+    <h3>Preview Past Data</h3>
+    <div class="container-fluid" style="float: left; width: 50%; height: 238px">
+        <form class="auth_form" action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                <div class="form-inline">
+                    {{ form.start_date.label(class_="form-label bold-this") }}
+                    {{ form.start_date(class_="form-control data-entry") }}<br>
+                </div>
+                {% if form.start_date.errors %}
+                    <ul>
+                    {% for error in form.start_date.errors %}
+                        <li class="feedback text-danger"> {{ error }} </li>
+                    {% endfor %}
+                    </ul> {# todo fix up warning colour so it appears nice in light mode #}
+                {% endif %}
+            </p>
+            <p>
+                <div class="form-inline">
+                    {{ form.end_date.label(class_="form-label bold-this") }}
+                    {{ form.end_date(class_="form-control data-entry") }}<br>
+                </div>
+                {% if form.end_date.errors %}
+                    <ul>
+                    {% for error in form.end_date.errors %}
+                        <li class="feedback text-danger"> {{ error }} </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+
+            {{ form.submit(class_="btn btn-primary submit-button") }}
+        </form>
+    </div>
+    <div style="float: right; width: 50%">
+        Graph goes here
+{#        <script>#}
+{#        </script>#}
+    </div>
+{% endblock %}
