@@ -46,22 +46,6 @@
                 {% endif %}
                 </div>
             </p>
-            <p>
-                <div class="form-inline">
-                    <div class="form-label bold-this">Options</div><br>
-                    {{ form.periods() }} {{ form.periods.label(class_="bold-this") }}<br>
-                    {{ form.morning() }} {{ form.morning.label(class_="bold-this") }}<br>
-                    {{ form.lunch() }} {{ form.lunch.label(class_="bold-this") }}<br>
-                    {{ form.recess() }} {{ form.recess.label(class_="bold-this") }}<br>
-				{% if form.periods.errors %} {# where periods actually refers to the checkboxes as a whole #}
-                    <ul class="feedback">
-                    {% for error in form.periods.errors %}
-                        <li class="text-danger"> {{ error }} </li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-                </div>
-            </p>
             {{ form.submit(class_="btn btn-primary submit-button") }}
         </form>
     </div>

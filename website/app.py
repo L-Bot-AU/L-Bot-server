@@ -65,9 +65,11 @@ def librarian_statistics():
     if "librarian" not in session:
         return redirect("/")
     form = GraphForm()
+    print(form.start_date)
     if form.validate_on_submit():
-        start_date = request.form["start_date"] #is a string, should turn into datetime object
-        end_date = request.form["end_date"]
+        start_date = form["start_date"] #is a string, should turn into datetime object
+        end_date = form["end_date"]
+        print(start_date, end_date, "abcabcba")
         selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
         print(start_date, end_date, selection)
         if not selection:

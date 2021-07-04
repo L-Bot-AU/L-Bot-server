@@ -23,8 +23,4 @@ class GraphForm(FlaskForm):
                                           ("week", "week"),
                                           ("term", "term")]
                                  )
-    periods = BooleanField("Periods")
-    morning = BooleanField("Morning")
-    lunch = BooleanField("Lunch")
-    recess = BooleanField("Recess")
     submit = SubmitField("Submit")
