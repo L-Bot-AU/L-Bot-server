@@ -7,15 +7,15 @@ function update_graph(data){
     window.librarianGraph.update();
 }
 
-function dataset(update){
+function dataset(update){ // most likely won't be used but possibly
     var data = {data: update["data"],
                 pointHitRadius: 5,
                 HoverBackgroundColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 3
-            }
-    return data
+            };
+    return data;
 }
 
 function hard_code_graph_upd(){
