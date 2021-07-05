@@ -51,5 +51,13 @@
     </div>
     <div style="float: right; width: 50%">
         graph goes here
+        <div>
+            <canvas id="librarian-graph"></canvas>
+            <script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='librarian.js') }}"></script>
+            <script>
+                gen_graph();
+            </script>
+        </div>
     </div>
 {% endblock %}

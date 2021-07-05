@@ -67,13 +67,9 @@ def librarian_statistics():
     form = GraphForm()
     print(form.start_date)
     if form.validate_on_submit():
-        start_date = form["start_date"] #is a string, should turn into datetime object
+        start_date = form["start_date"] #is a string but verified as a datetime, should turn into datetime object
         end_date = form["end_date"]
-        print(start_date, end_date, "abcabcba")
-        selection = [option for option in ["periods", "morning", "lunch", "recess"] if request.form.get(option)]
-        print(start_date, end_date, selection)
-        if not selection:
-            form.periods.errors.append("Please select at least one option")
+        print(start_date, end_date)
         # todo update chart.js
     return render_template("librarian_statistics.html", form=form)
 

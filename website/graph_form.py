@@ -5,12 +5,12 @@ from wtforms.validators import DataRequired
 
 class GraphForm(FlaskForm):
     start_date = DateField("Start Date",
-                           render_kw={"placeholder": "start date"},
+                           render_kw={"placeholder": "dd/mm/yy"},
                            validators=[DataRequired()],
                            format='%d/%m/%y'
                            )
     end_date = DateField("End Date",
-                         render_kw={"placeholder": "end date"},
+                         render_kw={"placeholder": "dd/mm/yy"},
                          validators=[DataRequired()],
                          format='%d/%m/%y'
                          )
