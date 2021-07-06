@@ -1,8 +1,6 @@
 # NOTE: should be run from cmdline, not IDE
 import threading
 import platform
-import psutil
-import signal
 import os
 
 # kill processes on ports, since 2 processes cannot run on the same port
@@ -14,6 +12,8 @@ if platform.system() == "Linux":
     os.system("kill $(lsof -ti tcp:11498)")
 
 elif platform.system() == "Windows":
+    import psutil
+    import signal
     for proc in psutil.process_iter():
         for conns in proc.connections(kind='inet'):
             if conns.laddr.port in [80, 9482, 2910, 11498]:

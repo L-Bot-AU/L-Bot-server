@@ -5,14 +5,14 @@ from wtforms.validators import DataRequired
 
 class GraphForm(FlaskForm):
     start_date = DateField("Start Date",
-                           render_kw={"placeholder": "dd/mm/yy"},
+                           render_kw={"type": "date"},
                            validators=[DataRequired()],
-                           format='%d/%m/%y'
+                           format='%Y-%m-%d'
                            )
     end_date = DateField("End Date",
-                         render_kw={"placeholder": "dd/mm/yy"},
+                         render_kw={"type": "date"},
                          validators=[DataRequired()],
-                         format='%d/%m/%y'
+                         format='%Y-%m-%d'
                          )
     data_frequency = SelectField("Time Interval",
                                  validators=[DataRequired()],

@@ -6,7 +6,6 @@
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
 from flask import Flask, render_template, request, jsonify, session, redirect, flash
-import requests
 from flask_bootstrap import Bootstrap
 import urllib.request, json
 from datetime import datetime
@@ -65,11 +64,9 @@ def librarian_statistics():
     if "librarian" not in session:
         return redirect("/")
     form = GraphForm()
-    print(form.start_date)
     if form.validate_on_submit():
         start_date = form["start_date"] #is a string but verified as a datetime, should turn into datetime object
         end_date = form["end_date"]
-        print(start_date, end_date)
         # todo update chart.js
     return render_template("librarian_statistics.html", form=form)
 

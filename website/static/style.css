@@ -137,6 +137,15 @@ table td, table td * {
 	background-color: var(--nav-primary-col);
 	border: none;
 }
+
+.logout > * {
+	color: #dc3545;
+}
+
+.logout:hover > * {
+	color: #a21d2d;
+}
+
 /*For later use*/
 
 .update {
