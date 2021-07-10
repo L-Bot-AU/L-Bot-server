@@ -53,7 +53,7 @@ def get_new_predictions(engine, Base, Data, Count, PastData):
 
     session.commit()
 
-def update_loop(engine, Base, Data, Count, PastData):
+def update_past_data(engine, Base, Data, Count, PastData):
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -82,7 +82,6 @@ def __init__(engine, Base, Data, Count, PastData):
     #restartdb(engine, Base, Data, Count, PastData)
     
     while True:
-        # waits until it's 1am
         #time.sleep(secsUntilNextDay())
         
         print(__name__, "Getting new predictions")
@@ -94,7 +93,7 @@ def __init__(engine, Base, Data, Count, PastData):
         
         while libraryOpen():
             print(__name__, "Entering update loop")
-            update_loop(engine, Base, Data, Count, PastData)
+            update_past_data(engine, Base, Data, Count, PastData)
             
-            time.sleep(60) # TODO: 60 should be defined as a constant
+            time.sleep(60) # TODO: this should be changed to waiting for the next minute since the update_past_data function will also take time
 
