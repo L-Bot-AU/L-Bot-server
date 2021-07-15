@@ -4,7 +4,7 @@
 #localStorage in js: https://code-maven.com/slides/javascript/local-storage-boolean
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
-
+from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
 from flask import Flask, render_template, request, jsonify, session, redirect, flash
 from flask_bootstrap import Bootstrap
 import urllib.request, json
@@ -96,4 +96,4 @@ def page_not_found(e):
 
 
 def __init__():
-    app.run(host="0.0.0.0", port=80, debug=True)
+    app.run(host=WEBSITE_HOST, port=WEBSITE_PORT, debug=WEBSITE_DEBUG)

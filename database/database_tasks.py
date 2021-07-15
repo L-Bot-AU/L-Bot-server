@@ -1,3 +1,4 @@
+from constants import DAYS, TIMES, DO_RESTARTDB, DATABASE_TASKS_TIMEOUT
 from predictions.getData import getData
 from sqlalchemy.orm import sessionmaker
 from Crypto.Cipher import AES
@@ -8,9 +9,6 @@ KEY = b'automate_egggggg'
 # two seperate objects are required for decrypting and encrypting (PyCryptoDome weirdness)
 aesenc = AES.new(KEY, AES.MODE_ECB)
 aesdec = AES.new(KEY, AES.MODE_ECB)
-
-days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-times = ["Morning", "Break 1", "Break 2"]
 
 def secsUntilNextDay():
     # get number of seconds until midnight
@@ -45,8 +43,8 @@ def get_new_predictions(engine, Base, Data, Count, PastData):
     # loop through each day of the week and update the predicted value on that day
     for day in range(1, 6):
         predData = getData(term, week, day)
-        for i, time in enumerate(times):
-            data = session.query(Data).filter_by(day=days[day-1], time=time).first()
+        for i, time in enumerate(TIMES):
+            data = session.query(Data).filter_by(day=DAYS[day-1], time=time).first()
             # for now, update with the average of the minumum and maximum
             data.jnr_expected = predData["Jnr"][i]
             data.snr_expected = predData["Snr"][i]
@@ -79,7 +77,8 @@ def update_past_data(engine, Base, Data, Count, PastData):
 
 def __init__(engine, Base, Data, Count, PastData):
     print(__name__, "Reset database")
-    #restartdb(engine, Base, Data, Count, PastData)
+    if DO_RESTARTDB:
+        restartdb(engine, Base, Data, Count, PastData)
     
     while True:
         #time.sleep(secsUntilNextDay())
@@ -95,5 +94,5 @@ def __init__(engine, Base, Data, Count, PastData):
             print(__name__, "Entering update loop")
             update_past_data(engine, Base, Data, Count, PastData)
             
-            time.sleep(60) # TODO: this should be changed to waiting for the next minute since the update_past_data function will also take time
+            time.sleep(DATABASE_TASKS_TIMEOUT) # TODO: this should be changed to waiting for the next minute since the update_past_data function will also take time
 

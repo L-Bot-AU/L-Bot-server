@@ -1,12 +1,8 @@
+from constants import CAMERA_SYSTEM_INTERFACE_DEBUG, CAMERA_SYSTEM_PORTS
 import datetime
 import random
 import socket
 
-DEBUG = True
-PORT = {
-    "jnr": 9482,
-    "snr": 11498
-}
 
 def updateCount(engine, lib):
     # start session with database
@@ -33,7 +29,7 @@ def receive_loop(engine, Count, lib):
     
     updateCount(engine, lib)
     
-    if DEBUG:
+    if CAMERA_SYSTEM_INTERFACE_DEBUG:
         # if verification is failed, raise an error and let the try/except statement catch it
         open(f"log{lib}.txt", "a").write(f"{session.query(Count).first().snrvalue} {datetime.datetime.now()}\n")
 
@@ -42,7 +38,7 @@ def __init__(engine, Base, Data, Count, PastData, lib):
     
     # create socket and listen
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("0.0.0.0", PORT[lib]))
+    sock.bind(("0.0.0.0", CAMERA_SYSTEM_PORTS[lib]))
     sock.listen(10)
     
     while True:

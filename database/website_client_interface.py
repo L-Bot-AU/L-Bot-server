@@ -1,13 +1,8 @@
+from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT
 from sqlalchemy.orm import sessionmaker
 import socketio
 import datetime
 import eventlet
-
-# for library overview website
-CLIENT_PORT = 2910
-
-# number of seconds before each dynamic data update
-TIMEOUT = 10.0
 
 # TODO: move these values into data files instead (shouldnt be defined through code)
 JNR_MAX = 108
@@ -69,7 +64,7 @@ def update(engine, Base, Data, Count, PastData):
         sio.emit("snrFullness", round(get_count(engine, Count, "snr")/SNR_MAX, 1))
         sio.emit("snrTrends", get_trends(engine, Data, "snr"))
         
-        sio.sleep(TIMEOUT)
+        sio.sleep(WEBSITE_UPDATE_TIMEOUT)
 
 def get_count(engine, Count, lib):
     Session = sessionmaker(bind=engine)
@@ -122,5 +117,5 @@ def get_events():
 
 def __init__(engine, Base, Data, Count, PastData):
     task = sio.start_background_task(update, engine, Base, Data, Count, PastData)
-    eventlet.wsgi.server(eventlet.listen(('', CLIENT_PORT)), app)
+    eventlet.wsgi.server(eventlet.listen(('', WEBSITE_CLIENT_PORT)), app)
 

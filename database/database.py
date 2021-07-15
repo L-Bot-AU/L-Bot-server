@@ -1,9 +1,8 @@
+from constants import DAYS, TIMES
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
 
-days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-times = ["Morning", "Break 1", "Break 2"]
 
 def restartdb(engine, Base, Data, Count, PastData):
     Session = sessionmaker(bind=engine)
@@ -12,8 +11,8 @@ def restartdb(engine, Base, Data, Count, PastData):
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     
-    for day in days:
-        for time in times:
+    for day in DAYS:
+        for time in TIMES:
             d = Data(day=day, time=time)
             begsession.add(d)
 
