@@ -67,6 +67,7 @@ def librarian_statistics():
     if form.validate_on_submit():
         start_date = form["start_date"] #is a string but verified as a datetime, should turn into datetime object
         end_date = form["end_date"]
+        print(start_date, end_date)
         # todo update chart.js
     return render_template("librarian_statistics.html", form=form)
 
