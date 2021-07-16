@@ -158,12 +158,10 @@
             </div>
         </div>
     </nav>
-	
 	<script type="text/javascript" src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
 	<script>
 		const sio = io("ws://127.0.0.1:2910");
 	</script>
-	<script type="text/javascript" src="{{ url_for('static', filename='requests.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
     <div class="container-fluid" style="height: calc(100vh - 80px);">
         {% block page_content %}{% endblock %}

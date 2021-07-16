@@ -125,8 +125,11 @@
 				<div class="progress">
 					<div id="{{ lib }}Fullness" class="progress-bar" style="width: 0%">0% full</div>
 				</div>
-				<div class="title">TODAY</div>
+				<div class="title">EXPECTED USAGE</div>
 				{{ homedata.today(lib) }}
+				
+				<div class="title">PAST TRENDS</div>
+				{{ homedata.pasttrends(lib) }}
 			</th>
 			{% endfor %}
 		</tr>
