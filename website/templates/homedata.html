@@ -164,7 +164,7 @@
 				}
 				
 				document.getElementById(lib + "Fullness").innerHTML = data + "% full";
-				document.getElementById(lib + "Fullness").style.width = data + "%";
+				document.getElementById(lib + "Fullness").parentElement.style.width = data + "%";
 			});
 			
 			sio.on(lib + "Trends", data => {

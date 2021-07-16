@@ -7,7 +7,7 @@
 	{% import "homedata.html" as homedata %}
 	<style>
 		.focusbtn {
-			padding: 15px 15px 0px 15px;
+			padding: 0px 15px;
 			background-color: transparent;
 			border: none;
 			font-size: 20px;
@@ -22,7 +22,7 @@
 			position: absolute;
 			transition-duration: 0.8s;
 			transform: translate(0%);
-			margin-top: 40px;
+			margin-top: 10px;
 		}
 		.jnrtab {
 			width: 90vw;
@@ -58,9 +58,12 @@
 		}
 		
 		.alert {
+			width: 90%;
+			margin: auto;
+			margin-top: 15px;
 			color: white;
 			background-color: red;
-			border-radius: 20px;
+			border-radius: 10px;
 			padding: 15px;
 			font-size: 20px;
 		}
@@ -80,8 +83,10 @@
 		}
 		
 		.progress {
-			margin: 20px 0px 20px 0px;
-			height: 80px;
+			width: 90%;
+			margin: auto;
+			margin-top: 10px;
+			height: 75px;
 			border-radius: 20px;
 			font-size: 30px;
 			border: 2px solid var(--border-colour);
@@ -89,20 +94,28 @@
 		}
 		
 		.progress-bar {
-			padding-left: 15px;
 			color: var(--txt-col);
 			background-color: var(--nav-primary-col);
 		}
 		
 		.status {
-			font-size: 40px;
+			font-size: 30px;
 			text-align: center;
+			margin: 20px 0px;
 		}
 		
 		.title {
-			font-size: 50px;
+			font-size: 45px;
 			text-align: center;
 			padding: 20px;
+		}
+		#jnrFullness {
+			padding-left: 15px;
+			margin: auto;
+		}
+		#snrFullness {
+			padding-left: 15px;
+			margin: auto;
 		}
 	</style>
 	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">Junior</button>
@@ -123,7 +136,7 @@
 					spots remaining
 				</div>
 				<div class="progress">
-					<div id="{{ lib }}Fullness" class="progress-bar" style="width: 0%">0% full</div>
+					<div class="progress-bar" style="width: 0%"><div id="{{ lib }}Fullness">0% full</div></div>
 				</div>
 				<div class="title">EXPECTED USAGE</div>
 				{{ homedata.today(lib) }}
