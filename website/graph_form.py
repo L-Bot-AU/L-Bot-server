@@ -23,4 +23,6 @@ class GraphForm(FlaskForm):
                                           ("week", "week"),
                                           ("term", "term")]
                                  )
-    submit = SubmitField("Submit")
+    preview = SubmitField("Preview")
+    download = SubmitField("Download")
+    
