@@ -4,37 +4,6 @@
 
 {% block page_content %}
 	{% import "eventsdata.html" as eventsdata %}
-	<style>
-		.key {
-			float: right;
-			border: 2px solid var(--border-colour);
-			border-radius: 10px;
-			padding: 40px;
-			text-align: left;
-		}
-		.list {
-			text-align: left;
-			list-style: none;
-			font-size: 22px;
-		}
-		.list li::before {
-			content: "•";
-			font-size: 30px;
-			font-weight: bold;
-			display: inline-block;
-			width: 1em;
-			margin: -10px -15px -15px -15px;
-		}
-		.highimpact::before {
-			color: red;
-		}
-		.moderateimpact::before {
-			color: orange;
-		}
-		.lowimpact::before {
-			color: green;
-		}
-	</style>
 	<ul class="key list">
 		<li class="highimpact">High Impact</li>
 		<li class="moderateimpact">Moderate Impact</li>

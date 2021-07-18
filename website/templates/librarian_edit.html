@@ -1,0 +1,93 @@
+{% extends "librarian_base.html" %}
+
+{% block page_title %}Edit{% endblock %}
+
+{% block page_content %}
+	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">General</button>
+	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Events</button>
+	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Alerts</button>
+	<div class="uppertabline"></div><br><br>
+	<div hidden>
+	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Junior</button>
+	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button>
+	<div class="tabline"></div><br><br>
+	<div class="form-inline edit-line">
+    <label class="bold-this edit-label" for="day"> Day: </label>
+	<select class="form-control edit-input" id="day" name="day" required>
+		<option value="Monday"> Monday </option>
+		<option value="Tuesday"> Tuesday </option>
+		<option value="Wednesyday"> Wednesday </option>
+		<option value="Thursday"> Thursday </option>
+		<option value="Friday"> Friday </option>
+	</select>
+	</div>
+	<div class="form-inline edit-line">
+	<label class="bold-this edit-label" for="openingTime"> Opening time: </label>
+	<input type="time" class="form-control edit-input" id="openingTime" name="openingTime" required>
+	</div>
+	<div class="form-inline edit-line">
+	<label class="bold-this edit-label" for="openingTime"> Closing time: </label>
+	<input type="time" class="form-control edit-input" id="closingTime" name="closingTime" required>
+	</div>
+	<div class="form-inline edit-line">
+	<label class="bold-this edit-label" for="openingTime"> Maximum seats: </label>
+	<input style="width: 80px" type="number" class="form-control" id="maxSeats" name="maxSeats" required>
+	</div>
+	<div class="edit-line" style="width: 364px; margin: auto; margin-top: 20px;"> <label style=" text-align: left; margin-right: 300px; padding-right: 10px" class="bold-this edit-label"> Librarians: </label><br>
+	<div id="librarians">
+		<li class="edit-list-line bold-this"> <input class="form-control edit-list" type="text" value="Ms Thomas"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button> </li>
+		<li class="edit-list-line bold-this"> <input class="form-control edit-list" type="text" value="Mr Wiramihardja"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button> </li>
+		<button style="margin-left: -292px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button>
+	</div>
+	</div>
+	<button class="btn btn-primary save-button" style="margin-right: 112px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	</div>
+	<div hidden>
+	<ul class="key list">
+		<li class="highimpact"> High impact </li>
+		<li class="moderateimpact"> Moderate impact </li>
+		<li class="lowimpact"> Low impact </li>
+	</ul>
+	<div class="event-tooltip">
+		<ul class="tooltip-list">
+			<li class="highimpact"></li>
+			<li class="moderateimpact"></li>
+			<li class="lowimpact"></li>
+		</ul>
+	</div>
+	<ul class="list" id="events">
+		<li onclick="makeEdit(event)" class="edit-hover highimpact bold-this"> <input class="form-control edit-event" type="text" value="Year 11 exams"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+				<li onclick="makeEdit(event)" class="edit-hover highimpact bold-this"> <input class="form-control edit-event" type="text" value="Year 10 excursion"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		<li onclick="makeEdit(event)" class="edit-hover moderateimpact bold-this"> <input class="form-control edit-event" type="text" value="Shortage of seats"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+				<li onclick="makeEdit(event)" class="edit-hover lowimpact bold-this"> <input class="form-control edit-event" type="text" value="Bogabilla fundraising BBQ"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
+		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	</ul>
+	</div>
+	<div>
+	<div class="alert-tooltip">
+		<ul class="alert-list">
+			<li class="exclamation-triangle">⚠</li>
+			<li class="information">ℹ</li>
+		</ul>
+	</div>
+	<ul class="alert-list" id="events">
+		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="exclamation-triangle">⚠</div><textarea class="form-control alert-box"> Library is under construction </textarea><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="exclamation-triangle">⚠</div><textarea class="form-control alert-box"> Library overtaken by monkeys! </textarea><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="information">ℹ</div><textarea class="form-control alert-box"> Please by mindful of the wet paint smile </textarea> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
+		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	</ul>
+	</div>
+	<script> 
+		function makeEdit(event) {
+			var box = event.target.getBoundingClientRect();
+			if (event.clientX >= box.left - 20 &&
+				event.clientX <= box.left + 8 &&
+				event.clientY >= box.top &&
+				event.clientY <= box.top + 40) {
+					
+			}
+		}
+	</script>
+{% endblock %}

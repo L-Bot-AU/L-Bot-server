@@ -151,3 +151,279 @@ table td, table td * {
 .update {
 	
 }
+.focusbtn {
+	padding: 0px 15px;
+	background-color: transparent;
+	border: none;
+	font-size: 20px;
+	font-weight: 800;
+}
+.focusbtn:focus {
+	outline: none;
+}
+		
+.tabwrapper {
+	width: 180vw;
+	position: absolute;
+	transition-duration: 0.8s;
+	transform: translate(0%);
+	margin-top: 10px;
+}
+.jnrtab {
+	width: 90vw;
+	opacity: 1;
+	transition:opacity 0.8s linear;
+}
+.snrtab {
+	width: 90vw;
+	opacity: 0;
+	transition:opacity 0.8s linear;
+}
+.tabline {
+	position: absolute;
+	height: 2px;
+	width: 70px;
+	background-color: var(--txt-primary-col);
+	left: calc(50% + 10px);
+}
+
+.uppertabline {
+	position: absolute;
+	height: 2px;
+	width: 70px;
+	background-color: var(--txt-primary-col);
+	left: calc(50% + 66px); /* -126px */
+}
+
+.focusright .tabwrapper {
+	transform: translate(-50%);
+}
+.focusright .jnrtab {
+	opacity: 0;
+	transition:opacity 0.8s linear;
+}
+.focusright .snrtab {
+	opacity: 1;
+	transition:opacity 0.8s linear;
+}
+.focusright .tabline {
+	left: calc(50% + 8px);
+}
+
+.alert {
+	width: 90%;
+	margin: auto;
+	margin-top: 15px;
+	color: white;
+	background-color: red;
+	border-radius: 20px;
+	padding: 15px;
+	font-size: 20px;
+}
+.closebtn {
+	color: white;
+	font-weight: 900;
+	float: right;
+	font-size: 40px;
+	line-height: 0px;
+	cursor: pointer;
+	transition: 0.3s;
+	padding: 10px;
+}
+.closebtn:hover {
+	color: black;
+}
+		
+.progress {
+	width: 90%;
+	margin: auto;
+	margin-top: 10px;
+	height: 75px;
+	border-radius: 20px;
+	font-size: 30px;
+	border: 2px solid var(--border-colour);
+	background-color: var(--bg-primary-col);
+}
+
+.progress-bar {
+	color: var(--txt-col);
+	background-color: var(--nav-primary-col);
+}
+.status {
+	font-size: 30px;
+	text-align: center;
+	margin: 20px 0px;
+}
+
+.title {
+	font-size: 45px;
+	text-align: center;
+	padding: 20px;
+}
+#jnrFullness {
+	padding-left: 15px;
+	margin: auto;
+}
+#snrFullness {
+	padding-left: 15px;
+	margin: auto;
+}
+
+.edit-line {
+	margin: auto;
+	margin-top: 10px;
+	width: 500px;
+}
+
+.edit-label {
+	width: 200px;
+}
+
+.edit-input {
+	width: 250px !important;
+}
+
+.edit-list {
+	margin-left: -204px;
+	margin-right: 20px;
+	display: inline;
+	width: 200px !important;
+}
+
+.edit-list-line {
+	margin: auto;
+	margin-top: 10px;
+	width: 500px;
+	font-size: 20px;
+}
+
+.remove-button {
+	background-color: #dc3545;
+	border: none;
+}
+
+.remove-button:hover {
+	background-color: #a21d2d;
+}
+
+.save-button {
+	background-color: #1b9420;
+	border: none;
+}
+
+.save-button:hover {
+	background-color: #007105;
+}
+
+.key {
+	float: right;
+	border: 2px solid var(--border-colour);
+	border-radius: 10px;
+	padding: 20px 40px 30px;
+	text-align: left;
+}
+.list {
+	text-align: left;
+	list-style: none;
+	font-size: 22px;
+}
+.list li::before {
+	content: "•";
+	font-size: 40px;
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+	margin: -10px -15px -15px -15px;
+}
+.highimpact::before {
+	color: red;
+}
+.moderateimpact::before {
+	color: orange;
+}
+.lowimpact::before {
+	color: green;
+}
+.edit-event {
+	display: inline;
+	width: 50%;
+	margin-bottom: 10px;
+}
+.edit-hover:hover {
+	cursor: pointer;
+}
+.event-tooltip {
+	position: absolute;
+	border-radius: 10px;
+	background-color: black;
+	width: 55px;
+	height: 90px;
+	margin-left: -50px; 
+	margin-top: -20px;
+}
+.event-tooltip::before {
+	content: "";
+	position: absolute;
+	width: 20px;
+	height: 60px;
+	right: 5px;
+	transform: rotate(-45deg);
+	background-color: black;
+	z-index: -1;
+}
+
+.tooltip-list {
+	margin-top: 5px;
+	margin-left: -40px;
+	list-style: none;
+}
+
+.tooltip-list li::before {
+	content: "•";
+	font-size: 42px;
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+	margin: -25px -15px -25px -15px;
+}
+
+.alert-list {
+	padding-left: 10px;
+	text-align: left;
+	list-style: none;
+}
+
+.alert-box {
+	width: 50% !important;
+	margin-right: 10px;
+}
+
+.exclamation-triangle {
+	margin-right: 10px;
+	font-size: 28px;
+}
+
+.information {
+	margin-right: 10px;
+	font-size: 28px;
+}
+
+.alert-tooltip {
+	position: absolute;
+	border-radius: 10px;
+	background-color: black;
+	width: 55px;
+	height: 100px;
+	margin-left: -50px; 
+	margin-top: -20px;
+}
+.alert-tooltip::before {
+	content: "";
+	position: absolute;
+	width: 20px;
+	height: 60px;
+	right: 5px;
+	transform: rotate(-45deg);
+	background-color: black;
+	z-index: -1;
+}

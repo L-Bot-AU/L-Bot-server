@@ -163,7 +163,7 @@
 		const sio = io("ws://127.0.0.1:2910");
 	</script>
     <script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
-    <div class="container-fluid" style="height: calc(100vh - 80px);">
+    <div class="container-fluid" style="height: calc(100vh - 80px); padding-top: 40px;">
         {% block page_content %}{% endblock %}
     </div>
 	<script>

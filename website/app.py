@@ -72,11 +72,11 @@ def librarian_statistics():
     return render_template("librarian_statistics.html", form=form)
 
 
-@app.route("/librarian/events", methods=["GET", "POST"])
+@app.route("/librarian/edit", methods=["GET", "POST"])
 def librarian_events():
     if "librarian" not in session:
         return redirect("/")
-    return render_template("librarian_events.html")
+    return render_template("librarian_edit.html")
 
 
 @app.route("/librarian/about", methods=["GET", "POST"])
