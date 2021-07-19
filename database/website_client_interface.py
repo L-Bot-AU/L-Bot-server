@@ -1,72 +1,48 @@
-from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT
+from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT, DAYS, TIMES
+from database import database
 from sqlalchemy.orm import sessionmaker
+import kill_port
 import socketio
 import datetime
 import eventlet
 
-# TODO: move these values into data files instead (shouldnt be defined through code)
-JNR_MAX = 108
-SNR_MAX = 84
-JNR_OPENING = {
-    "mon": "7:30am - 3:30pm",
-    "tue": "7:30am - 3:30pm",
-    "wed": "7:30am - 3:30pm",
-    "thu": "7:30am - 3:30pm",
-    "fri": "7:30am - 3:30pm",
-}
-SNR_OPENING = {
-    "mon": "8:00am - 2:30pm",
-    "tue": "8:00am - 2:30pm",
-    "wed": "8:00am - 12:30pm",
-    "thu": "8:00am - 3:15pm",
-    "fri": "8:00am - 2:30pm",
-}
-JNR_LIBRARIANS = ["Ms Crothers"]
-SNR_LIBRARIANS = ["Mr Wiramhardja", "Ms Meredith"]
-
-days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-times = ["Morning", "Break 1", "Break 2"]
-
-
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio)
-    
+
 @sio.event
 def connect(sid, environ):
     """static data, called when a user loads the website"""
     print(__name__, "Connected", sid)
+    sendStaticData()
+    sendDynamicData()
     
-    # TODO: events should have dynamic data
-    sio.emit("events", get_events())
-    
-    sio.emit("jnrOpening", JNR_OPENING)
-    sio.emit("jnrMax", JNR_MAX)
-    sio.emit("jnrLibrarians", JNR_LIBRARIANS)
-    
-    sio.emit("snrOpening", SNR_OPENING)
-    sio.emit("snrMax", SNR_MAX)
-    sio.emit("snrLibrarians", SNR_LIBRARIANS)
-
 @sio.event
 def disconnect(sid):
     print(__name__, "Disconnected", sid)
 
-def update(engine, Base, Data, Count, PastData):
+def update():
     """dynamic data (e.g. current availability of website), sent to all users every regular interval"""
     while True:
-        sio.emit("jnrAlert", get_alert(engine, "jnr"))
-        sio.emit("jnrRemaining", JNR_MAX - get_count(engine, Count, "jnr"))
-        sio.emit("jnrFullness", round(get_count(engine, Count, "jnr")/JNR_MAX, 1))
-        sio.emit("jnrTrends", get_trends(engine, Data, "jnr"))
-        
-        sio.emit("snrAlert", get_alert(engine, "snr"))
-        sio.emit("snrRemaining", SNR_MAX - get_count(engine, Count, "snr"))
-        sio.emit("snrFullness", round(get_count(engine, Count, "snr")/SNR_MAX, 1))
-        sio.emit("snrTrends", get_trends(engine, Data, "snr"))
-        
+        sendDynamicData()
         sio.sleep(WEBSITE_UPDATE_TIMEOUT)
 
-def get_count(engine, Count, lib):
+def sendStaticData():
+    sio.emit("events", get_events())
+    
+    for lib in ["jnr", "snr"]:
+        sio.emit(lib + "Opening", get_opening(lib))
+        sio.emit(lib + "Max", get_max(lib))
+        sio.emit(lib + "Librarians", get_librarians(lib))
+
+def sendDynamicData():
+    for lib in ["jnr", "snr"]:
+        sio.emit(lib + "Periods", get_periods(lib))
+        sio.emit(lib + "Alert", get_alert(lib))
+        sio.emit(lib + "Remaining", get_max(lib) - get_count(lib))
+        sio.emit(lib + "Fullness", round(get_count(lib)/get_max(lib), 3))
+        sio.emit(lib + "Trends", get_trends(lib))
+    
+def get_count(lib):
     Session = sessionmaker(bind=engine)
     session = Session()
     if lib == "jnr":
@@ -74,15 +50,16 @@ def get_count(engine, Count, lib):
     elif lib == "snr":
         return session.query(Count).first().snrvalue
 
-def get_trends(engine, Data, lib):
+def get_trends(lib):
     Session = sessionmaker(bind=engine)
     session = Session()
-    trends = {}
-    trends["labels"] = times
-    trends["data"] = []
-    for day in days:
+    trends = {
+        "labels": TIMES,
+        "data": []
+    }
+    for day in DAYS:
         day_trends = []
-        for time in times:
+        for time in TIMES:
             data = session.query(Data).filter_by(day=day, time=time).first()
             if lib == "jnr":
                 pred = data.jnr_expected
@@ -92,30 +69,82 @@ def get_trends(engine, Data, lib):
         trends["data"].append(day_trends)
     return trends
 
-def get_alert(engine, lib):
-    # TODO
-    if lib == "jnr":
-        #return "Junior library overtaken by wild animals, keep out!"
-        return ""
-    else:
-        return "Senior library overtaken by wild animals, keep out!" or ""
-        #return ""
+def get_opening(lib):
+    return {
+        "jnr": {
+            "mon": "7:30am - 3:30pm",
+            "tue": "7:30am - 3:30pm",
+            "wed": "7:30am - 3:30pm",
+            "thu": "7:30am - 3:30pm",
+            "fri": "7:30am - 3:30pm",
+        },
+        "snr": {
+            "mon": "8:00am - 2:30pm",
+            "tue": "8:00am - 2:30pm",
+            "wed": "8:00am - 12:30pm",
+            "thu": "8:00am - 3:15pm",
+            "fri": "8:00am - 2:30pm",
+        }
+    }[lib]
+
+def get_max(lib):
+    # TODO: get data from librarian interface
+    return {
+        "jnr": 108,
+        "snr": 84
+    }[lib]
+
+def get_librarians(lib):
+    # TODO: get data from librarian interface
+    return {
+        "jnr": ["Ms Crothers"],
+        "snr": ["Mr Wiramhardja", "Ms Meredith"]
+    }[lib]
+
+def get_alert(lib):
+    # TODO: get data from librarian interface
+    return {
+        "jnr": "", # "Junior library overtaken by wild animals, keep out!"
+        "snr": "Senior library overtaken by wild animals, keep out!" or ""
+    }[lib]
 
 def get_events():
-    # TODO
+    # TODO: get data from librarian interface
     return [
-        {"text": "Cyril stupid!!!", "impact": "high"},
-        {"text": "Cyril stupid!!!", "impact": "high"},
-        {"text": "Cyril stupid!!!", "impact": "high"},
-        {"text": "Cyril stupid!!", "impact": "moderate"},
-        {"text": "Cyril stupid!!", "impact": "moderate"},
-        {"text": "Cyril stupid!", "impact": "low"},
-        {"text": "Cyril stupid!", "impact": "low"},
-        {"text": "Cyril stupid!", "impact": "low"},
-        {"text": "Cyril stupid!", "impact": "low"},
+        {"text": "Too Bar Baz!!!", "impact": "high"},
+        {"text": "Wild animals have taken over the junior library!!!", "impact": "high"},
+        {"text": "Have you seen my glasses?", "impact": "high"},
+        {"text": "If anyone has left a sports bag in the junior library, please pick it up immediately", "impact": "moderate"},
+        {"text": "Remember to tuck in your chairs.", "impact": "low"},
     ]
 
-def __init__(engine, Base, Data, Count, PastData):
-    task = sio.start_background_task(update, engine, Base, Data, Count, PastData)
-    eventlet.wsgi.server(eventlet.listen(('', WEBSITE_CLIENT_PORT)), app)
+def get_periods(lib):
+    # TODO: get data from librarian interface
+    # order is indicative of order of periods for that day
+    return {
+        "jnr": [
+            ["1", 5],
+            ["2", 4],
+            ["Recess", 46],
+            ["3", 12],
+            ["Lunch", 56],
+            ["4", 14],
+            ["5", 1],
+        ],
+        "snr": [
+            ["1", 5],
+            ["2", 4],
+            ["Recess", 46],
+            ["3", 12],
+            ["Lunch", 56],
+            ["4", 14],
+            ["5", 1],
+        ],
+    }[lib]
+
+kill_port.kill_port(WEBSITE_CLIENT_PORT)
+
+engine, Base, Data, Count, PastData = database.genDatabase()
+task = sio.start_background_task(update)
+eventlet.wsgi.server(eventlet.listen(('', WEBSITE_CLIENT_PORT)), app)
 

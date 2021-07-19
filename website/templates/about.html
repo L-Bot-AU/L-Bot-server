@@ -3,31 +3,16 @@
 {% block page_title %}About{% endblock %}
 
 {% block page_content %}
-	{% import "aboutdata.html" as aboutdata %}
-	<style>
-		.des {
-			width: 100%;
-		}
-		.librarydes {
-			width: 50%;
-			text-align: left;
-		}
-		.indent {
-			margin-left: 40px;
-		}
-	</style>
-	<h1>How to use the website</h1>
-	<p>lorem ipsum dolor sit amet, consectetuer adispiscing edit. yes.</p>
 	<table class="des">
 		<tr>
 			{% for libdisplay, lib in [("JUNIOR", "jnr"), ("SENIOR", "snr")] %}
 			<th class="librarydes">
-				<h2>{{ libdisplay }} LIBRARY</h2>
+				<h1>{{ libdisplay }} LIBRARY</h1>
 
-				<h3>Opening hours</h3>
+				<h2>Normal Opening hours</h2>
 				<table class="indent">
 					{% for daydisplay, day in [('Mon', 'mon'), ('Tue', 'tue'), ('Wed', 'wed'), ('Thu', 'thu'), ('Fri', 'fri')] %}
-						<tr>
+						<tr class="text-align: center;">
 							<td style="width: 50px">{{ daydisplay }}</td>
 							<td id='{{ lib }}{{ day }}'>...am - ...pm</td>
 						</tr>
@@ -35,16 +20,25 @@
 				</table>
 				<br>
 				
-				<h3>Total seats</h3>
+				<h2>Total seats</h2>
 				<div class="indent" id="{{ lib }}max">...</div>
 				<br>
 				
-				<h3>Librarians</h3>
-				<ul id="{{ lib }}librarians">
-				</ul>
+				<h2>Librarians</h2>
+				<div id="{{ lib }}librarians">
+				</div>
+				<br>
+				
+				<h2>Email address</h2>
+				{% if lib == "jnr" %} 
+					<a href="mailto:juniorlibrary@sbhs.nsw.edu.au">juniorlibrary@sbhs.nsw.edu.au</a>
+				{% elif lib == "snr" %}
+					<a href="mailto:seniorlibrary@sbhs.nsw.edu.au">seniorlibrary@sbhs.nsw.edu.au</div>
+				{% endif %}
+				<br>
 			</th>
 			{% endfor %}
 		</tr>
 	</table>
-	{{ aboutdata.scripts() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='aboutdata.js') }}"></script>
 {% endblock %}

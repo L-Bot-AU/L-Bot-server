@@ -54,7 +54,7 @@
         <div>
             <h3>Preview</h3>
             <canvas id="librarian-graph"></canvas>
-            <script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
+            <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
             <script type="text/javascript" src="{{ url_for('static', filename='librarian.js') }}"></script>
             <script>
                 var ctx = document.getElementById("librarian-graph").getContext("2d");

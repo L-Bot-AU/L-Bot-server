@@ -1,3 +1,4 @@
+/* GENERAL STUFF */
 @import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');
 /*Both the light and dark themes inherit all values in this.
 This is used for shared values like interface sizing, and fonts*/
@@ -41,6 +42,21 @@ This is used for shared values like interface sizing, and fonts*/
     --toggle-box-text: "Dark";
 }
 
+* {
+	transition-duration: 1s;
+}
+
+body {
+	transition: 0.3s ease 0.3s, opacity 0.3s linear 0.3s, background-color linear 1s;
+	opacity: 0;
+    padding: 0;
+    margin: 0;
+    background-color: var(--bg-primary-col);
+    position: absolute;
+    width: 100%;
+    top: 0px; /* how much you want to shift entire body down */
+}
+
 a, h1, h2, h3, h4, h5, h6, i, button, #setting-content-wrapper {
     font-family: var(--primary-font), sans-serif !important;
     color: var(--txt-primary-col);
@@ -54,8 +70,7 @@ a:hover {
     color: var(--a-hover-col);
 }
 
-p, div, ul, progress {
-    transition-duration: 1s;
+p, div, ul, progress, a, td, tr, th {
     color: var(--txt-col);
 }
 
@@ -72,19 +87,6 @@ p, div, ul, progress {
     font-size: var(--navbarheadersize);
 }
 
-body {
-    transition-duration: 1s;
-    padding: 0;
-    margin: 0;
-    background-color: var(--bg-primary-col);
-    position: absolute;
-    width: 100%;
-    top: 0px; /* how much you want to shift entire body down */
-}
-
-body > * {
-    transition-duration: 1s;
-}
 
 a {
     text-decoration: None !important;
@@ -98,6 +100,320 @@ table td, table td * {
     font-weight: bold;
 }
 
+/* NAVBAR */
+.toggle-box {
+	display: flex;
+	align-items: center;
+}
+
+.toggle-box input[type=checkbox], .toggle-box input[type=checkbox]:active {
+	display: none;
+}
+
+.toggle-box input[type=checkbox]:checked + .toggle-box-label-left {
+	color: hsla(0, 0%, 58.4%, .51);
+}
+
+.toggle-box input[type=checkbox]:checked + .toggle-box-label-left:before {
+	right: 17px;
+	box-shadow: 5px 5px 0 0 #eee;
+	background: transparent;
+}
+
+.toggle-box-label-left:before {
+	transition-duration: 0.7s;
+	content: "";
+	display: block;
+	position: absolute;
+	z-index: 1;
+	line-height: 34px;
+	text-indent: 40px;
+	height: 16px;
+	width: 16px;
+	margin: 4px;
+	border-radius: 100%;
+	right: 26px;
+	bottom: 0;
+	background: #ffb200;
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+.toggle-box input[type=checkbox]:checked + .toggle-box-label-left:after {
+	background: rgba(0, 0, 0, .15);
+	border: 2px solid #ddd;
+}
+
+.toggle-box-label-left:after {
+	content: "";
+	display: inline-block;
+	width: 40px;
+	height: 24px;
+	border-radius: 16px;
+	background: hsla(0, 0%, 100%, .15);
+	vertical-align: middle;
+	margin: 0 10px;
+	border: 2px solid #ffb200;
+}
+
+.toggle-box input[type=checkbox] + .toggle-box-label-left {
+	color: hsla(0, 0%, 98%, .51);
+}
+
+.toggle-box input[type=checkbox]:checked + .toggle-box-label-left + .toggle-box-label {
+	color: hsla(0, 0%, 98%, .51);
+}
+
+.toggle-box label {
+	margin-bottom: 0px;
+	display: inline-block;
+	position: relative;
+	padding: 0;
+	font-size: 14px;
+	line-height: 16px;
+	cursor: pointer;
+	color: hsla(0, 0%, 58.4%, .51);
+}
+
+.navbar {
+	background: var(--bg-second-col);
+	/*background: linear-gradient(180deg, var(--bg-second-col), var(--bg-primary-col));*/
+	// border-bottom: 1px var(--txt-primary-col) solid;
+	height: 80px;
+	position: sticky; /* similar to fixed, but will work if you want to add something to top of nav */
+	top: 0px;
+	width: 100%;
+	z-index: 1;
+}
+
+.nav li {
+	margin-left: 40px;
+	margin-right: 0px;
+	font-size: 25px;
+}
+
+.navbar-text {
+	height: 80px;
+	padding: 30px 20px 20px 20px;
+}
+
+a.navbar-text:hover {
+	background: rgb(240, 240, 240);
+}
+
+.logo-size {
+	height: var(--navbarheadersize);
+}
+
+.container-fluid {
+	padding: 55px;
+	position: fixed;
+	text-align: center;
+	overflow-y: visible;
+	overflow-x: hidden;
+}
+
+/* HOME */
+.chartContainer {
+	height: 600px;
+}
+
+.focusbtn {
+	padding: 0px 15px;
+	background-color: transparent;
+	border: none;
+	font-size: 20px;
+	font-weight: 800;
+}
+.focusbtn:focus {
+	outline: none;
+}
+		
+.tabwrapper {
+	width: calc(200vw - 240px);
+	position: absolute;
+	transition-duration: 0.8s;
+	margin-top: 10px;
+}
+.tab {
+	width: calc(100vw - 120px);
+}
+.jnrtab {
+	opacity: 1;
+	transition:opacity 0.8s linear;
+}
+.snrtab {
+	opacity: 0;
+	transition:opacity 0.8s linear;
+}
+.tabline {
+	position: absolute;
+	height: 2px;
+	width: 70px;
+	background-color: var(--txt-primary-col);
+	left: calc(50% - 83px);
+}
+
+.uppertabline {
+	position: absolute;
+	height: 2px;
+	width: 70px;
+	background-color: var(--txt-primary-col);
+	left: calc(50% - 126px);
+}
+
+.focusright .tabwrapper {
+	transform: translate(-50%);
+}
+.focusright .jnrtab {
+	opacity: 0;
+	transition:opacity 0.8s linear;
+}
+.focusright .snrtab {
+	opacity: 1;
+	transition:opacity 0.8s linear;
+}
+.focusright .tabline {
+	left: calc(50% + 8px);
+}
+
+.alert {
+	width: 90%;
+	margin: auto;
+	margin-top: 15px;
+	color: white;
+	background-color: red;
+	border-radius: 20px;
+	padding: 15px;
+	font-size: 20px;
+}
+
+.closebtn {
+	color: white;
+	font-weight: 900;
+	float: right;
+	font-size: 40px;
+	line-height: 0px;
+	cursor: pointer;
+	transition: 0.3s;
+	padding: 10px;
+}
+
+.closebtn:hover {
+	color: black;
+}
+		
+.progress {
+	width: 90%;
+	margin: auto;
+	margin-top: 10px;
+	height: 75px;
+	border-radius: 20px;
+	font-size: 30px;
+	border: 2px solid var(--border-colour);
+	background-color: var(--bg-primary-col);
+}
+
+.progress-bar {
+	color: var(--txt-col);
+	background-color: var(--nav-primary-col);
+	width: 0px;
+}
+
+.status {
+	font-size: 30px;
+	text-align: center;
+	margin: 20px 0px;
+}
+
+.title {
+	font-size: 45px;
+	text-align: center;
+	padding: 20px;
+}
+
+#jnrFullness {
+	padding-left: 15px;
+	margin: auto;
+}
+
+#snrFullness {
+	padding-left: 15px;
+	margin: auto;
+}
+
+.periods {
+	margin: auto;
+}
+
+.periodText {
+	font-weight: normal;
+	font-size: 19px;
+	//text-align: left;
+	width: 15%;
+}
+
+.periodFullness {
+	font-weight: normal;
+	font-size: 19px;
+	width: 15%;
+}
+
+.selected {
+	text-underline-offset: 8px;
+	text-decoration: underline;
+}
+
+/* EVENTS */
+.key {
+	float: right;
+	border: 2px solid var(--border-colour);
+	border-radius: 10px;
+	padding: 50px;
+	text-align: left;
+	width: 400px;
+}
+.list {
+	text-align: left;
+	list-style: none;
+	font-size: 28px;
+}
+.list li::before {
+	content: "•";
+	font-size: 35px;
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+	margin: -10px -15px -15px -15px;
+	padding-bottom: 15px;
+}
+.highimpact::before {
+	color: red;
+}
+.moderateimpact::before {
+	color: orange;
+}
+.lowimpact::before {
+	color: green;
+}
+
+/* ABOUT */
+.des {
+	width: 100%;
+}
+
+.librarydes {
+	width: 50%;
+	text-align: center;
+	vertical-align: text-top;
+}
+
+.indent {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* IDK */
 .auth_form {
 	margin: auto;
 	position: absolute;
@@ -151,123 +467,6 @@ table td, table td * {
 .update {
 	
 }
-.focusbtn {
-	padding: 0px 15px;
-	background-color: transparent;
-	border: none;
-	font-size: 20px;
-	font-weight: 800;
-}
-.focusbtn:focus {
-	outline: none;
-}
-		
-.tabwrapper {
-	width: 180vw;
-	position: absolute;
-	transition-duration: 0.8s;
-	transform: translate(0%);
-	margin-top: 10px;
-}
-.jnrtab {
-	width: 90vw;
-	opacity: 1;
-	transition:opacity 0.8s linear;
-}
-.snrtab {
-	width: 90vw;
-	opacity: 0;
-	transition:opacity 0.8s linear;
-}
-.tabline {
-	position: absolute;
-	height: 2px;
-	width: 70px;
-	background-color: var(--txt-primary-col);
-	left: calc(50% + 10px);
-}
-
-.uppertabline {
-	position: absolute;
-	height: 2px;
-	width: 70px;
-	background-color: var(--txt-primary-col);
-	left: calc(50% + 66px); /* -126px */
-}
-
-.focusright .tabwrapper {
-	transform: translate(-50%);
-}
-.focusright .jnrtab {
-	opacity: 0;
-	transition:opacity 0.8s linear;
-}
-.focusright .snrtab {
-	opacity: 1;
-	transition:opacity 0.8s linear;
-}
-.focusright .tabline {
-	left: calc(50% + 8px);
-}
-
-.alert {
-	width: 90%;
-	margin: auto;
-	margin-top: 15px;
-	color: white;
-	background-color: red;
-	border-radius: 20px;
-	padding: 15px;
-	font-size: 20px;
-}
-.closebtn {
-	color: white;
-	font-weight: 900;
-	float: right;
-	font-size: 40px;
-	line-height: 0px;
-	cursor: pointer;
-	transition: 0.3s;
-	padding: 10px;
-}
-.closebtn:hover {
-	color: black;
-}
-		
-.progress {
-	width: 90%;
-	margin: auto;
-	margin-top: 10px;
-	height: 75px;
-	border-radius: 20px;
-	font-size: 30px;
-	border: 2px solid var(--border-colour);
-	background-color: var(--bg-primary-col);
-}
-
-.progress-bar {
-	color: var(--txt-col);
-	background-color: var(--nav-primary-col);
-}
-.status {
-	font-size: 30px;
-	text-align: center;
-	margin: 20px 0px;
-}
-
-.title {
-	font-size: 45px;
-	text-align: center;
-	padding: 20px;
-}
-#jnrFullness {
-	padding-left: 15px;
-	margin: auto;
-}
-#snrFullness {
-	padding-left: 15px;
-	margin: auto;
-}
 
 .edit-line {
 	margin: auto;
@@ -315,35 +514,8 @@ table td, table td * {
 	background-color: #007105;
 }
 
-.key {
-	float: right;
-	border: 2px solid var(--border-colour);
-	border-radius: 10px;
-	padding: 20px 40px 30px;
-	text-align: left;
-}
-.list {
-	text-align: left;
-	list-style: none;
-	font-size: 22px;
-}
-.list li::before {
-	content: "•";
-	font-size: 40px;
-	font-weight: bold;
-	display: inline-block;
-	width: 1em;
-	margin: -10px -15px -15px -15px;
-}
-.highimpact::before {
-	color: red;
-}
-.moderateimpact::before {
-	color: orange;
-}
-.lowimpact::before {
-	color: green;
-}
+
+
 .edit-event {
 	display: inline;
 	width: 50%;
@@ -427,3 +599,4 @@ table td, table td * {
 	background-color: black;
 	z-index: -1;
 }
+

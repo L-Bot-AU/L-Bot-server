@@ -3,6 +3,7 @@ CAMERA_SYSTEM_PORTS = {
     "jnr": 9482,
     "snr": 11498
 }
+CAMERA_KEY = b"automate_egggggg"
 
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 TIMES = ["Morning", "Break 1", "Break 2"]

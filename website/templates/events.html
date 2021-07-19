@@ -3,13 +3,15 @@
 {% block page_title %}Events{% endblock %}
 
 {% block page_content %}
-	{% import "eventsdata.html" as eventsdata %}
 	<ul class="key list">
+		<h1>Severity</h1>
 		<li class="highimpact">High Impact</li>
 		<li class="moderateimpact">Moderate Impact</li>
 		<li class="lowimpact">Low Impact</li>
 	</ul>
+	
 	<ul class="list" id="list">
 	</ul>
-	{{ eventsdata.scripts() }}
+	
+	<script type="text/javascript" src="{{ url_for('static', filename='eventsdata.js') }}"></script>
 {% endblock %}

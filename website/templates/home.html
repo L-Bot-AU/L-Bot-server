@@ -1,40 +1,51 @@
-<!-- use macros: https://www.webforefront.com/django/createreusablejinjatemplates.html-->
 {% extends 'base.html' %}
 
 {% block page_title %}Home{% endblock %}
 
 {% block page_content %}
-	{% import "homedata.html" as homedata %}
+	<script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+	
 	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">Junior</button>
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button>
 	<div class="tabline"></div>
 	<table class="tabwrapper">
 		<tr valign="top">
 			{% for lib in ["jnr", "snr"] %}
-			<th class="{{ lib }}tab">
+			<th class="tab {{ lib }}tab">
 				<div class="alert" id="{{ lib }}Alert">
 					<span>⚠</span>
 					<span id="{{ lib }}Alerttext">...</span>
 					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 				</div>
+				
 				<div class="status">
 					<span id="{{ lib }}Status">...:</span>
 					~<span id="{{ lib }}Remaining">...</span>
 					spots remaining
 				</div>
+				
 				<div class="progress">
-					<div class="progress-bar" style="width: 0%"><div id="{{ lib }}Fullness">0% full</div></div>
+					<div class="progress-bar"><div class="fullness" id="{{ lib }}Fullness">0% full</div></div>
 				</div>
+				
 				<div class="title">EXPECTED USAGE</div>
-				{{ homedata.today(lib) }}
+				<table class="periods" id="{{ lib }}Periods">
+				</table>
 				
 				<div class="title">PAST TRENDS</div>
-				{{ homedata.pasttrends(lib) }}
+				{% for i, day in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (3, "Thu"), (4, "Fri")] %}
+					<button class="focusbtn {{ lib }}daybtn" onclick="displayGraph(`{{ lib }}`, {{ i }})">{{ day }}</button>
+				{% endfor %}
+				
+				<br><br><br> <!-- brbrbrbrbr -->
+				<div class="chartContainer">
+					<canvas id="{{ lib }}Predictions"></canvas>
+				</div>
 			</th>
 			{% endfor %}
 		</tr>
 	</table>
-	{{ homedata.scripts() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='homedata.js') }}"></script>
 	
 	<script>
 		function setFocus(newFocus) {

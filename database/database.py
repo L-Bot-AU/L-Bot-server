@@ -1,8 +1,7 @@
-from constants import DAYS, TIMES
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
-
+from constants import DAYS, TIMES, DO_RESTARTDB
 
 def restartdb(engine, Base, Data, Count, PastData):
     Session = sessionmaker(bind=engine)
@@ -18,7 +17,7 @@ def restartdb(engine, Base, Data, Count, PastData):
 
     begsession.add(Count())
     begsession.commit()
-
+    
 def genDatabase():
     engine = create_engine("sqlite:///library_usage.db", echo=False, connect_args={"check_same_thread": False})
     Base = declarative_base()
@@ -79,6 +78,7 @@ def genDatabase():
         time = Column(String(10), nullable=False)
         jnrcount = Column(Integer, nullable=False)
         snrcount = Column(Integer, nullable=False)
-    
-    restartdb(engine, Base, Data, Count, PastData)
+        
+    if DO_RESTARTDB:
+        restartdb(engine, Base, Data, Count, PastData)
     return engine, Base, Data, Count, PastData

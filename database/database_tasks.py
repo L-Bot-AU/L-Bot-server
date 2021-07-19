@@ -1,14 +1,13 @@
-from constants import DAYS, TIMES, DO_RESTARTDB, DATABASE_TASKS_TIMEOUT
+from constants import DATABASE_TASKS_TIMEOUT
+from database import database
 from predictions.getData import getData
 from sqlalchemy.orm import sessionmaker
+from constants import DAYS, TIMES
 from Crypto.Cipher import AES
 import datetime
 import time
 
-KEY = b'automate_egggggg'
-# two seperate objects are required for decrypting and encrypting (PyCryptoDome weirdness)
-aesenc = AES.new(KEY, AES.MODE_ECB)
-aesdec = AES.new(KEY, AES.MODE_ECB)
+engine, Base, Data, Count, PastData = database.genDatabase()
 
 def secsUntilNextDay():
     # get number of seconds until midnight
@@ -29,9 +28,28 @@ def getClosingTime(): # TODO: currently a stub
 def libraryOpen(): # TODO: currently a stub
     return getOpeningTime() <= datetime.datetime.now() <= getClosingTime()
 
+def restartdb():
+    try:
+        os.remove("library_usage.db")
+    except FileNotFoundError:
+        pass
+    
+    Session = sessionmaker(bind=engine)
+    begsession = Session()
+
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+    
+    for day in DAYS:
+        for time in TIMES:
+            d = Data(day=day, time=time)
+            begsession.add(d)
+
+    begsession.add(Count())
+    begsession.commit()
 
 
-def get_new_predictions(engine, Base, Data, Count, PastData):
+def get_new_predictions():
     """called once every day"""
     # start session with database
     Session = sessionmaker(bind=engine)
@@ -51,7 +69,7 @@ def get_new_predictions(engine, Base, Data, Count, PastData):
 
     session.commit()
 
-def update_past_data(engine, Base, Data, Count, PastData):
+def update_loop():
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -75,24 +93,21 @@ def update_past_data(engine, Base, Data, Count, PastData):
     session.add(new_data)
     session.commit()
 
-def __init__(engine, Base, Data, Count, PastData):
-    print(__name__, "Reset database")
-    if DO_RESTARTDB:
-        restartdb(engine, Base, Data, Count, PastData)
+print(__name__, "Reset database")
+while True:
+    # waits until it's 1am
+    #time.sleep(secsUntilNextDay())
     
-    while True:
-        #time.sleep(secsUntilNextDay())
+    print(__name__, "Getting new predictions")
+    get_new_predictions()
+    
+    # wait until the library is open
+    secsUntilOpening = (getOpeningTime() - datetime.datetime.now()).total_seconds()
+    time.sleep(max(0, secsUntilOpening))
+    
+    while libraryOpen():
+        print(__name__, "Entering update loop")
+        update_loop()
         
-        print(__name__, "Getting new predictions")
-        get_new_predictions(engine, Base, Data, Count, PastData)
-        
-        # wait until the library is open
-        secsUntilOpening = (getOpeningTime() - datetime.datetime.now()).total_seconds()
-        time.sleep(max(0, secsUntilOpening))
-        
-        while libraryOpen():
-            print(__name__, "Entering update loop")
-            update_past_data(engine, Base, Data, Count, PastData)
-            
-            time.sleep(DATABASE_TASKS_TIMEOUT) # TODO: this should be changed to waiting for the next minute since the update_past_data function will also take time
+        time.sleep(DATABASE_TASKS_TIMEOUT)
 

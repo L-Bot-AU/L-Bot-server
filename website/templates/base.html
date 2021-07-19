@@ -5,133 +5,12 @@
 			{% block page_title %}{% endblock %}
 		{% endblock %}
 	</title>
-	<link rel="shortcut icon" type="image/jpg" href="static/logo.png"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="/static/style.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-	<script>
-		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
-        document.documentElement.hidden = true; 
-    </script>
+	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<!--<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>-->
 </head>
-<body>
-	<style>
-		.toggle-box {
-			display: flex;
-			align-items: center;
-		}
-
-		.toggle-box input[type=checkbox], .toggle-box input[type=checkbox]:active {
-			display: none;
-		}
-
-		.toggle-box input[type=checkbox]:checked + .toggle-box-label-left {
-			color: hsla(0, 0%, 58.4%, .51);
-		}
-
-		.toggle-box input[type=checkbox]:checked + .toggle-box-label-left:before {
-			right: 17px;
-			box-shadow: 5px 5px 0 0 #eee;
-			background: transparent;
-		}
-
-		.toggle-box-label-left:before {
-			transition-duration: 0.7s;
-			content: "";
-			display: block;
-			position: absolute;
-			z-index: 1;
-			line-height: 34px;
-			text-indent: 40px;
-			height: 16px;
-			width: 16px;
-			margin: 4px;
-			border-radius: 100%;
-			right: 26px;
-			bottom: 0;
-			background: #ffb200;
-			-webkit-transform: rotate(-45deg);
-			transform: rotate(-45deg);
-		}
-
-		.toggle-box input[type=checkbox]:checked + .toggle-box-label-left:after {
-			background: rgba(0, 0, 0, .15);
-			border: 2px solid #ddd;
-		}
-
-		.toggle-box-label-left:after {
-			content: "";
-			display: inline-block;
-			width: 40px;
-			height: 24px;
-			border-radius: 16px;
-			background: hsla(0, 0%, 100%, .15);
-			vertical-align: middle;
-			margin: 0 10px;
-			border: 2px solid #ffb200;
-		}
-
-		.toggle-box input[type=checkbox] + .toggle-box-label-left {
-			color: hsla(0, 0%, 98%, .51);
-		}
-
-		.toggle-box input[type=checkbox]:checked + .toggle-box-label-left + .toggle-box-label {
-			color: hsla(0, 0%, 98%, .51);
-		}
-
-		.toggle-box label {
-			margin-bottom: 0px;
-			display: inline-block;
-			position: relative;
-			padding: 0;
-			font-size: 14px;
-			line-height: 16px;
-			cursor: pointer;
-			color: hsla(0, 0%, 58.4%, .51);
-		}
-
-		.navbar {
-			transition-duration: 1s;
-			background: var(--bg-second-col);
-			/*background: linear-gradient(180deg, var(--bg-second-col), var(--bg-primary-col));*/
-			// border-bottom: 1px var(--txt-primary-col) solid;
-			height: 80px;
-			position: sticky; /* similar to fixed, but will work if you want to add something to top of nav */
-			top: 0px;
-			width: 100%;
-			z-index: 1;
-		}
-
-		.nav li {
-			margin-left: 40px;
-			margin-right: 0px;
-			font-size: 25px;
-		}
-
-		.navbar-text {
-			transition-duration: 1s;
-			height: 80px;
-			padding: 30px 20px 20px 20px;
-		}
-
-		a.navbar-text:hover {
-			background: rgb(240, 240, 240);
-		}
-
-		.logo-size {
-			height: var(--navbarheadersize);
-			transition-duration: 1s;
-		}
-
-		.container-fluid {
-			padding: 55px;
-			position: fixed;
-			text-align: center;
-			overflow-y: visible;
-			overflow-x: hidden;
-		}
-	</style>
-	
+<body style="opacity: 0; background-color: var(--bg-primary-col);">
     <nav class="navbar">
         <div class="container-fluid" style="padding-left: 10px">
             <div class="navbar-header">
@@ -158,15 +37,28 @@
             </div>
         </div>
     </nav>
+	
 	<script type="text/javascript" src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
 	<script>
 		const sio = io("ws://127.0.0.1:2910");
 	</script>
-    <script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
+    
+	
     <div class="container-fluid" style="height: calc(100vh - 80px); padding-top: 40px;">
         {% block page_content %}{% endblock %}
     </div>
+	
+	
+	<script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
 	<script>
-        document.documentElement.hidden = false;
+		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
+		// also the screen is blank until socket.io is fully loaded, then a nifty fade in
+        sio.on("connect", () => {
+			setTimeout(() => {document.body.style.opacity = "1";}, 500);
+		});
+		// if disconnected from socketio, interface fades out to blank
+		sio.on("disconnect", () => {
+			document.body.style.opacity = "0";
+		});
     </script>
 </body>

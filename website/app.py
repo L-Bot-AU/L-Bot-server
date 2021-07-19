@@ -4,13 +4,14 @@
 #localStorage in js: https://code-maven.com/slides/javascript/local-storage-boolean
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
-from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
+
 from flask import Flask, render_template, request, jsonify, session, redirect, flash
-from flask_bootstrap import Bootstrap
-import urllib.request, json
-from datetime import datetime
+from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
+from flask_bootstrap import Bootstrap
+from datetime import datetime
+import urllib.request, json
 
 
 app = Flask(__name__)
@@ -63,6 +64,7 @@ def logout():
 def librarian_statistics():
     if "librarian" not in session:
         return redirect("/")
+    
     form = GraphForm()
     if form.validate_on_submit():
         start_date = form["start_date"] #is a string but verified as a datetime, should turn into datetime object
