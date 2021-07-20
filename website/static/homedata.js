@@ -111,6 +111,13 @@ window.predictionGraph = {};
 			document.getElementById(lib + "Status").innerHTML = "Very busy:";
 		}
 		
+		if (data <= 12) {
+			document.getElementById(lib + "Fullness").style.marginLeft = "calc(100% + 20px)";
+		}
+		else {
+			document.getElementById(lib + "Fullness").style.marginLeft = "";
+		}
+		
 		document.getElementById(lib + "Fullness").innerHTML = data + "% full";
 		document.getElementById(lib + "Fullness").parentElement.style.width = data + "%";
 	});
