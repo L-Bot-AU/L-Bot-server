@@ -43,7 +43,7 @@ This is used for shared values like interface sizing, and fonts*/
 }
 
 * {
-	transition: background-color 0.4s;
+	transition: transform 1s, background-color 0.4s;
 }
 
 #page-content {
