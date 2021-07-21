@@ -8,9 +8,12 @@
 	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	<!--<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>-->
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+	<script>
+		document.documentElement.hidden = true;
+	</script>
 </head>
-<body style="opacity: 0; background-color: var(--bg-primary-col);">
+<body style="background-color: var(--bg-primary-col);">
     <nav class="navbar">
         <div class="container-fluid" style="padding-left: 10px">
             <div class="navbar-header">
@@ -44,7 +47,7 @@
 	</script>
     
 	
-    <div class="container-fluid" style="height: calc(100vh - 80px); padding-top: 40px;">
+    <div id="page-content" class="container-fluid" style="height: calc(100vh - 80px); padding-top: 40px;">
         {% block page_content %}{% endblock %}
     </div>
 	
@@ -52,13 +55,11 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
 	<script>
 		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
+		document.documentElement.hidden = false;
 		// also the screen is blank until socket.io is fully loaded, then a nifty fade in
-        sio.on("connect", () => {
-			setTimeout(() => {document.body.style.opacity = "1";}, 500);
-		});
-		// if disconnected from socketio, interface fades out to blank
-		sio.on("disconnect", () => {
-			document.body.style.opacity = "0";
+		sio.on("connect", () => {
+			document.body.style.opacity = "1";
+			document.getElementById("page-content").style.opacity = 1;
 		});
     </script>
 </body>

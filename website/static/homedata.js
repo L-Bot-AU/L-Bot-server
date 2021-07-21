@@ -112,10 +112,10 @@ window.predictionGraph = {};
 		}
 		
 		if (data <= 12) {
-			document.getElementById(lib + "Fullness").style.marginLeft = "calc(100% + 20px)";
+			document.getElementById(lib + "Fullness").style.paddingLeft = "20px";
 		}
 		else {
-			document.getElementById(lib + "Fullness").style.marginLeft = "";
+			document.getElementById(lib + "Fullness").style.paddingLeft = "";
 		}
 		
 		document.getElementById(lib + "Fullness").innerHTML = data + "% full";

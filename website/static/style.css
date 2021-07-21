@@ -42,12 +42,12 @@ This is used for shared values like interface sizing, and fonts*/
     --toggle-box-text: "Dark";
 }
 
-* {
-	transition-duration: 1s;
+#page-content {
+	opacity: 0;
+	transition: 0.1s ease 0.1s, opacity 0.1s linear 0.1s, background-color linear 0.5s;
 }
 
 body {
-	transition: 0.3s ease 0.3s, opacity 0.3s linear 0.3s, background-color linear 1s;
 	opacity: 0;
     padding: 0;
     margin: 0;
@@ -333,12 +333,10 @@ a.navbar-text:hover {
 }
 
 #jnrFullness {
-	padding-left: 15px;
 	margin: auto;
 }
 
 #snrFullness {
-	padding-left: 15px;
 	margin: auto;
 }
 
