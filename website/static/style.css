@@ -42,9 +42,13 @@ This is used for shared values like interface sizing, and fonts*/
     --toggle-box-text: "Dark";
 }
 
+* {
+	transition: background-color 0.4s;
+}
+
 #page-content {
 	opacity: 0;
-	transition: 0.1s ease 0.1s, opacity 0.1s linear 0.1s, background-color linear 0.5s;
+	transition: 0.2s, opacity 0.2s linear 0.2s, background-color linear 0.5s;
 }
 
 body {
@@ -341,13 +345,23 @@ a.navbar-text:hover {
 }
 
 .periods {
+	width: 30%;
 	margin: auto;
 }
 
+.periods td, .periods th {
+	border: 1px solid var(--border-colour);
+}
+
+.periods th {
+	background-color: var(--nav-primary-col);
+}
+
+/*
 .periodText {
 	font-weight: normal;
 	font-size: 19px;
-	//text-align: left;
+	text-align: left;
 	width: 15%;
 }
 
@@ -356,6 +370,7 @@ a.navbar-text:hover {
 	font-size: 19px;
 	width: 15%;
 }
+*/
 
 .selected {
 	text-underline-offset: 8px;

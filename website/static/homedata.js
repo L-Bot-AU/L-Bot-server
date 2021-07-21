@@ -34,22 +34,23 @@ window.predictionGraph = {};
 		type: "bar",
 		data: {
 			labels: [],
-			datasets: [],
+			datasets: []
 		},
 		options: {
 			legend: {
-				display: false,
+				display: false
 			},
 			scales: {
 				yAxes: [{
 					ticks: {
 						beginAtZero: true,
-						max: 100,
+						max: 100
 					}
 				}]
 			},
 			responsiveAnimationDuration: 0,
 			responsive: true,
+			maintainAspectRatio: false
 		}
 	});
 });
@@ -60,7 +61,7 @@ window.predictionGraph = {};
 		//console.log(data);
 		
 		var table = document.getElementById(lib + "Periods");
-		table.innerHTML = "";
+		table.innerHTML = "<tr><th>Period</th><th> Expected</th></tr>";
 		data.forEach(val => {
 			if (val[0].length === 1) {
 				val[0] = "Period " + val[0];
