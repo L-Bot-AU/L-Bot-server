@@ -6,7 +6,7 @@ import os
 # kill processes on ports, since 2 processes cannot run on the same port
 def kill_port(port: int):
     # kill processes on ports, since 2 processes cannot run on the same port
-    if platform.system() == "Linux":
+    if platform.system() in ("Darwin", "Linux"):
         # TODO: define ports from constants
         os.system(f"kill $(lsof -ti tcp:{port})")
 
