@@ -5,7 +5,7 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify, session, redirect, flash
+from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file
 from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
@@ -73,16 +73,16 @@ def librarian_statistics():
         start_date = form["start_date"].data #is a datetime.date object
         end_date = form["end_date"].data
         data_frequency = form["data_frequency"].data #is a string
+        preview = form["preview"].data
+        download = form["download"].data
         if start_date >= end_date:
             form.end_date.errors.append("End date must be after Start date.")
+        elif preview:
+            data = get_data(start_date, end_date, data_frequency)
+            graphData = data
         else:
             data = get_data(start_date, end_date, data_frequency)
-            preview = form["preview"].data
-            download = form["download"].data
-            if preview:
-                graphData = data
-            else:
-                download_excel_spreadsheet(data)
+            return send_file(download_excel_spreadsheet(data), attachment_filename="spreadsheet.xlsx")
     return render_template("librarian_statistics.html", form=form, graphData=graphData)
 
 

@@ -1,4 +1,5 @@
 from database import database
+from flask import send_file
 import xlsxwriter
 
 
@@ -55,7 +56,7 @@ def download_excel_spreadsheet(data):
 
     ws.insert_chart('C1', graph)
 
-    wb.close()
+    print("hello?")
     return wb
 
 engine, Base, Data, Count, PastData = database.genDatabase()
