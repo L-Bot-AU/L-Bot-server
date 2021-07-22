@@ -1,8 +1,6 @@
 from constants import CAMERA_SYSTEM_PORTS, WEBSITE_CLIENT_PORT, WEBSITE_PORT
 import threading
 import platform
-import psutil
-import signal
 import os
 
 # kill processes on ports, since 2 processes cannot run on the same port
@@ -13,6 +11,8 @@ def kill_port(port: int):
         os.system(f"kill $(lsof -ti tcp:{port})")
 
     elif platform.system() == "Windows":
+        import psutil
+        import signal
         for proc in psutil.process_iter():
             for conns in proc.connections(kind='inet'):
                 if conns.laddr.port == port:
