@@ -9,6 +9,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, f
 from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
+from website.librarian_data import get_data, download_excel_spreadsheet
 from flask_bootstrap import Bootstrap
 from datetime import datetime
 import urllib.request, json
@@ -67,10 +68,21 @@ def librarian_statistics():
     
     form = GraphForm()
     if form.validate_on_submit():
-        start_date = form["start_date"] #is a string but verified as a datetime, should turn into datetime object
-        end_date = form["end_date"]
-        print(start_date, end_date)
-        # todo update chart.js
+        start_date = form["start_date"].data #is a string but verified as a datetime, should turn into datetime object
+        end_date = form["end_date"].data # todo assert start_date < end_date
+        data_frequency = form["data_frequency"]
+        print(data_frequency, type(data_frequency))
+        if start_date >= end_date:
+            form.end_date.errors.append("End date must be after Start date.")
+        else:
+            data = get_data(start_date, end_date, data_frequency)
+            preview = form["preview"].data
+            download = form["download"].data
+            if preview:
+                # todo update chart.js
+                pass
+            else:
+                download_excel_spreadsheet(data)
     return render_template("librarian_statistics.html", form=form)
 
 
