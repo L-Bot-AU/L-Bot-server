@@ -18,7 +18,7 @@ function dataset(update){ // most likely won't be used but possibly
     return data;
 }
 
-function hard_code_graph_upd(){
+function hard_code_graph_upd(){ //unnecessary?
     var data = {
         "labels": ["8:00am", "9:00am", "10:00am", "11", "12", "1", "2", "3"],
         "data": [47, 93, 64, 53, 76, 84, 86, 96]

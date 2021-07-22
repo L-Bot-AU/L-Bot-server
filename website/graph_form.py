@@ -25,4 +25,3 @@ class GraphForm(FlaskForm):
                                  )
     preview = SubmitField("Preview")
     download = SubmitField("Download")
-    
