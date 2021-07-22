@@ -1,5 +1,5 @@
 from database import database
-from flask import send_file
+from flask import send_file, send_from_directory
 import xlsxwriter
 
 
@@ -12,7 +12,7 @@ def get_data(start_date, end_date, data_frequency):
     return data
 
 
-def download_excel_spreadsheet(data):
+def create_excel_spreadsheet(data):
     # All documentaton from https://xlsxwriter.readthedocs.io/
 
     # .Workbook creates a workbook with given name
@@ -56,7 +56,6 @@ def download_excel_spreadsheet(data):
 
     ws.insert_chart('C1', graph)
 
-    print("hello?")
-    return wb
+    print("complete")
 
 engine, Base, Data, Count, PastData = database.genDatabase()

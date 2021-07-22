@@ -5,11 +5,11 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file
+from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file, send_from_directory
 from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
-from website.librarian_data import get_data, download_excel_spreadsheet
+from website.librarian_data import get_data, create_excel_spreadsheet
 from flask_bootstrap import Bootstrap
 from datetime import datetime
 import urllib.request, json
@@ -82,7 +82,10 @@ def librarian_statistics():
             graphData = data
         else:
             data = get_data(start_date, end_date, data_frequency)
-            return send_file(download_excel_spreadsheet(data), attachment_filename="spreadsheet.xlsx")
+            directory = "/Downloads"
+            create_excel_spreadsheet(data)
+            #todo use send_file to somehow download the file
+            # return send_file(download_excel_spreadsheet(data), attachment_filename="spreadsheet.xlsx")
     return render_template("librarian_statistics.html", form=form, graphData=graphData)
 
 
