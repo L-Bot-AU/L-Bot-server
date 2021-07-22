@@ -67,11 +67,12 @@ def librarian_statistics():
         return redirect("/")
     
     form = GraphForm()
+    graphData = {"dates": [],
+                 "values": []}
     if form.validate_on_submit():
-        start_date = form["start_date"].data #is a string but verified as a datetime, should turn into datetime object
-        end_date = form["end_date"].data # todo assert start_date < end_date
-        data_frequency = form["data_frequency"]
-        print(data_frequency, type(data_frequency))
+        start_date = form["start_date"].data #is a datetime.date object
+        end_date = form["end_date"].data
+        data_frequency = form["data_frequency"].data #is a string
         if start_date >= end_date:
             form.end_date.errors.append("End date must be after Start date.")
         else:
@@ -79,11 +80,10 @@ def librarian_statistics():
             preview = form["preview"].data
             download = form["download"].data
             if preview:
-                # todo update chart.js
-                pass
+                graphData = data
             else:
                 download_excel_spreadsheet(data)
-    return render_template("librarian_statistics.html", form=form)
+    return render_template("librarian_statistics.html", form=form, graphData=graphData)
 
 
 @app.route("/librarian/edit", methods=["GET", "POST"])

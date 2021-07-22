@@ -1,6 +1,6 @@
 function update_graph(data){
-    window.librarianGraph.data.labels = data["labels"];
-    window.librarianGraph.data.datasets[0].data = data["data"];
+    window.librarianGraph.data.labels = data["dates"];
+    window.librarianGraph.data.datasets[0].data = data["values"];
     //alternative:
     // window.librarianGraph.data.datasets = [];
     // window.librarianGraph.data.datasets.push(dataset(data));

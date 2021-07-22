@@ -94,4 +94,9 @@
             <button class="btn btn-primary submit-button" onclick="imageDownload()">Download graph as image</button>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='librarian.js') }}"></script>
+    <script>
+        console.log("Graph data: {{ graphData | safe }}");
+        update_graph({{ graphData | safe }});
+    </script>
 {% endblock %}

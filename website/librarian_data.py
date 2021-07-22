@@ -1,8 +1,11 @@
+from database import database
 import xlsxwriter
 
 
 def get_data(start_date, end_date, data_frequency):
-
+    # connect to database
+    # get data straight from database, don't need socket.io
+    # []
     data = {"dates": [str(i) + "/7" for i in range(1, 11)],
             "values": [i for i in range(10, 101, 10)]}
     return data
@@ -54,3 +57,5 @@ def download_excel_spreadsheet(data):
 
     wb.close()
     return wb
+
+engine, Base, Data, Count, PastData = database.genDatabase()
