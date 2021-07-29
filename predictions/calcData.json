@@ -1,6 +1,9 @@
 {
     "Jnr": {
+        "min_year": 2018,
+        "max_year": 2019,
         "2018": {
+            "time_periods": ["bs","b1","b2"],
             "Term1": {
                 "Fri": {
                     "b1": {
@@ -291,6 +294,7 @@
             }
         },
         "2019": {
+            "time_periods": ["bs","b1","b2"],
             "Term1": {
                 "Fri": {
                     "b1": {
@@ -582,7 +586,10 @@
         }
     },
     "Snr": {
+        "min_year": 2019,
+        "max_year": 2019,
         "2019": {
+            "time_periods": ["bs","b1","b2"],
             "Term1": {
                 "Fri": {
                     "b1": {
