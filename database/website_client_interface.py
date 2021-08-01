@@ -39,7 +39,7 @@ def sendDynamicData():
         sio.emit(lib + "Periods", get_periods(lib))
         sio.emit(lib + "Alert", get_alert(lib))
         sio.emit(lib + "Remaining", get_max(lib) - get_count(lib))
-        sio.emit(lib + "Fullness", round(get_count(lib)/get_max(lib), 3))
+        sio.emit(lib + "Fullness", round(get_count(lib)/get_max(lib)*100))
         sio.emit(lib + "Trends", get_trends(lib))
     
 def get_count(lib):
