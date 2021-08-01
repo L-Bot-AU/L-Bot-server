@@ -181,8 +181,7 @@ table td, table td * {
 
 .navbar {
 	background: var(--bg-second-col);
-	/*background: linear-gradient(180deg, var(--bg-second-col), var(--bg-primary-col));*/
-	// border-bottom: 1px var(--txt-primary-col) solid;
+	border-bottom: 1px var(--txt-primary-col) solid;
 	height: 80px;
 	position: sticky; /* similar to fixed, but will work if you want to add something to top of nav */
 	top: 0px;
@@ -423,7 +422,7 @@ a.navbar-text:hover {
 .auth_form {
 	margin: auto;
 	position: absolute;
-	top: -80px;
+	top: 0;
 	bottom: 0;
 	right: 0;
 	left: 0;
