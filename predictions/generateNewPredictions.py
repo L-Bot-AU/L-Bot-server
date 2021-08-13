@@ -1,9 +1,11 @@
-import predictions.getPastData as get
-import predictions.calculateNewPredictions as calculate
+import getPastData as get
+import calculateNewPredictions as calculate
+import writeNewPredictions as write
 
 def generate():
     data = get.getPastData()
     predictions = calculate.genereatePrediction(data)
+    write.write(predictions)
 
     return predictions
 

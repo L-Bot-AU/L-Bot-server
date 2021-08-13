@@ -1,4 +1,4 @@
-def genereatePrediction(data):
+def generatePrediction(data):
     for day in range(1,6):
         for time in data["Times"]:
             jnr_calc_list = data["Days"][str(day)][time]["Jnr"]
@@ -7,13 +7,12 @@ def genereatePrediction(data):
             snr_average = sum(snr_calc_list)/len(snr_calc_list)
             data["Days"][str(day)][time]["Jnr"] = jnr_average
             data["Days"][str(day)][time]["Snr"] = snr_average
+    return data
 
 if __name__ == "__main__":
     #For testing different imports based on run condition
-    try:
-        import predictions.getPastData as getPastData
-    try:
-        import getPastData
+    
+    import getPastData
 
     data = getPastData.getPastData()
-    genereatePrediction(data)
+    print(generatePrediction(data))
