@@ -235,6 +235,14 @@ a.navbar-text:hover {
 	transition-duration: 0.8s;
 	margin-top: 10px;
 }
+
+.edit-tabwrapper {
+	width: calc(300vw - 240px);
+	position: absolute;
+	transition-duration: 0.8s;
+	margin-top: 10px;
+}
+
 .tab {
 	width: calc(100vw - 120px);
 }

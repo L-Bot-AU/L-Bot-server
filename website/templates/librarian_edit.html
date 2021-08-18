@@ -7,7 +7,10 @@
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Events</button>
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Alerts</button>
 	<div class="uppertabline"></div><br><br>
-	<div hidden>
+	
+	<table class="edit-tabwrapper"><tr valign="top">
+	<!-- GENERAL -->
+	<th class="tab generaltab">
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Junior</button>
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button>
 	<div class="tabline"></div><br><br>
@@ -41,8 +44,10 @@
 	</div>
 	</div>
 	<button class="btn btn-primary save-button" style="margin-right: 112px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
-	</div>
-	<div hidden>
+	</th>
+	
+	<!-- EVENTS TAB -->
+	<th class="tab eventstab">
 	<ul class="key list">
 		<li class="highimpact"> High impact </li>
 		<li class="moderateimpact"> Moderate impact </li>
@@ -63,8 +68,10 @@
 		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
 		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</ul>
-	</div>
-	<div>
+	</th>
+	
+	<!-- ALERTS TAB -->
+	<th class="tab alertstab">
 	<div class="alert-tooltip">
 		<ul class="alert-list">
 			<li class="exclamation-triangle">⚠</li>
@@ -78,7 +85,8 @@
 		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
 		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</ul>
-	</div>
+	</th>
+	</tr></table>
 	<script> 
 		function makeEdit(event) {
 			var box = event.target.getBoundingClientRect();
