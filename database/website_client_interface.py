@@ -111,11 +111,11 @@ def get_alert(lib):
 def get_events():
     # TODO: get data from librarian interface
     return [
-        {"text": "Too Bar Baz!!!", "severity": "moderate", "library":"jnr"},
-        {"text": "Wild animals have taken over the junior library!!!", "severity": "high","library":"jnr"},
-		{"text": "Make sure you clean up after you play chess", "severity": "moderate","library":"jnr"},
-        {"text": "Have you seen my glasses?", "severity": "high","library":"snr"},
-        {"text": "Remember to tuck in your chairs.", "severity": "low","library":"snr"},
+        {"text": "Too Bar Baz!!!", "impact": "moderate", "library":"jnr"},
+        {"text": "Wild animals have taken over the junior library!!!", "impact": "high","library":"jnr"},
+		{"text": "Make sure you clean up after you play chess", "impact": "moderate","library":"jnr"},
+        {"text": "Have you seen my glasses?", "impact": "high","library":"snr"},
+        {"text": "Remember to tuck in your chairs.", "impact": "low","library":"snr"},
     ]
 
 def get_periods(lib):
