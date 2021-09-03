@@ -11,7 +11,6 @@ TIMES = ["Morning", "Break 1", "Break 2"]
 
 WEBSITE_CLIENT_PORT = 2910
 WEBSITE_UPDATE_TIMEOUT = 10.0 # time between each dynamic data update (in seconds)
-
 DATABASE_TASKS_TIMEOUT = 60
 
 WEBSITE_HOST = "0.0.0.0"

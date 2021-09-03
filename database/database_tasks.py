@@ -28,27 +28,6 @@ def getClosingTime(): # TODO: currently a stub
 def libraryOpen(): # TODO: currently a stub
     return getOpeningTime() <= datetime.datetime.now() <= getClosingTime()
 
-def restartdb():
-    try:
-        os.remove("library_usage.db")
-    except FileNotFoundError:
-        pass
-    
-    Session = sessionmaker(bind=engine)
-    begsession = Session()
-
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    
-    for day in DAYS:
-        for time in TIMES:
-            d = Data(day=day, time=time)
-            begsession.add(d)
-
-    begsession.add(Count())
-    begsession.commit()
-
-
 def get_new_predictions():
     """called once every day"""
     # start session with database

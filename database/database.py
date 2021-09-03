@@ -1,9 +1,14 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
-from constants import DAYS, TIMES, DO_RESTARTDB, OPENING_TIMES, CLOSING_TIMES, MAX_CAPS, LIBRARIANS 
+from constants import DAYS, TIMES, DO_RESTARTDB#, OPENING_TIMES, CLOSING_TIMES, MAX_CAPS, LIBRARIANS 
+import os
 
 def restartdb(engine, Base, Data, Count, PastData):
+    try:
+        os.remove("library_usage.db")
+    except FileNotFoundError:
+        pass
     Session = sessionmaker(bind=engine)
     begsession = Session()
 
@@ -16,9 +21,6 @@ def restartdb(engine, Base, Data, Count, PastData):
             begsession.add(d)
 
     begsession.add(Count())
-    begsession.add(GeneralInfo(
-        library="jnr",
-        openinghour = 
     begsession.commit()
     
 def genDatabase():
