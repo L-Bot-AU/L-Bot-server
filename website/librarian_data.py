@@ -1,15 +1,36 @@
+from constants import DAYS, TIMES
 from database import database
+from sqlalchemy.orm import sessionmaker
 from flask import send_file, send_from_directory
 import xlsxwriter
 
 
-def get_data(start_date, end_date, data_frequency):
-    # connect to database
-    # get data straight from database, don't need socket.io
-    # []
-    data = {"dates": [str(i) + "/7" for i in range(1, 11)],
-            "values": [i for i in range(10, 101, 10)]}
+def get_data(start_date, end_date, data_frequency, lib, mode):
+    data = {
+        "dates": [f"{i}/7" for i in range(1, 11)],
+        "values": [10*i for i in range(1, 11)]
+    }
     return data
+
+    # connect to database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    trends = {
+        "dates": TIMES,
+        "values": []
+    }
+    for day in DAYS:
+        day_trends = []
+        for time in TIMES:
+            data = session.query(Data).filter_by(day=day, time=time).first()
+            if lib == "Junior":
+                pred = data.jnr_expected
+            elif lib == "Senior":
+                pred = data.snr_expected
+            day_trends.append(pred)
+        trends["data"].append(day_trends)
+    return trends
 
 
 def create_excel_spreadsheet(data):
@@ -55,6 +76,7 @@ def create_excel_spreadsheet(data):
     })
 
     ws.insert_chart('C1', graph)
+    wb.close()
 
     print("complete")
 
