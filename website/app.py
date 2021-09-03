@@ -11,7 +11,7 @@ from website.login_form import LoginForm
 from website.graph_form import GraphForm
 from website.librarian_data import get_data, create_excel_spreadsheet
 from flask_bootstrap import Bootstrap
-from datetime import datetime
+from datetime import date, datetime
 import urllib.request, json
 
 
@@ -75,13 +75,26 @@ def librarian_statistics():
         data_frequency = form["data_frequency"].data #is a string
         preview = form["preview"].data
         download = form["download"].data
+        # Verify dates are valid
+        valid_dates = True
+        if start_date >= date.today():
+            form.start_date.errors.append("Start date must be before current date.")
+            valid_dates = False
+        if end_date >= date.today():
+            form.end_date.errors.append("End date must be before current date.")
+            form.end_date.errors.append("blah blah blah etc.") # For testing purposes
+            form.end_date.errors.append("blah blah blah etc.")
+            valid_dates = False
         if start_date >= end_date:
             form.end_date.errors.append("End date must be after Start date.")
-        elif preview:
-            data = get_data(start_date, end_date, data_frequency)
+            valid_dates = False
+
+        # Apply necessary action
+        if valid_dates and preview:
+            data = get_data(start_date, end_date, data_frequency, session["librarian"], "preview")
             graphData = data
-        else:
-            data = get_data(start_date, end_date, data_frequency)
+        elif valid_dates and download:
+            data = get_data(start_date, end_date, data_frequency, session["librarian"], "download")
             directory = "/Downloads"
             create_excel_spreadsheet(data)
             #todo use send_file to somehow download the file
