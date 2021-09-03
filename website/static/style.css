@@ -20,7 +20,7 @@ This is used for shared values like interface sizing, and fonts*/
 
     --txt-primary-col: #1E90FF;
     --nav-primary-col: #1E90FF;
-    --a-hover-col: #1E90FF;
+    --a-hover-col: #FF5A09;
     --txt-col: #000000;
 
     --toggle-box-text: "Light";
@@ -80,6 +80,10 @@ p, div, ul, progress, a, td, tr, th {
 
 .navbar a {
     color: var(--nav-primary-col);
+}
+
+.navbar-link:hover {
+	color: var(--a-hover-col) !important;
 }
 
 .body p {
@@ -228,7 +232,11 @@ a.navbar-text:hover {
 .focusbtn:focus {
 	outline: none;
 }
-		
+	
+.feedback {
+	text-align: left;
+}
+	
 .tabwrapper {
 	width: calc(200vw - 240px);
 	position: absolute;
@@ -262,27 +270,53 @@ a.navbar-text:hover {
 	left: calc(50% - 83px);
 }
 
-.uppertabline {
-	position: absolute;
-	height: 2px;
-	width: 70px;
-	background-color: var(--txt-primary-col);
-	left: calc(50% - 126px);
-}
-
 .focusright .tabwrapper {
 	transform: translate(-50%);
 }
 .focusright .jnrtab {
 	opacity: 0;
-	transition:opacity 0.8s linear;
 }
 .focusright .snrtab {
 	opacity: 1;
-	transition:opacity 0.8s linear;
 }
 .focusright .tabline {
 	left: calc(50% + 8px);
+}
+
+.generaltab {
+	opacity: 1;
+	transition: opacity 0.8s linear;
+}
+
+.eventstab {
+	opacity: 0;
+	transition: opacity 0.8s linear;
+}
+
+.alertstab {
+	opacity: 0;
+	transition: opacity 0.8s linear;
+}
+
+.focuscenter .generaltab {opacity: 0}
+
+.focuscenter .eventstab {opacity: 1}
+
+.focusright .generaltab {opacity: 0}
+
+.focusright .alertstab {opacity: 1}
+
+.focuscenter .edit-tabwrapper {
+	transform: translate(-33%);
+}
+
+.focusright .edit-tabwrapper {
+	transform: translate(-66%);
+}
+
+.settab {
+	text-decoration: underline;
+	text-underline-offset: 5px;
 }
 
 .alert {
@@ -362,15 +396,22 @@ a.navbar-text:hover {
 	text-align: left;
 }
 
+.tooltip-arrow {
+	transition: none;
+}
+
 .periodFullnessBar {
 	float: left;
-	margin: 0.75em;
+	margin: 1em;
+	height: 1.5em;
 	background-color: rgb(54, 162, 235);
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
 .periodText {
+	margin-right: 10px;
 	text-align: left;
+	vertical-align: middle;
 }
 
 .selected {
@@ -383,31 +424,28 @@ a.navbar-text:hover {
 	float: right;
 	border: 2px solid var(--border-colour);
 	border-radius: 10px;
-	padding: 50px;
+	padding: 25px 0px 25px 50px;
+	margin-right: 10px;
 	text-align: left;
 	width: 400px;
 }
 .list {
 	text-align: left;
-	list-style: none;
 	font-size: 28px;
+	list-style-position: outside !important;
 }
-.list li::before {
-	content: "•";
-	font-size: 35px;
-	font-weight: bold;
-	display: inline-block;
-	width: 1em;
-	margin: -10px -15px -15px -15px;
-	padding-bottom: 15px;
+
+.list li {
+	list-style-position: outside !important;
 }
-.highimpact::before {
+
+.highimpact::marker {
 	color: red;
 }
-.moderateimpact::before {
+.moderateimpact::marker {
 	color: orange;
 }
-.lowimpact::before {
+.lowimpact::marker {
 	color: green;
 }
 
@@ -442,11 +480,12 @@ a.navbar-text:hover {
 }
 
 .form-label {
-	width: 24%;
+	width: 27%;
 }
 
 .data-entry {
-	width: 76% !important;
+	width: 70% !important;
+	display: inline;
 }
 
 .form-inline {
@@ -456,6 +495,7 @@ a.navbar-text:hover {
 .form-inline label {
 	justify-content: flex-end;
 	padding-right: 10px;
+	text-align: right;
 }
 
 .feedback {
@@ -468,11 +508,19 @@ a.navbar-text:hover {
 }
 
 .logout > * {
-	color: #dc3545;
+	color: #dc3545 !important;
+}
+
+.logout {
+	color: #dc3545 !important;
 }
 
 .logout:hover > * {
-	color: #a21d2d;
+	color: #a21d2d !important;
+}
+
+.logout:hover {
+	color: #a21d2d !important;
 }
 
 /*For later use*/
@@ -493,6 +541,7 @@ a.navbar-text:hover {
 
 .edit-input {
 	width: 250px !important;
+	display: inline;
 }
 
 .edit-list {
@@ -512,6 +561,7 @@ a.navbar-text:hover {
 .remove-button {
 	background-color: #dc3545;
 	border: none;
+	display: inline;
 }
 
 .remove-button:hover {
@@ -534,9 +584,7 @@ a.navbar-text:hover {
 	width: 50%;
 	margin-bottom: 10px;
 }
-.edit-hover:hover {
-	cursor: pointer;
-}
+
 .event-tooltip {
 	position: absolute;
 	border-radius: 10px;
@@ -579,16 +627,20 @@ a.navbar-text:hover {
 }
 
 .alert-box {
+	vertical-align: middle;
+	display: inline;
 	width: 50% !important;
 	margin-right: 10px;
 }
 
 .exclamation-triangle {
+	display: inline;
 	margin-right: 10px;
 	font-size: 28px;
 }
 
 .information {
+	display: inline;
 	margin-right: 10px;
 	font-size: 28px;
 }

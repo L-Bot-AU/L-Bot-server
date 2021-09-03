@@ -3,17 +3,15 @@
 {% block page_title %}Edit{% endblock %}
 
 {% block page_content %}
-	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">General</button>
-	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Events</button>
-	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Alerts</button>
-	<div class="uppertabline"></div><br><br>
+	<button type="button" class="focusbtn settab" onclick="setFocus('general', this)">General</button>
+	<button type="button" class="focusbtn" onclick="setFocus('events', this)">Events</button>
+	<button type="button" class="focusbtn" onclick="setFocus('alerts', this)">Alerts</button><br><br>
 	
 	<table class="edit-tabwrapper"><tr valign="top">
 	<!-- GENERAL -->
 	<th class="tab generaltab">
-	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Junior</button>
-	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button>
-	<div class="tabline"></div><br><br>
+	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">Junior</button>
+	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button><br><br>
 	<div class="form-inline edit-line">
     <label class="bold-this edit-label" for="day"> Day: </label>
 	<select class="form-control edit-input" id="day" name="day" required>
@@ -34,7 +32,7 @@
 	</div>
 	<div class="form-inline edit-line">
 	<label class="bold-this edit-label" for="openingTime"> Maximum seats: </label>
-	<input style="width: 80px" type="number" class="form-control" id="maxSeats" name="maxSeats" required>
+	<input style="width: 80px; margin-right: 170px; display: inline" type="number" class="form-control" id="maxSeats" name="maxSeats" required>
 	</div>
 	<div class="edit-line" style="width: 364px; margin: auto; margin-top: 20px;"> <label style=" text-align: left; margin-right: 300px; padding-right: 10px" class="bold-this edit-label"> Librarians: </label><br>
 	<div id="librarians">
@@ -48,7 +46,7 @@
 	
 	<!-- EVENTS TAB -->
 	<th class="tab eventstab">
-	<ul class="key list">
+	<ul class="key list" style="font-weight: normal">
 		<li class="highimpact"> High impact </li>
 		<li class="moderateimpact"> Moderate impact </li>
 		<li class="lowimpact"> Low impact </li>
@@ -87,7 +85,25 @@
 	</ul>
 	</th>
 	</tr></table>
-	<script> 
+	<script>
+		function setFocus(newFocus, obj) {
+			document.getElementsByClassName("settab")[0].classList.remove("settab");
+			obj.classList.add("settab");
+			switch (newFocus) {
+				case "general":
+					document.body.classList.remove("focuscenter");
+					document.body.classList.remove("focusright");
+					break;
+				case "events":
+					document.body.classList.remove("focusright");
+					document.body.classList.add("focuscenter");
+					break;
+				case "alerts":
+					document.body.classList.remove("focuscenter");
+					document.body.classList.add("focusright");
+					break;
+			}
+		}
 		function makeEdit(event) {
 			var box = event.target.getBoundingClientRect();
 			if (event.clientX >= box.left - 20 &&

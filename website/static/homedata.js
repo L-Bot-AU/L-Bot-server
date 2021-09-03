@@ -71,19 +71,22 @@ window.predictionGraph = {};
 			td1.setAttribute("class", "periodText");
 			td1.appendChild(document.createTextNode(val[0]));
 			var td2 = document.createElement("td");
-			td2.setAttribute("class", "periodFullness");
-			td2.appendChild(document.createTextNode(val[1]));
-			var td3 = document.createElement("td");
-			td3.setAttribute("class", "periodFullnessBar");
+			td2.setAttribute("class", "periodFullnessBar");
+			td2.setAttribute("data-bs-toggle", "tooltip");
+			td2.setAttribute("data-bs-placement", "right");
+			td2.setAttribute("title", `${val[1]}`);
 			var bar = document.createElement("div");
-			bar.setAttribute("style", `width: ${val[1]*3}px;`);
-			td3.appendChild(bar);
+			bar.setAttribute("style", `width: ${val[1]*5}px;`);
+			td2.appendChild(bar);
 			
 			tr.appendChild(td1);
 			tr.appendChild(td2);
-			tr.appendChild(td3);
 			
 			table.appendChild(tr);
+		});
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl);
 		});
 	});
 	sio.on(lib + "Alert", data => {
