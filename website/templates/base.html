@@ -43,12 +43,14 @@
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
 	<script>
-		const sio = io("ws://127.0.0.1:2910");
+		
+		const sio = io(`${window.origin}:2910`);
 	</script>
     
 	
-    <div id="page-content" class="container-fluid" style="height: calc(100vh - 80px); padding-top: 40px;">
-        {% block page_content %}{% endblock %}
+    <div id="page-content" class="container-fluid" style="height: calc(100vh - 80px)">
+		<br>
+		{% block page_content %}{% endblock %}
     </div>
 	
 	
