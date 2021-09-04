@@ -485,6 +485,7 @@ a.navbar-text:hover {
 
 .data-entry {
 	width: 70% !important;
+	appearance: auto;
 	display: inline;
 }
 

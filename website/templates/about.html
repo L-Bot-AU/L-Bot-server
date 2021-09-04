@@ -9,12 +9,12 @@
 			<th class="librarydes">
 				<h1>{{ libdisplay }} LIBRARY</h1>
 
-				<h2>Normal Opening hours</h2>
+				<h2>Normal opening hours</h2>
 				<table class="indent">
-					{% for daydisplay, day in [('Mon', 'mon'), ('Tue', 'tue'), ('Wed', 'wed'), ('Thu', 'thu'), ('Fri', 'fri')] %}
+					{% for day in ["monday", "tuesday", "wednesday", "thursday", "friday"] %}
 						<tr class="text-align: center;">
-							<td style="width: 50px">{{ daydisplay }}</td>
-							<td id='{{ lib }}{{ day }}'>...am - ...pm</td>
+							<td style="width: 110px; text-align: left">{{ day | capitalize }}:</td>
+							<td style="text-align:left" id='{{ lib }}{{ day }}'>...am - ...pm</td>
 						</tr>
 					{% endfor %}
 				</table>

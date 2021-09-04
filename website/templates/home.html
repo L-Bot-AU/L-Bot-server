@@ -12,10 +12,9 @@
 		<tr valign="top">
 			{% for lib in ["jnr", "snr"] %}
 			<th class="tab {{ lib }}tab">
-				<div class="alert" id="{{ lib }}Alert">
-					<span>⚠</span>
-					<span id="{{ lib }}Alerttext">...</span>
-					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+				<div id="{{ lib }}alerts">
+					<div class="alert" id="{{ lib }}Alert">
+					</div>
 				</div>
 				
 				<div class="status">
@@ -24,7 +23,7 @@
 					spots remaining
 				</div>
 				
-				<div class="progress">
+				<div class="progress" id="progressContainer">
 					<div class="progress-bar"><div class="fullness" id="{{ lib }}Fullness">0% full</div></div>
 				</div>
 				

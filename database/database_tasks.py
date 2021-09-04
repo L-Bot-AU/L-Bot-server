@@ -1,13 +1,69 @@
-from constants import DATABASE_TASKS_TIMEOUT
+from constants import DO_RESTARTDB, DATABASE_TASKS_TIMEOUT
 from database import database
 from predictions.getData import getData
+from constants import DAYS, TIMES, OPENING_TIMES, CLOSING_TIMES, MAX_CAPS, LIBRARIANS
 from sqlalchemy.orm import sessionmaker
-from constants import DAYS, TIMES
-from Crypto.Cipher import AES
 import datetime
+import os
 import time
 
-engine, Base, Data, Count, PastData = database.genDatabase()
+
+engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
+if DO_RESTARTDB:
+    # restarts the database with new values (default, hard-coded ones). not recommended for production since all information is lost
+    # remove the database file if it exists
+    try:
+        os.remove("library_usage.db")
+    except FileNotFoundError:
+        pass
+        
+    # create opening session
+    Session = sessionmaker(bind=engine)
+    begsession = Session()
+
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+    
+    
+    # loop through each time of each day and add a data record for it (the predicted usage for that day and time)
+    for day in DAYS:
+        for t in TIMES:
+            predictedUsage = Data(day=day, time=t)
+            begsession.add(predictedUsage)
+       
+    # add a count record representing the occupancy of each library (set to 0)
+    begsession.add(Count())
+    
+    # loop through each day and library and set the opening/closing times as the hard-coded values
+    for day in DAYS:
+        for library in ["jnr", "snr"]:
+            openinghour, openingminute = OPENING_TIMES[library][day]
+            closinghour, closingminute = CLOSING_TIMES[library][day]
+            newTimes = LibraryTimes(
+                library=library,
+                day=day,
+                openinghour=openinghour,
+                openingminute=openingminute,
+                closinghour=closinghour,
+                closingminute=closingminute
+            )
+            begsession.add(newTimes)
+    
+    # set the maximum capacity of each library to the hard-coded value (counted on the 2nd of February 2021 and the 5th of February 2021 for the junior and senior libraries respectively)
+    begsession.add(MaxSeats(library="jnr", seats=MAX_CAPS["jnr"]))
+    begsession.add(MaxSeats(library="snr", seats=MAX_CAPS["snr"]))
+    
+    # loop through each librarian's name and create a record of it
+    for library in ["jnr", "snr"]:
+        for name in LIBRARIANS[library]:
+            librarian = Librarians(
+                library=library,
+                name=name
+            )
+            begsession.add(librarian)
+    
+    # commit the session to the database
+    begsession.commit()
 
 def secsUntilNextDay():
     # get number of seconds until midnight

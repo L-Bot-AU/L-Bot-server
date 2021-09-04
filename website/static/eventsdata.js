@@ -1,4 +1,5 @@
 sio.on("events", data => {
+	//data = [{"text": "foo bar", "impact": "high", "library": "jnr"}, {"text": "baz", "impact": "low", "library": "snr"}]
 	var ul = document.getElementById("list");
 	ul.innerHTML = "";
 	data.forEach(value => {

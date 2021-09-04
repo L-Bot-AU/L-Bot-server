@@ -90,15 +90,21 @@ window.predictionGraph = {};
 		});
 	});
 	sio.on(lib + "Alert", data => {
+		document.getElementById(`${lib}alerts`).innerHTML = "";
 		//console.log(data);
-		if (data !== "") {
-			// nonzero alert
-			document.getElementById(lib + "Alert").style.display = "visible";
-			document.getElementById(lib + "Alerttext").innerHTML = data;
-		}
-		else {
-			document.getElementById(lib + "Alert").style.display = "none";
-		}
+		data.forEach(alert => {
+			if (window.sessionStorage.getItem(alert[0]) === "close") {
+				return;
+			}
+			var alertHTML = "<div class='alert'><span>";
+			if (alert[1] === "warning") {
+				alertHTML += "⚠";
+			} else {
+				alertHTML += "ℹ";
+			}
+			alertHTML += `</span><span>${alert[0]}</span><span class='closebtn' onclick=removeElement(this.parentElement)>&times;</span></div>`;
+			document.getElementById(`${lib}alerts`).innerHTML += alertHTML;
+		});
 	});
 	
 	
@@ -109,21 +115,25 @@ window.predictionGraph = {};
 	
 	sio.on(lib + "Fullness", data => {
 		//console.log(data);
+		var fullnessElement = document.getElementById(lib + "Fullness");
+		var statusElement = document.getElementById(lib + "Status")
 		if (data <= 30) {
-			document.getElementById(lib + "Status").innerHTML = "Not busy:";
+			statusElement.innerHTML = "Not busy:";
 		}
 		else if (data <= 70) {
-			document.getElementById(lib + "Status").innerHTML = "Busy:";
+			statusElement.innerHTML = "Busy:";
 		}
 		else {
-			document.getElementById(lib + "Status").innerHTML = "Very busy:";
+			statusElement.innerHTML = "Very busy:";
 		}
 		
-		if (data <= 12) {
-			document.getElementById(lib + "Fullness").style.paddingLeft = "calc(100% + 20px)";
+		if (data <= 25) {
+			fullnessElement.style.paddingLeft = "calc(" + (data / 2) + "% + 12px)";
+			fullnessElement.style.position = "absolute";
 		}
 		else {
-			document.getElementById(lib + "Fullness").style.paddingLeft = "";
+			fullnessElement.style.position = "";
+			fullnessElement.style.paddingLeft = "";
 		}
 		
 		document.getElementById(lib + "Fullness").innerHTML = data + "% full";
@@ -178,4 +188,9 @@ function displayGraph(lib, day){
 	
 	window.predictionGraph[lib].data.datasets[0] = window.graphData[day];
 	window.predictionGraph[lib].update();
+}
+
+function removeElement(alertElement) {
+	window.sessionStorage.setItem(alertElement.children[1].innerHTML, "close");
+	alertElement.remove();
 }

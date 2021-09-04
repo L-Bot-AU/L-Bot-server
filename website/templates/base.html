@@ -60,7 +60,7 @@
 	<script>
 		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
 		document.documentElement.hidden = false;
-		// also the screen is blank until socket.io is fully loaded, then a nifty fade in
+		// also the main page content (excluding the navbar) is blank until socket.io is fully loaded, then it fades in
 		sio.on("connect", () => {
 			document.body.style.opacity = "1";
 			document.getElementById("page-content").style.opacity = 1;

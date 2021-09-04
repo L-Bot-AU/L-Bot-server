@@ -7,6 +7,7 @@
 
 from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file, send_from_directory
 from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
+from database import database
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
 from website.librarian_data import get_data, create_excel_spreadsheet
@@ -16,7 +17,7 @@ import urllib.request, json
 
 
 app = Flask(__name__)
-app.secret_key = "super secret" #TOOD: Store secret key in .env
+app.secret_key = "super secret" #TODO: Store secret key in .env
 bootstrap = Bootstrap(app)
 
 
@@ -127,4 +128,5 @@ def page_not_found(e):
 
 
 def __init__():
+    engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
     app.run(host=WEBSITE_HOST, port=WEBSITE_PORT, debug=WEBSITE_DEBUG)

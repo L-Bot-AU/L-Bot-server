@@ -70,56 +70,46 @@ def get_trends(lib):
     return trends
 
 def get_opening(lib):
-    return {
-        "jnr": {
-            "mon": "7:30am - 3:30pm",
-            "tue": "7:30am - 3:30pm",
-            "wed": "7:30am - 3:30pm",
-            "thu": "7:30am - 3:30pm",
-            "fri": "7:30am - 3:30pm",
-        },
-        "snr": {
-            "mon": "8:00am - 2:30pm",
-            "tue": "8:00am - 2:30pm",
-            "wed": "8:00am - 12:30pm",
-            "thu": "8:00am - 3:15pm",
-            "fri": "8:00am - 2:30pm",
-        }
-    }[lib]
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    library_times = {}
+    for day in DAYS:
+        timeRecord = session.query(LibraryTimes).filter_by(library=lib, day=day).first()
+        openingtime = datetime.time(hour=timeRecord.openinghour, minute=timeRecord.openingminute)
+        closingtime = datetime.time(hour=timeRecord.closinghour, minute=timeRecord.closingminute)
+        library_times[day] = f"{openingtime.strftime('%#I:%M%p').lower()} - {closingtime.strftime('%#I:%M%p').lower()}"
+    return library_times
 
 def get_max(lib):
-    # TODO: get data from librarian interface
-    return {
-        "jnr": 108,
-        "snr": 84
-    }[lib]
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session.query(MaxSeats).filter_by(library=lib).first().seats
 
 def get_librarians(lib):
-    # TODO: get data from librarian interface
-    return {
-        "jnr": ["Ms Crothers"],
-        "snr": ["Mr Wiramhardja", "Ms Meredith"]
-    }[lib]
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    librarians = session.query(Librarians).filter_by(library=lib).all()
+    return [librarian.name for librarian in librarians]
 
 def get_alert(lib):
-    # TODO: get data from librarian interface
-    return {
-        "jnr": "", # "Junior library overtaken by wild animals, keep out!"
-        "snr": "Senior library overtaken by wild animals, keep out!" or ""
-    }[lib]
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    alerts = session.query(Alerts).filter_by(library=lib).all()
+    return [[alert.alert, alert.type] for alert in alerts] #TODO: This functionality is drastically different on the frontend
 
 def get_events():
-    # TODO: get data from librarian interface
-    return [
-        {"text": "Too Bar Baz!!!", "impact": "moderate", "library":"jnr"},
-        {"text": "Wild animals have taken over the junior library!!!", "impact": "high","library":"jnr"},
-		{"text": "Make sure you clean up after you play chess", "impact": "moderate","library":"jnr"},
-        {"text": "Have you seen my glasses?", "impact": "high","library":"snr"},
-        {"text": "Remember to tuck in your chairs.", "impact": "low","library":"snr"},
-    ]
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    events = [] #TODO: sort by impact
+    for event in session.query(Events).all():
+        events.append(
+            {"text": event.event, "impact": event.impact, "library": event.library}
+        )
+    events.sort(key=lambda x:["high", "moderate", "low"].index(x))
+    return events
 
 def get_periods(lib):
-    # TODO: get data from librarian interface
+    # TODO: MAKE WORK NICE BETTER THANK!!!!!!!!!!
     # order is indicative of order of periods for that day
     return {
         "jnr": [
@@ -144,7 +134,7 @@ def get_periods(lib):
 
 kill_port.kill_port(WEBSITE_CLIENT_PORT)
 
-engine, Base, Data, Count, PastData = database.genDatabase()
+engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
 task = sio.start_background_task(update)
 eventlet.wsgi.server(eventlet.listen(('', WEBSITE_CLIENT_PORT)), app)
 

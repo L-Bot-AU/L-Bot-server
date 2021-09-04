@@ -1,27 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
-from constants import DAYS, TIMES, DO_RESTARTDB#, OPENING_TIMES, CLOSING_TIMES, MAX_CAPS, LIBRARIANS 
-import os
 
-def restartdb(engine, Base, Data, Count, PastData):
-    try:
-        os.remove("library_usage.db")
-    except FileNotFoundError:
-        pass
-    Session = sessionmaker(bind=engine)
-    begsession = Session()
-
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    
-    for day in DAYS:
-        for time in TIMES:
-            d = Data(day=day, time=time)
-            begsession.add(d)
-
-    begsession.add(Count())
-    begsession.commit()
     
 def genDatabase():
     engine = create_engine("sqlite:///library_usage.db", echo=False, connect_args={"check_same_thread": False})
@@ -84,27 +64,36 @@ def genDatabase():
         jnrcount = Column(Integer, nullable=False)
         snrcount = Column(Integer, nullable=False)
         
-    class GeneralInfo(Base):
+    class LibraryTimes(Base):
         __tablename__ = "generalinfo"
         
         id = Column(Integer, primary_key=True)
-        library = Column(String, nullable=False)
+        library = Column(String(3), nullable=False)
+        day = Column(String(9), nullable=False)
         openinghour = Column(Integer, nullable=False)
         openingminute = Column(Integer, nullable=False)
         closinghour = Column(Integer, nullable=False)
         closingminute = Column(Integer, nullable=False)
-        maximumSeats = Column(Integer, nullable=False)
+    
+    class MaxSeats(Base):
+        __tablename__ = "maxseats"
+        
+        id = Column(Integer, primary_key=True)
+        library = Column(String(3), nullable=False)
+        seats = Column(Integer, nullable=False)
         
     class Librarians(Base):
         __tablename__ = "librarians"
         
         id = Column(Integer, primary_key=True)
+        library = Column(String(3), nullable=False)
         name = Column(String(32), nullable=False)
 
     class Events(Base):
         __tablename__ = "events"
         
         id = Column(Integer, primary_key=True)
+        library = Column(String(3), nullable=False)
         event = Column(String(100), nullable=False)
         impact = Column(String(8), nullable=False)
     
@@ -112,9 +101,8 @@ def genDatabase():
         __tablename__ = "alerts"
         
         id = Column(Integer, primary_key=True)
+        library = Column(String(3), nullable=False)
         alert = Column(String(100),  nullable=False)
-        type = Column(String(11), nullable=False)
+        type = Column(String(11), nullable=False) # warning or information
 
-    if DO_RESTARTDB:
-        restartdb(engine, Base, Data, Count, PastData)
-    return engine, Base, Data, Count, PastData
+    return engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts

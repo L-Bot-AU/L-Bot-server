@@ -80,4 +80,4 @@ def create_excel_spreadsheet(data):
 
     print("complete")
 
-engine, Base, Data, Count, PastData = database.genDatabase()
+engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
