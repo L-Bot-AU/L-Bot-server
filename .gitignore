@@ -2,7 +2,6 @@
 *.db
 .idea
 output.xlsx
-library_usage.db
-*.db
-library_usage.db
-*.db
+.vscode
+.gitignore
+
