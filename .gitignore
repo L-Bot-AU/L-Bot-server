@@ -2,3 +2,6 @@
 *.db
 .idea
 output.xlsx
+.vscode
+.gitignore
+
