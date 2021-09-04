@@ -149,7 +149,7 @@ window.predictionGraph = {};
 			isFirstLoad[lib] = false;
 			
 			var today = new Date().getDay() - 1;
-			if (today === -1 || today === 6) {
+			if (today === -1 || today === 5) {
 				// today is sunday or saturday respectively
 				// view for monday instead
 				today = 0;
