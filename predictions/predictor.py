@@ -2,7 +2,7 @@ import json
 
 def callData(term, week, day):
     days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-    f = open("calcData.json")
+    f = open("predictions/calcData.json")
     calcData = {}
     calcData = json.load(f)
     f.close()
