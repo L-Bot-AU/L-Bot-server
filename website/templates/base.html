@@ -8,7 +8,9 @@
 	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='fa-all.css') }}">
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
+	<script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 	<script>
 		document.documentElement.hidden = true;
 	</script>
@@ -55,8 +57,6 @@
 	
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 	<script>
 		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
 		document.documentElement.hidden = false;

@@ -128,6 +128,7 @@ def librarian_edit():
     library = {"Junior": "jnr", "Senior": "snr"}[session["librarian"]]
     
     if request.method == "POST":
+        print(request.json)
         tab = request.json.get("tab")
         if tab == "general":
             opening_times = request.json.get("opening_times")
@@ -148,14 +149,30 @@ def librarian_edit():
                 dbsession.add(librarianRecord)
         elif tab == "events":
             events = request.json.get("events")
+            dbsession.query(Events).delete()
+            for event in events:
+                eventRecord = Events(
+                    library=library,
+                    impact=event.get("impact"),
+                    event=event.get("event")
+                )
+                dbsession.add(eventRecord)
         elif tab == "alerts":
             alerts = request.json.get("alerts")
+            dbsession.query(Alerts).delete()
+            for alert in alerts:
+                alertRecord = Alerts(
+                    library=library,
+                    type=alert["importance"],
+                    alert=alert["alert"]
+                )
+                dbsession.add(alertRecord)
         else:
             return "Invalid tab", 404
         
         dbsession.commit()
         
-        return "Your changes have been saved!"
+        return "Success!"
 
     opening_times = {}
     closing_times = {}
@@ -166,8 +183,8 @@ def librarian_edit():
     
     events = list(dbsession.query(Events).filter_by(library=library).all())
     alerts = list(dbsession.query(Alerts).filter_by(library=library).all())
-    events.sort(key=lambda x:["high", "moderate", "low"].index(x))
-    alerts.sort(key=lambda x:["high", "moderate", "low"].index(x))
+    events.sort(key=lambda x:["high", "moderate", "low"].index(x.impact))
+    alerts.sort(key=lambda x:["warning", "information"].index(x.type))
 
     return render_template("librarian_edit.html",
         opening_times=str(opening_times),

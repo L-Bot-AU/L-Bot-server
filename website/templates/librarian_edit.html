@@ -6,7 +6,10 @@
 	<button type="button" class="focusbtn settab" onclick="setFocus('general', this)">General</button>
 	<button type="button" class="focusbtn" onclick="setFocus('events', this)">Events</button>
 	<button type="button" class="focusbtn" onclick="setFocus('alerts', this)">Alerts</button><br><br>
-	
+	<div id="notification" hidden style="background-color: #1b9420; color: white; position: fixed; z-index: 100; top: 90px; right: 20px;  border-radius: 5px; padding: 12px">
+		<i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i>
+	 	Your changes have been saved!
+	</div>
 	<table class="edit-tabwrapper"><tr valign="top">
 	<!-- GENERAL -->
 	<th class="tab generaltab">
@@ -40,7 +43,7 @@
 	</div>
 	<button style="margin-left: -292px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addLibrarian(this.parentElement)"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button>
 	</div>
-	<button class="btn btn-primary save-button" style="margin-right: 112px;" onclick="saveGeneral()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	<button class="btn btn-primary save-button" style="margin-right: 112px;" onclick="saveGeneral()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button" onclick=window.location.reload()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</th>
 	
 	<!-- EVENTS TAB -->
@@ -52,7 +55,7 @@
 	</ul>
 	<ul class="list" id="events">
 		{% for event in events %}
-			<li data-bs-placement="left" class="edit-hover {{ event.impact }}impact bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-html="true" data-content="test"> <input class="form-control edit-event" type="text" value="{{ event.event }}"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+			<li data-bs-placement="left" class="edit-hover {{ event.impact }}impact bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="<ul class='list'><li class='highimpact impact-choice'></li><li class='moderateimpact impact-choice'></li><li class='lowimpact impact-choice'></li></ul>"> <input class="form-control edit-event" type="text" value="{{ event.event }}"> <button class="btn btn-primary remove-button" onclick=this.parentElement.remove()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
 		{% endfor %}
 	</ul>
 	<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addEvent()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
@@ -63,7 +66,7 @@
 	<th class="tab alertstab">
 	<ul class="alert-list" id="alerts">
 		{% for alert in alerts %}
-			<li data-bs-placement="left" class="form-inline bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-html="true" data-content="test"><div class="exclamation-triangle">{{'⚠' if alert.type == "warning" else 'ℹ' }}</div><textarea class="form-control alert-box"> {{ alert.alert }} </textarea><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+			<li data-bs-placement="left" class="form-inline bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="<div class='list'><span class='impact-choice'>⚠</span><br><span class='impact-choice'>ℹ</span><br></div>"><div class="alert-icon">{{'⚠' if alert.type == "warning" else 'ℹ' }}</div><textarea class="form-control alert-box"> {{ alert.alert }} </textarea><button class="btn btn-primary remove-button" onclick=this.parentElement.remove()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
 		{% endfor %}
 	</ul>
 	<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addAlert()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
@@ -81,7 +84,29 @@
 		var selectedDay = document.getElementById("day");
 		selectedDay.value = [...selectedDay.options].map(option => option.value)[currentDay];
 		changeTimes(day);
-		
+		[...document.getElementById("events").children].forEach(event => {
+			event.onclick = function() {
+				window.currentSelected = event;
+				document.querySelectorAll(".impact-choice").forEach(choice => {
+					choice.onclick = function() {setImpact(choice)};
+				});
+			};
+		});
+		[...document.getElementById("alerts").children].forEach(alert => {
+			alert.onclick = function() {
+				window.currentSelected = alert;
+				document.querySelectorAll(".impact-choice").forEach(choice => {
+					choice.onclick = function() {
+						choice.onclick = setImportance(choice);
+					}
+				});
+			}
+		});
+		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+		var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+			return new bootstrap.Popover(popoverTriggerEl);
+		});
+
 		function setFocus(newFocus, obj) {
 			document.getElementsByClassName("settab")[0].classList.remove("settab");
 			obj.classList.add("settab");
@@ -148,8 +173,7 @@
 			newEvent.setAttribute("data-bs-trigger", "focus");
 			newEvent.setAttribute("data-bs-placement", "left");
 			newEvent.setAttribute("data-bs-html", "true");
-			newEvent.setAttribute("onclick", "window.currentSelected=this");
-			newEvent.setAttribute("data-bs-content", "<ul class='list'><li onclick=setImpact(this) class='highimpact'></li><li onclick=setImpact(this) class='moderateimpact'></li><li onclick=setImpact(this) class='lowimpact'></li></ul>");
+			newEvent.setAttribute("data-bs-content", "<ul class='list'><li class='highimpact impact-choice'></li><li class='moderateimpact impact-choice'></li><li class='lowimpact impact-choice'></li></ul>");
 			var eventInput = document.createElement("input");
 			eventInput.classList.add("form-control", "edit-event");
 			eventInput.setAttribute("type", "text");
@@ -169,6 +193,12 @@
 			var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 			  return new bootstrap.Popover(popoverTriggerEl);
 			});
+			newEvent.onclick = function() {
+				window.currentSelected = newEvent;
+				document.querySelectorAll(".impact-choice").forEach(choice => {
+					choice.onclick = function() {setImpact(choice)};
+				});
+			}
 		}
 		
 		function addAlert() {
@@ -179,9 +209,9 @@
 			newAlert.setAttribute("data-bs-trigger", "focus");
 			newAlert.setAttribute("data-bs-placement", "left");
 			newAlert.setAttribute("data-bs-html", "true");
-			newAlert.setAttribute("data-bs-content", "<div class='list'>⚠<br>ℹ<br></div>");
+			newAlert.setAttribute("data-bs-content", "<div class='list'><span class='impact-choice'>⚠</span><br><span class='impact-choice'>ℹ</span><br></div>");
 			var alertIcon = document.createElement("div");
-			alertIcon.classList.add("exclamation-triangle");
+			alertIcon.classList.add("alert-icon");
 			alertIcon.appendChild(document.createTextNode("⚠"));
 			var alertText = document.createElement("textarea");
 			alertText.classList.add("form-control", "alert-box");
@@ -202,11 +232,22 @@
 			var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 			  return new bootstrap.Popover(popoverTriggerEl);
 			});
+			newAlert.onclick = function() {
+				window.currentSelected = newAlert;
+				document.querySelectorAll(".impact-choice").forEach(choice => {
+					choice.onclick = function() {
+						choice.onclick = setImportance(choice);
+					}
+				});
+			}
 		}
 		
 		function setImpact(impactType) {
-			console.log("a");
 			window.currentSelected.className = impactType.classList[0];
+		}
+
+		function setImportance(importanceType) {
+			window.currentSelected.children[0].innerHTML = importanceType.innerHTML;
 		}
 		
 		function saveGeneral() {
@@ -222,7 +263,7 @@
 			
 			xhr.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
-					console.log(this.responseText);
+					showNotification("Your changes have been changed!");
 				}
 			}
 			
@@ -238,15 +279,28 @@
 		function saveEvents() {
 			var xhr = new XMLHttpRequest();
 			var events = [];
+			var event;
+			var impact;
 			[...document.getElementById("events").children].forEach(l => {
-				events.push(l.children[0].value);
+				if (l.classList.contains("lowimpact")) {
+					impact = "low";
+				} else if (l.classList.contains("moderateimpact")) {
+					impact = "moderate";
+				} else {
+					impact = "high";
+				}
+				event = {
+					impact: impact,
+					event: l.children[0].value
+				};
+				events.push(event);
 			});
 			xhr.open("POST", "", true);
 			xhr.setRequestHeader("Content-Type", "application/json");
 			
 			xhr.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
-					console.log(this.responseText);
+					showNotification("Your changes have been changed!");
 				}
 			}
 			
@@ -254,6 +308,50 @@
 				tab: "events",
 				events: events
 			}));
+		}
+
+		function saveAlerts() {
+			var xhr = new XMLHttpRequest();
+			var alerts = [];
+			var alert;
+			var importance;
+			[...document.getElementById("alerts").children].forEach (l => {
+				if (l.children[0].innerHTML === "⚠") {
+					importance = "warning";
+				} else {
+					importance = "information";
+				}
+				alert = {
+					importance: importance,
+					alert: l.children[1].value
+				};
+				alerts.push(alert);
+			})
+			xhr.open("POST", "", true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+
+			xhr.onreadystatechange = function() {
+				if (this.readyState === 4 && this.status === 200) {
+					showNotification("Your changes have been changed!");
+				}
+			}
+			
+			xhr.send(JSON.stringify({
+				tab: "alerts",
+				alerts: alerts
+			}));
+		}
+
+		function showNotification(message) {
+			console.log("a");
+			var notif = document.getElementById("notification");
+			console.log(notif);
+			notif.hidden = false;
+			notif.innerHTML = "<i style='font-family: \"Font Awesome 5 Pro\" !important; color: white;' class=\"fas fa-check-circle\"></i> " + message;
+			setTimeout(function() {
+			    notif.hidden = true;
+			}, 3000);
+			console.log(notif);
 		}
 			
 	</script>

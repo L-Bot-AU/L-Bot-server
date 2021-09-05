@@ -453,6 +453,10 @@ a.navbar-text:hover {
 	color: green;
 }
 
+.impact-choice:hover {
+	cursor: pointer;
+}
+
 /* ABOUT */
 .des {
 	width: 100%;
@@ -638,13 +642,7 @@ a.navbar-text:hover {
 	margin-right: 10px;
 }
 
-.exclamation-triangle {
-	display: inline;
-	margin-right: 10px;
-	font-size: 28px;
-}
-
-.information {
+.alert-icon {
 	display: inline;
 	margin-right: 10px;
 	font-size: 28px;
