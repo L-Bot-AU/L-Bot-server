@@ -92,10 +92,10 @@ def librarian_statistics():
         download = form["download"].data
         # Verify dates are valid
         valid_dates = True
-        if start_date >= date.today():
+        if start_date > date.today():
             form.start_date.errors.append("Start date must be before current date.")
             valid_dates = False
-        if end_date >= date.today():
+        if end_date > date.today():
             form.end_date.errors.append("End date must be before current date.")
             valid_dates = False
         if start_date > end_date:
