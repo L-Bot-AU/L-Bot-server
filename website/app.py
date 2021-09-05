@@ -26,8 +26,6 @@ engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events,
 @app.route("/")
 @app.route("/home")
 def home():
-    if "interface_last_page" in session:
-        return redirect(session["interface_last_page"])
     session["interface_last_page"] = "/home"
     return render_template("home.html")
 
@@ -42,6 +40,11 @@ def about():
 def events():
     session["interface_last_page"] = "/events"
     return render_template("events.html")
+
+
+@app.route("/main_page")
+def main_page():
+    return redirect(session["interface_last_page"])
 
 
 @app.route("/login", methods=["GET", "POST"])
