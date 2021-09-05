@@ -124,7 +124,7 @@ def librarian_edit():
                 day = timesRecord.day
                 timesRecord.openinghour, timesRecord.openingminute = opening_times[day]
                 timesRecord.closinghour, timesRecord.closingminute = closing_times[day]
-            dbsession.query(MaxSeats).first().seats = max_seats
+            dbsession.query(MaxSeats).filter_by(library=library).first().seats = max_seats
             dbsession.query(Librarians).delete()
             for name in librarians:
                 librarianRecord = Librarians(
