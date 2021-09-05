@@ -26,22 +26,29 @@ engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events,
 @app.route("/")
 @app.route("/home")
 def home():
+    if "interface_last_page" in session:
+        return redirect(session["interface_last_page"])
+    session["interface_last_page"] = "/home"
     return render_template("home.html")
 
 
 @app.route("/about")
 def about():
+    session["interface_last_page"] = "/about"
     return render_template("about.html")
 
 
 @app.route("/events")
 def events():
+    session["interface_last_page"] = "/events"
     return render_template("events.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def librarian_login():
     if "librarian" in session:
+        if "librarian_last_page" in session:
+            return redirect(session["librarian_last_page"])
         return redirect("/librarian/statistics")
     form = LoginForm()
     if form.validate_on_submit():
@@ -61,6 +68,7 @@ def librarian_login():
 @app.route("/logout")
 def logout():
     session.pop("librarian", None)
+    session.pop("librarian_last_page", None)
     return redirect("/login")
 
 
@@ -68,6 +76,7 @@ def logout():
 def librarian_statistics():
     if "librarian" not in session:
         return redirect("/")
+    session["librarian_last_page"] = "/librarian/statistics"
     
     form = GraphForm()
     graphData = {"dates": [],
@@ -109,6 +118,8 @@ def librarian_statistics():
 def librarian_edit():
     if "librarian" not in session:
         return redirect("/")
+    session["librarian_last_page"] = "/librarian/edit"
+
     Session = sessionmaker(bind=engine)
     dbsession = Session()
     library = {"Junior": "jnr", "Senior": "snr"}[session["librarian"]]
@@ -169,6 +180,8 @@ def librarian_edit():
 def librarian_about():
     if "librarian" not in session:
         return redirect("/")
+    session["librarian_last_page"] = "/librarian/about"
+
     return render_template("librarian_about.html")
 
 

@@ -10,12 +10,13 @@ def get_data(start_date, end_date, data_frequency, lib, mode):
         "dates": [f"{i}/7" for i in range(1, 11)],
         "values": [10*i for i in range(1, 11)]
     }
-    return data
+    # return data
 
     # connect to database
     Session = sessionmaker(bind=engine)
     session = Session()
 
+    print(TIMES)
     trends = {
         "dates": TIMES,
         "values": []
@@ -29,7 +30,7 @@ def get_data(start_date, end_date, data_frequency, lib, mode):
             elif lib == "Senior":
                 pred = data.snr_expected
             day_trends.append(pred)
-        trends["data"].append(day_trends)
+        trends["values"].append(round(sum(day_trends)/len(day_trends), 2))
     return trends
 
 
