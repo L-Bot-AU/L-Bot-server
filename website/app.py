@@ -6,8 +6,9 @@
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
 from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file, send_from_directory
-from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG
+from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG, DAYS
 from database import database
+from sqlalchemy.orm import sessionmaker
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
 from website.librarian_data import get_data, create_excel_spreadsheet
@@ -19,6 +20,7 @@ import urllib.request, json
 app = Flask(__name__)
 app.secret_key = "super secret" #TODO: Store secret key in .env
 bootstrap = Bootstrap(app)
+engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
 
 
 @app.route("/")
@@ -105,10 +107,63 @@ def librarian_statistics():
 
 
 @app.route("/librarian/edit", methods=["GET", "POST"])
-def librarian_events():
+def librarian_edit():
     if "librarian" not in session:
         return redirect("/")
-    return render_template("librarian_edit.html")
+    Session = sessionmaker(bind=engine)
+    dbsession = Session()
+    library = {"Junior": "jnr", "Senior": "snr"}[session["librarian"]]
+    
+    if request.method == "POST":
+        tab = request.json.get("tab")
+        if tab == "general":
+            opening_times = request.json.get("opening_times")
+            closing_times = request.json.get("closing_times")
+            max_seats = request.json.get("max_seats")
+            librarians = request.json.get("librarians")
+            for timesRecord in dbsession.query(LibraryTimes).filter_by(library=library):
+                day = timesRecord.day
+                timesRecord.openinghour, timesRecord.openingminute = opening_times[day]
+                timesRecord.closinghour, timesRecord.closingminute = closing_times[day]
+            dbsession.query(MaxSeats).first().seats = max_seats
+            dbsession.query(Librarians).delete()
+            for name in librarians:
+                librarianRecord = Librarians(
+                    library=library,
+                    name=name
+                )
+                dbsession.add(librarianRecord)
+        elif tab == "events":
+            events = request.json.get("events")
+        elif tab == "alerts":
+            alerts = request.json.get("alerts")
+        else:
+            return "Invalid tab", 404
+        
+        dbsession.commit()
+        
+        return "Your changes have been saved!"
+
+    opening_times = {}
+    closing_times = {}
+    for day in DAYS:
+        timesRecord = dbsession.query(LibraryTimes).filter_by(library=library, day=day).first()
+        opening_times[day] = [timesRecord.openinghour, timesRecord.openingminute]
+        closing_times[day] = [timesRecord.closinghour, timesRecord.closingminute]
+    
+    events = list(dbsession.query(Events).filter_by(library=library).all())
+    alerts = list(dbsession.query(Alerts).filter_by(library=library).all())
+    events.sort(key=lambda x:["high", "moderate", "low"].index(x))
+    alerts.sort(key=lambda x:["high", "moderate", "low"].index(x))
+
+    return render_template("librarian_edit.html",
+        opening_times=str(opening_times),
+        closing_times=str(closing_times),
+        max_seats=str(dbsession.query(MaxSeats).filter_by(library=library).first().seats),
+        librarians=dbsession.query(Librarians).filter_by(library=library).all(),
+        events=events,
+        alerts=alerts
+    )
 
 
 @app.route("/librarian/about", methods=["GET", "POST"])

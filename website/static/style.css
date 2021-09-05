@@ -400,6 +400,10 @@ a.navbar-text:hover {
 	transition: none;
 }
 
+.popover-arrow {
+	transition: none;
+}
+
 .periodFullnessBar {
 	float: left;
 	margin: 1em;
@@ -669,3 +673,4 @@ a.navbar-text:hover {
 	margin-top: 20px;
 	height: 170px;
 }
+.popover-title { display: none }

@@ -1,10 +1,12 @@
 from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT, DAYS, TIMES
+from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT, DAYS, TIMES
 from database import database
 from sqlalchemy.orm import sessionmaker
 import kill_port
 import socketio
 import datetime
 import eventlet
+import platform
 
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio)
@@ -77,7 +79,7 @@ def get_opening(lib):
         timeRecord = session.query(LibraryTimes).filter_by(library=lib, day=day).first()
         openingtime = datetime.time(hour=timeRecord.openinghour, minute=timeRecord.openingminute)
         closingtime = datetime.time(hour=timeRecord.closinghour, minute=timeRecord.closingminute)
-        library_times[day] = f"{openingtime.strftime('%#I:%M%p').lower()} - {closingtime.strftime('%#I:%M%p').lower()}"
+        library_times[day] = f"{openingtime.strftime('%#I:%M%p' if platform.system() == 'Windows' else '%-I:%M%p').lower()} - {closingtime.strftime('%#I:%M%p').lower()}"
     return library_times
 
 def get_max(lib):
@@ -95,12 +97,12 @@ def get_alert(lib):
     Session = sessionmaker(bind=engine)
     session = Session()
     alerts = session.query(Alerts).filter_by(library=lib).all()
-    return [[alert.alert, alert.type] for alert in alerts] #TODO: This functionality is drastically different on the frontend
+    return [[alert.alert, alert.type] for alert in alerts]
 
 def get_events():
     Session = sessionmaker(bind=engine)
     session = Session()
-    events = [] #TODO: sort by impact
+    events = []
     for event in session.query(Events).all():
         events.append(
             {"text": event.event, "impact": event.impact, "library": event.library}
