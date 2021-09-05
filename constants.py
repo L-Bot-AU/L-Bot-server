@@ -46,8 +46,8 @@ MAX_CAPS  = {
 }
 
 LIBRARIANS = {
-    "jnr": ["Ms Meredith", "Mr Wiramihardja"],
-    "snr": ["Ms Crothers"]
+    "jnr": ["Ms Crothers"],
+    "snr": ["Ms Meredith", "Mr Wiramihardja"]
 }
 
 WEBSITE_CLIENT_PORT = 2910
@@ -59,4 +59,4 @@ WEBSITE_PORT = 80
 WEBSITE_DEBUG = True
 
 
-DO_RESTARTDB = True
+DO_RESTARTDB = False
