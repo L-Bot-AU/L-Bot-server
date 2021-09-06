@@ -1,5 +1,4 @@
 from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT, DAYS, TIMES
-from constants import WEBSITE_CLIENT_PORT, WEBSITE_UPDATE_TIMEOUT, DAYS, TIMES
 from database import database
 from sqlalchemy.orm import sessionmaker
 import kill_port
