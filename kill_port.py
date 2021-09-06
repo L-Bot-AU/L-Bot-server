@@ -10,8 +10,8 @@ def kill_port(port: int):
 
 kill processes on ports to free the port, since 2 processes cannot run on the same port"""
     if platform.system() in ("Darwin", "Linux"):
-        # TODO: define ports from constants
-        os.system(f"kill $(lsof -ti tcp:{port})")
+        #os.system(f"kill $(lsof -ti tcp:{port})")
+        pass
 
     elif platform.system() == "Windows":
         import psutil

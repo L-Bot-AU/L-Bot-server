@@ -6,8 +6,9 @@ import kill_port
 import datetime
 import random
 import socket
+from loguru import logger
 
-engine, Base, Data, Count, PastData = database.genDatabase()
+engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
 aesenc = AES.new(CAMERA_KEY, AES.MODE_ECB)
 
 def updateCount(lib, incr):
@@ -53,7 +54,7 @@ def getMsg(lib, client):
     # receive the update to the number of people in the senior library (+x or -x)
     msg = client.recv(1024)
     incr = eval(msg + b"+0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
-    print(__name__, "Recieved message:", incr)
+    logger.info(f"Recieved message: {incr}")
     return incr
 
 def handleConnection(lib, sock):
@@ -71,14 +72,14 @@ def handleConnection(lib, sock):
     # timeout the connection if the client takes to long to send a response
     sock.settimeout(6)
 
-    print(__name__, lib, f"Connection from {address[0]}")
+    logger.info(f"{lib}: Connection from {address[0]}")
     
     try:
         # We don't want the person counter to simply send the key over since, if a third-party was
         # to intercept our connection, they'd be able to view the key and verify themselves. Thus,
         # we should verify by checking whether or not the connecting client is able to decrypt streams
         # with a key using a symmetric, one-way algorithm (e.g. AES)
-        print(__name__, lib, "Sending verification string")
+        logger.info(f"{lib}: Sending verification string")
         
         # create random string of bytes for verification
         plaintext = bytes([random.randint(0, 0xff) for _ in range(16)])
@@ -88,7 +89,7 @@ def handleConnection(lib, sock):
         # if verification is failed, raise an error and let the try/except statement catch it
         assert msg == CAMERA_KEY, "Verification failed"
         
-        print(__name__, lib, "Verification succeeded")
+        logger.info(f"{lib}: Verification succeeded")
         while True:
             # once verification has succeeded, no time limit is required
             sock.settimeout(None)
@@ -99,12 +100,12 @@ def handleConnection(lib, sock):
     except Exception as e:
         sock.settimeout(None)
         # print the error (due to verification taking too long, verification being unsuccessful, client closing the connection or some other unknown error
-        print(__name__, lib, repr(e))
+        logger.debug(f"{lib}: {e!r}")
         
     client.close()
 
 def __init__(lib):
-    print(__name__, f"Starting {lib}_updater")
+    logger.info(f"Starting {lib}_updater")
     kill_port.kill_port(CAMERA_SYSTEM_PORTS[lib])
     
     # create socket and listen

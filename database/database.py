@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
-
+from constants import MAX_CAPS
     
 def genDatabase():
     """
@@ -28,16 +28,11 @@ def genDatabase():
 
         @validates("jnr_expected")
         def validate_jnrexpected(self, key, count):
-            if count < 0:
-                return 0
-            return count
-
+            return min(MAX_CAPS["jnr"], max(0, count))
 
         @validates("snr_expected")
         def validate_snrexpected(self, key, count):
-            if count < 0:
-                return 0
-            return count
+            return min(MAX_CAPS["snr"], max(0, count))
         
     class Count(Base):
         __tablename__ = "count"
@@ -46,19 +41,13 @@ def genDatabase():
         snrvalue = Column(Integer, default=0)
         jnrvalue = Column(Integer, default=0)
 
-
-        @validates("snrvalue")
-        def valid_snrvalue(self, key, count):
-            if count < 0:
-                return 0
-            return count
-
-
         @validates("jnrvalue")
         def valid_jnrvalue(self, key, count):
-            if count < 0:
-                return 0
-            return count
+            return min(MAX_CAPS["jnr"], max(0, count))
+        
+        @validates("snrvalue")
+        def valid_snrvalue(self, key, count):
+            return min(MAX_CAPS["snr"], max(0, count))
         
     class PastData(Base):
         __tablename__ = "pastdata"

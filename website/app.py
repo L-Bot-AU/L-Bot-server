@@ -5,16 +5,16 @@
 #innerHTML updating: https://www.w3schools.com/js/js_htmldom_events.asp
 #setInterval for website to automatically call websocket: https://www.w3schools.com/jsref/met_win_setinterval.asp
 
-from flask import Flask, render_template, request, jsonify, session, redirect, flash, send_file, send_from_directory
-from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG, DAYS
+from flask import Flask, render_template, request, session, redirect, send_file
+from constants import WEBSITE_HOST, WEBSITE_PORT, WEBSITE_DEBUG, WEBSITE_CLIENT_PORT, DAYS
 from database import database
 from sqlalchemy.orm import sessionmaker
 from website.login_form import LoginForm
 from website.graph_form import GraphForm
 from website.librarian_data import get_data, create_excel_spreadsheet
 from flask_bootstrap import Bootstrap
-from datetime import date, datetime
-import urllib.request, json
+from datetime import date
+from loguru import logger
 
 
 app = Flask(__name__)
@@ -33,7 +33,7 @@ def home():
     """
 
     session["interface_last_page"] = "/home"
-    return render_template("home.html")
+    return render_template("home.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT)
 
 
 @app.route("/about")
@@ -46,7 +46,7 @@ def about():
     """
 
     session["interface_last_page"] = "/about"
-    return render_template("about.html")
+    return render_template("about.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT)
 
 
 @app.route("/events")
@@ -58,7 +58,7 @@ def events():
     """
 
     session["interface_last_page"] = "/events"
-    return render_template("events.html")
+    return render_template("events.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT)
 
 
 @app.route("/main_page")
@@ -86,9 +86,7 @@ def librarian_login():
 
     # If the librarian is logged in already, redirect them to either their last page or the statistics page
     if "librarian" in session:
-        if "librarian_last_page" in session:
-            return redirect(session["librarian_last_page"])
-        return redirect("/librarian/statistics")
+        return redirect(session.get("librarian_last_page", "/librarian/statistics"))
     form = LoginForm()
 
     # If the Flask.WTForms form is valid (including if its a POST request)
@@ -106,7 +104,7 @@ def librarian_login():
         # Otherwise, display an error
         else:
             form.password.errors.append("Incorrect password")
-    return render_template("login.html", form=form)
+    return render_template("login.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT, form=form)
 
 
 @app.route("/logout")
@@ -138,8 +136,10 @@ def librarian_statistics():
     session["librarian_last_page"] = "/librarian/statistics"
     
     form = GraphForm()
-    graphData = {"dates": [],
-                 "values": []}
+    graphData = {
+        "dates": [],
+        "values": []
+    }
     if form.validate_on_submit():
         start_date = form["start_date"].data #is a datetime.date object
         end_date = form["end_date"].data
@@ -168,7 +168,12 @@ def librarian_statistics():
             create_excel_spreadsheet(data)
             #todo use send_file to somehow download the file
             # return send_file(download_excel_spreadsheet(data), attachment_filename="spreadsheet.xlsx")
-    return render_template("librarian_statistics.html", form=form, graphData=graphData)
+            
+    return render_template("librarian_statistics.html",
+        WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT,
+        form=form,
+        graphData=graphData
+    )
 
 
 @app.route("/librarian/edit", methods=["GET", "POST"])
@@ -272,6 +277,7 @@ def librarian_edit():
 
     # Return the edit information page's HTML as well as the existing information that may be changed
     return render_template("librarian_edit.html",
+        WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT,
         opening_times=str(opening_times),
         closing_times=str(closing_times),
         max_seats=str(dbsession.query(MaxSeats).filter_by(library=library).first().seats),
@@ -283,7 +289,7 @@ def librarian_edit():
 
 @app.route("/test")
 def test():
-    return render_template("testing.html")
+    return render_template("testing.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT)
 
 
 @app.errorhandler(404)
@@ -294,7 +300,7 @@ def page_not_found(e):
     :return: HTML of 404 error page
     """
 
-    return render_template("404.html")
+    return render_template("404.html", WEBSITE_CLIENT_PORT=WEBSITE_CLIENT_PORT)
 
 
 def __init__():
