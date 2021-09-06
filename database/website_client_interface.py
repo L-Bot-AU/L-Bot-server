@@ -79,7 +79,10 @@ def get_opening(lib):
         timeRecord = session.query(LibraryTimes).filter_by(library=lib, day=day).first()
         openingtime = datetime.time(hour=timeRecord.openinghour, minute=timeRecord.openingminute)
         closingtime = datetime.time(hour=timeRecord.closinghour, minute=timeRecord.closingminute)
-        library_times[day] = f"{openingtime.strftime('%#I:%M%p' if platform.system() == 'Windows' else '%-I:%M%p').lower()} - {closingtime.strftime('%#I:%M%p').lower()}"
+        library_times[day] = {
+            "opening": openingtime.strftime('%I:%M%p').lstrip("0").lower(),
+            "closing": closingtime.strftime('%I:%M%p').lstrip("0").lower()
+        }
     return library_times
 
 def get_max(lib):
