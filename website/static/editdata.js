@@ -1,10 +1,14 @@
 var currentDay = new Date().getDay() - 1;
-if (currentDay == -1 || currentDay == 5) {
+if (currentDay == -1 || currentDay == 5) { // If today is Saturday or Sunday, set it to show Monday
 	currentDay = 0;
 }
+
+// Get the select element for the day dropdown list and set it to today's value
 var selectedDay = document.getElementById("day");
 selectedDay.value = [...selectedDay.options].map(option => option.value)[currentDay];
 changeTimes(day);
+
+// Loop through each event and add onclick event handlers to each option for the impact
 [...document.getElementById("events").children].forEach(event => {
 	event.onclick = function() {
 		window.currentSelected = event;
@@ -13,6 +17,8 @@ changeTimes(day);
 		});
 	};
 });
+
+// Loop through each alert and add onclick event handlers to each option for the importance
 [...document.getElementById("alerts").children].forEach(alert => {
 	alert.onclick = function() {
 		window.currentSelected = alert;
@@ -23,6 +29,8 @@ changeTimes(day);
 		});
 	}
 });
+
+// Enable the popovers of all required elements
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 	return new bootstrap.Popover(popoverTriggerEl);
