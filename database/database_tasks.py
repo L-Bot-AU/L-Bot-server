@@ -67,12 +67,88 @@ if DO_RESTARTDB:
     begsession.commit()
 
 def secsUntilNextDay():
-    # get number of seconds until midnight
-    # code from https://stackoverflow.com/questions/45986035/seconds-until-end-of-day-in-python (takes into account daylight savings as well)
+    # get number of seconds until midnight for next school day
     today = datetime.datetime.now()
+    public_holidays = []
+    term_dates = []
+    with open("school_day.csv", newline="") as g:
+        next(g)
+        reader = csv.reader(g,delimiter=',',
+                                quotechar='|') # initialise csv reader
+
+        term_dates = [list(map(lambda x:datetime.datetime.strptime(x, "%d-%m-%Y"), [start_date, end_date])) for start_date, end_date in reader]
+
+    with open("public_holiday.csv", newline="") as g:
+        next(g)
+        reader = csv.reader(g,delimiter=',',
+                                quotechar='|') # initialise csv reader
+
+        public_holidays = [datetime.datetime.strptime(date, "%d-%m-%Y") for date, _ in reader]
+
+    tIndex = 0
+    hIndex = 0
+    # binary search for the last starting term date
+    r = len(term_dates)
+    while tIndex < r:
+        m = (tIndex + r) // 2
+        if term_dates[m][0] < today:
+            tIndex = m + 1
+        else:
+            r = m
+
+    # binary search for the last holiday
+    r = len(public_holidays)
+    while hIndex < r:
+        m = (hIndex + r) // 2
+        if public_holidays[m][0] < today:
+            hIndex = m + 1
+        else:
+            r = m
+
+    # increment to find the next holiday coming up
+    hIndex += 1
+
+    # get date of tomorrow midnight. code from https://stackoverflow.com/questions/45986035/seconds-until-end-of-day-in-python (takes into account daylight savings as well)
     tomorrow = today + datetime.timedelta(days=1)
-    secs = (datetime.datetime.combine(tomorrow, datetime.time.min) - today).total_seconds()
-    return secs
+    tomorrow = datetime.datetime.combine(tomorrow, datetime.time.min)
+
+    # repeatedly move up a term (if we are currently in the holidays) or a day (if we are on a holiday) until
+    found = False
+    nextDay = today + datetime.timedelta(days=1)
+    while not found:
+        if term_dates[tIndex][1] < nextDay:
+            tIndex += 1
+            nextDay = term_dates[tIndex][1]
+            while public_holidays[hIndex] < nextDay:
+                hIndex += 1
+        elif public_holidays[hIndex] == nextDay:
+            nextDay += 1
+            hIndex += 1
+        else:
+            found = True
+
+    # return total number of seconds between now and the next day (not using today since time may have elapsed during processing)
+    return (datetime.datetime.combine(nextDay) - datetime.datetime.now()).total_seconds()
+
+def getWeekAndTerm():
+    today = datetime.datetime.now()
+    term = 1
+    with open("school_day.csv", newline="") as f:
+        next(f)
+        reader = csv.reader(f,delimiter=',',
+                                quotechar='|') # initialise csv reader
+
+        for start_date, end_date in reader: # loop through the start and end dates of each term
+            if start_date[-2:] == str(today.year)[-2:]: # check only term dates for the current year
+                start_date = datetime.datetime.strptime(start_date, "%d-%m-%Y")
+                end_date = datetime.datetime.strptime(end_date, "%d-%m-%Y")
+                if start_date <= today <= end_date: # if the current date is now in the term we are checking
+                    break
+                term += 1 # increment to represent the next term
+
+        print(today, start_date)
+        week = (today - start_date).days // 7 + 1
+    return week, term
 
 def getOpeningTime():
     """return the opening time of the library for today, as a datetime object"""
@@ -91,20 +167,8 @@ def get_new_predictions():
     Session = sessionmaker(bind=engine)
     session = Session()
     
-    today = datetime.datetime.now()
-    term = 0
-    with open("school_day.csv", newline="") as f:
-        next(f)
-        reader = csv.reader(f,delimiter=',',
-                                quotechar='|') # initialise csv reader
-
-        for start_date, end_date in reader: # loop through the start and end dates of each term
-            if start_date[:-2] == today.year[:-2]: # check only term dates for the current year
-                term += 1 # increment to represent the next term
-                if today >= datetime.datetime.strptime(start_date, "%d-%m-%Y"): # if the current date is now in the term we are checking
-                    break
-
-        week = (today - start_date) // 7 + 1
+    # get week and term today
+    week, term = getWeekAndTerm()
 
     # loop through each day of the week and update the predicted value on that day
     for day in range(1, 6):
@@ -122,21 +186,9 @@ def update_loop():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    # get information today
+    # get week and term today
     today = datetime.datetime.now()
-    term = 0
-    with open("school_day.csv", newline="") as f:
-        next(f)
-        reader = csv.reader(f,delimiter=',',
-                                quotechar='|') # initialise csv reader
-
-        for start_date, end_date in reader: # loop through the start and end dates of each term
-            if start_date[:-2] == today.year[:-2]: # check only term dates for the current year
-                term += 1 # increment to represent the next term
-                if today >= datetime.datetime.strptime(start_date, "%d-%m-%Y"): # if the current date is now in the term we are checking
-                    break
-
-        week = (today - start_date) // 7 + 1
+    week, term = getWeekAndTerm()
 
     # add new record to past data
     new_data = PastData(
