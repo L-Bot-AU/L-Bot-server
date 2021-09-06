@@ -74,15 +74,15 @@ def secsUntilNextDay():
     secs = (datetime.datetime.combine(tomorrow, datetime.time.min) - today).total_seconds()
     return secs
 
-def getOpeningTime(): # TODO: currently a stub
+def getOpeningTime():
     """return the opening time of the library for today, as a datetime object"""
-    return datetime.datetime.now()
+    return datetime.datetime.now().replace(hour=7, minute=30)
 
-def getClosingTime(): # TODO: currently a stub
+def getClosingTime():
     """return the closing time of the library for today, as a datetime object"""
-    return datetime.datetime.max # haha it never closes
+    return datetime.datetime.now().replace(hour=15, minute=30)
 
-def libraryOpen(): # TODO: currently a stub
+def libraryOpen():
     return getOpeningTime() <= datetime.datetime.now() <= getClosingTime()
 
 def get_new_predictions():
@@ -91,15 +91,20 @@ def get_new_predictions():
     Session = sessionmaker(bind=engine)
     session = Session()
     
+    today = datetime.datetime.now()
+    term = 0
+    with open("school_day.csv", newline="") as f:
+        next(f)
+        reader = csv.reader(f,delimiter=',',
+                                quotechar='|') # initialise csv reader
 
-    with open("school_day.csv", "r", newline="") as f:
-        reader = csv.reader(f)
-        date = next(reader)
-        while date[:-2] != "21":
+        for start_date, end_date in reader: # loop through the start and end dates of each term
+            if start_date[:-2] == today.year[:-2]: # check only term dates for the current year
+                term += 1 # increment to represent the next term
+                if today >= datetime.datetime.strptime(start_date, "%d-%m-%Y"): # if the current date is now in the term we are checking
+                    break
 
-
-    week = 1 # TODO: find way of getting week of term from date
-    term = 1 # TODO: find way of getting term today
+        week = (today - start_date) // 7 + 1
 
     # loop through each day of the week and update the predicted value on that day
     for day in range(1, 6):
