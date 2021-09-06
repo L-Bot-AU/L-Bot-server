@@ -72,8 +72,6 @@ window.predictionGraph = {};
 			td1.appendChild(document.createTextNode(val[0]));
 			var td2 = document.createElement("td");
 			td2.setAttribute("class", "periodFullnessBar");
-			td2.setAttribute("data-bs-toggle", "tooltip");
-			td2.setAttribute("data-bs-placement", "right");
 			td2.setAttribute("title", `${val[1]}`);
 			var bar = document.createElement("div");
 			bar.setAttribute("style", `width: ${val[1]*5}px;`);
@@ -87,10 +85,6 @@ window.predictionGraph = {};
 			tr.appendChild(td3)
 			
 			table.appendChild(tr);
-		});
-		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-			return new bootstrap.Tooltip(tooltipTriggerEl);
 		});
 	});
 	sio.on(lib + "Alert", data => {

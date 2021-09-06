@@ -100,7 +100,7 @@ def secsUntilNextDay():
     r = len(public_holidays)
     while hIndex < r:
         m = (hIndex + r) // 2
-        if public_holidays[m][0] < today:
+        if public_holidays[m] < today:
             hIndex = m + 1
         else:
             r = m
@@ -122,13 +122,15 @@ def secsUntilNextDay():
             while public_holidays[hIndex] < nextDay:
                 hIndex += 1
         elif public_holidays[hIndex] == nextDay:
-            nextDay += 1
+            nextDay += datetime.timedelta(days=1)
             hIndex += 1
+        elif nextDay.weekday() >= 5:
+            nextDay += datetime.timedelta(days=1)
         else:
             found = True
 
     # return total number of seconds between now and the next day (not using today since time may have elapsed during processing)
-    return (datetime.datetime.combine(nextDay) - datetime.datetime.now()).total_seconds()
+    return (datetime.datetime.combine(nextDay, datetime.time.min) - datetime.datetime.now()).total_seconds()
 
 def getWeekAndTerm():
     today = datetime.datetime.now()
@@ -159,6 +161,7 @@ def getClosingTime():
     return datetime.datetime.now().replace(hour=15, minute=30)
 
 def libraryOpen():
+
     return getOpeningTime() <= datetime.datetime.now() <= getClosingTime()
 
 def get_new_predictions():
@@ -207,13 +210,15 @@ def update_loop():
 print(__name__, "Reset database")
 while True:
     # waits until it's 1am
-    #time.sleep(secsUntilNextDay())
+    print(secsUntilNextDay())
+    time.sleep(secsUntilNextDay())
     
     print(__name__, "Getting new predictions")
     get_new_predictions()
     
     # wait until the library is open
     secsUntilOpening = (getOpeningTime() - datetime.datetime.now()).total_seconds()
+    print(secsUntilOpening)
     time.sleep(max(0, secsUntilOpening))
     
     while libraryOpen():

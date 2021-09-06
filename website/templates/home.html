@@ -32,7 +32,7 @@
 				</table>
 				<div class="title">PAST TRENDS</div>
 				{% for i, day in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (3, "Thu"), (4, "Fri")] %}
-					<button class="focusbtn {{ lib }}daybtn" onclick="displayGraph(`{{ lib }}`, {{ i }}">{{ day }}</button>
+					<button class="focusbtn {{ lib }}daybtn" onclick="displayGraph(`{{ lib }}`, {{ i }}")>{{ day }}</button>
 				{% endfor %}
 				<br><br>
 				<div class="chartContainer" style="width: min(130vh, 90vw); margin: auto;">
