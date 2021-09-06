@@ -107,7 +107,7 @@ def get_events():
         events.append(
             {"text": event.event, "impact": event.impact, "library": event.library}
         )
-    events.sort(key=lambda x:["high", "moderate", "low"].index(x))
+    events.sort(key=lambda x:["high", "moderate", "low"].index(x["impact"]))
     return events
 
 def get_periods(lib):
