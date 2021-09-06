@@ -10,8 +10,9 @@ import time
 
 
 engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
+# if a constant is set, restart the database with default, hard-coded values.
+# Not recommended for productions since this overrwrites all changes and data collected
 if DO_RESTARTDB:
-    # restarts the database with new values (default, hard-coded ones). not recommended for production since all information is lost
     # remove the database file if it exists
     try:
         os.remove("library_usage.db")
@@ -67,19 +68,27 @@ if DO_RESTARTDB:
     begsession.commit()
 
 def secsUntilNextDay():
-    # get number of seconds until midnight for next school day
+    """
+    Gets the number of seconds until midnight for the next school day
+
+    :return: The number of seconds until 12:00am on the next school day
+    """
+
     today = datetime.datetime.now()
     public_holidays = []
     term_dates = []
+
+    # Read through the CSV file and collect all starting and ending term dates
     with open("school_day.csv", newline="") as g:
-        next(g)
+        next(g) # ignores the first line, which is the initialising variables of the CSV
         reader = csv.reader(g,delimiter=',',
                                 quotechar='|') # initialise csv reader
 
         term_dates = [list(map(lambda x:datetime.datetime.strptime(x, "%d-%m-%Y"), [start_date, end_date])) for start_date, end_date in reader]
 
+    # Read through the CSV file and collect all public holiday dates (ignore significance in the second column)
     with open("public_holiday.csv", newline="") as g:
-        next(g)
+        next(g) # ignores the first line, which is the initialising variables of the CSV
         reader = csv.reader(g,delimiter=',',
                                 quotechar='|') # initialise csv reader
 
@@ -116,23 +125,31 @@ def secsUntilNextDay():
     found = False
     nextDay = today + datetime.timedelta(days=1)
     while not found:
-        if term_dates[tIndex][1] < nextDay:
+        if term_dates[tIndex][1] < nextDay: # if we are not in a term i.e. in holidays
             tIndex += 1
             nextDay = term_dates[tIndex][1]
-            while public_holidays[hIndex] < nextDay:
+            while public_holidays[hIndex] < nextDay: # move the hIndex up (represents next holiday)
                 hIndex += 1
-        elif public_holidays[hIndex] == nextDay:
+        elif public_holidays[hIndex] == nextDay: # if we are in a public holiday
             nextDay += datetime.timedelta(days=1)
             hIndex += 1
-        elif nextDay.weekday() >= 5:
+        elif nextDay.weekday() >= 5: # if we are in the weekends
             nextDay += datetime.timedelta(days=1)
         else:
             found = True
+            while public_holidays[hIndex] < nextDay: # move the hIndex up (represents next holiday)
+                hIndex += 1
 
     # return total number of seconds between now and the next day (not using today since time may have elapsed during processing)
     return (datetime.datetime.combine(nextDay, datetime.time.min) - datetime.datetime.now()).total_seconds()
 
 def getWeekAndTerm():
+    """
+    Returns the school week and term of the current day
+
+    :return: a tuple with the first value being the week and the second being the term
+    """
+
     today = datetime.datetime.now()
     term = 1
     with open("school_day.csv", newline="") as f:
@@ -140,7 +157,8 @@ def getWeekAndTerm():
         reader = csv.reader(f,delimiter=',',
                                 quotechar='|') # initialise csv reader
 
-        for start_date, end_date in reader: # loop through the start and end dates of each term
+        # loop through the start and end dates of each term
+        for start_date, end_date in reader:
             if start_date[-2:] == str(today.year)[-2:]: # check only term dates for the current year
                 start_date = datetime.datetime.strptime(start_date, "%d-%m-%Y")
                 end_date = datetime.datetime.strptime(end_date, "%d-%m-%Y")
@@ -148,25 +166,43 @@ def getWeekAndTerm():
                     break
                 term += 1 # increment to represent the next term
 
-        print(today, start_date)
+        # get the number of days since the start of the term and use it to calculate the current week
         week = (today - start_date).days // 7 + 1
     return week, term
 
 def getOpeningTime():
-    """return the opening time of the library for today, as a datetime object"""
+    """
+    Returns the opening time of the library for today
+
+    :return: A datetime object representing both libraries' opening time today
+    """
+
     return datetime.datetime.now().replace(hour=7, minute=30)
 
 def getClosingTime():
-    """return the closing time of the library for today, as a datetime object"""
+    """
+    Returns the closing time of the library for today
+
+    :return: A datetime object representing both libraries' closing time today
+    """
+
     return datetime.datetime.now().replace(hour=15, minute=30)
 
 def libraryOpen():
+    """
+    Returns whether or not the libraries are currently open
 
+    :return: A boolean value - True if both libraries are open, False if not
+    """
     return getOpeningTime() <= datetime.datetime.now() <= getClosingTime()
 
 def get_new_predictions():
-    """called once every day"""
-    # start session with database
+    """
+    Generates new predicted occupancies of the libraries and stores them in the database
+    
+    :return:
+    """
+
     Session = sessionmaker(bind=engine)
     session = Session()
     
@@ -177,14 +213,22 @@ def get_new_predictions():
     for day in range(1, 6):
         predData = getData(term, week, day)
         for i, time in enumerate(TIMES):
+            # Get the expected usage record for the provided day and time
             data = session.query(Data).filter_by(day=DAYS[day-1], time=time).first()
-            # for now, update with the average of the minumum and maximum
+
+            # Update the expected occupancy with the new value
             data.jnr_expected = predData["Jnr"][i]
             data.snr_expected = predData["Snr"][i]
 
     session.commit()
 
 def update_loop():
+    """
+    Records the current occupancy of the library as a new record (called every minute)
+
+    :return:
+    """
+
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -210,17 +254,17 @@ def update_loop():
 print(__name__, "Reset database")
 while True:
     # waits until it's 1am
-    print(secsUntilNextDay())
     time.sleep(secsUntilNextDay())
     
+    # get new predictions
     print(__name__, "Getting new predictions")
     get_new_predictions()
     
     # wait until the library is open
     secsUntilOpening = (getOpeningTime() - datetime.datetime.now()).total_seconds()
-    print(secsUntilOpening)
     time.sleep(max(0, secsUntilOpening))
     
+    # while the library is open, record the occupancy every minute
     while libraryOpen():
         print(__name__, "Entering update loop")
         update_loop()

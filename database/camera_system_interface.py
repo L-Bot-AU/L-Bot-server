@@ -11,10 +11,19 @@ engine, Base, Data, Count, PastData = database.genDatabase()
 aesenc = AES.new(CAMERA_KEY, AES.MODE_ECB)
 
 def updateCount(lib, incr):
-    # start session with database
+    """
+    Updates the count of the database
+
+    :param lib: The library whose occupancy should be updated
+    :param incr: The amount to increment/decrement the occupancy by (positive for increase, negative for decrease)
+    :return:
+    """
+
     Session = sessionmaker(bind=engine)
     session = Session()
     
+
+    # check which library to update, update the occupancy and log the information (if debugging is set) 
     if lib == "jnr":
         session.query(Count).first().jnrvalue += incr
         if CAMERA_SYSTEM_INTERFACE_DEBUG:
@@ -28,11 +37,19 @@ def updateCount(lib, incr):
                 f.write(f"{session.query(Count).first().snrvalue} {datetime.datetime.now()}\n")
     
     else:
-        raise Exception("what sorta library is this?!?!")
+        raise Exception("Invalid library")
     
     session.commit()
 
 def getMsg(lib, client):
+    """
+    Returns the number of people entering or exiting the library from the person counter
+
+    :param lib: The library which the entrance(s)/exit(s) are from (+x for entrances or -x for exits)
+    :param client: The client (person counter) sending the data to the server
+    :return: Returns an integer which represents the processed increment of the request
+    """
+
     # receive the update to the number of people in the senior library (+x or -x)
     msg = client.recv(1024)
     incr = eval(msg + b"+0") # add a "+0" at the end in case the string has a trailing + or - (due to weird bug where requests get merged)
@@ -40,6 +57,14 @@ def getMsg(lib, client):
     return incr
 
 def handleConnection(lib, sock):
+    """
+    Handler which facilitates the connection between the person counter and this server
+
+    :param lib: The library which this function will receive calls requests from
+    :param sock: The socket object (a combination of this server's host and port)
+    :return:
+    """
+
     # wait for connection
     client, address = sock.accept()
 
@@ -49,8 +74,12 @@ def handleConnection(lib, sock):
     print(__name__, lib, f"Connection from {address[0]}")
     
     try:
+        # We don't want the person counter to simply send the key over since, if a third-party was
+        # to intercept our connection, they'd be able to view the key and verify themselves. Thus,
+        # we should verify by checking whether or not the connecting client is able to decrypt streams
+        # with a key using a symmetric, one-way algorithm (e.g. AES)
         print(__name__, lib, "Sending verification string")
-        # TODO: replace this verification system with SSL
+        
         # create random string of bytes for verification
         plaintext = bytes([random.randint(0, 0xff) for _ in range(16)])
         client.send(aesenc.encrypt(plaintext) + b"\n")

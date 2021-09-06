@@ -34,15 +34,5 @@
         </p>
         {{ form.submit(class_="btn btn-primary submit-button") }}
     </form>
-	<script>
-		if (!("librarian" in localStorage)) {
-				localStorage["librarian"] = "Junior";
-		}
-		document.getElementById("librarian").value = localStorage["librarian"];
-	
-		function update_librarian(event) {
-			console.log(event);
-			console.log(this);
-		}
-	</script>
+    <script type="text/javascript" src="{{ url_for('static', filename='logindata.js') }}"></script>
 {% endblock %}

@@ -61,29 +61,40 @@ window.predictionGraph = {};
 		
 		var table = document.getElementById(lib + "Periods");
 		table.innerHTML = "";
+
+		// Loop through each period's occupancy
 		data.forEach(val => {
 			if (val[0].length === 1) {
 				val[0] = "Period " + val[0];
 			}
+
+			// Create a row element in the periods table for the particular period
 			var tr = document.createElement("tr");
-			
+
+			// Create an element with the period/break name
 			var td1 = document.createElement("td");
 			td1.setAttribute("class", "periodText");
 			td1.appendChild(document.createTextNode(val[0]));
+
+			// Create an element with the bar of the library's expected fullness
 			var td2 = document.createElement("td");
 			td2.setAttribute("class", "periodFullnessBar");
 			td2.setAttribute("title", `${val[1]}`);
 			var bar = document.createElement("div");
 			bar.setAttribute("style", `width: ${val[1]*5}px;`);
 			td2.appendChild(bar);
+
+			// Create an element with the exact expected occupancy of the library (as an integer)
 			var td3 = document.createElement("td");
 			td3.appendChild(document.createTextNode(val[1]));
 			td3.setAttribute("style", "vertical-align: middle")
 			
+			// Append each of these elements to the row
 			tr.appendChild(td1);
 			tr.appendChild(td2);
 			tr.appendChild(td3)
 			
+			// Add the row to the table
 			table.appendChild(tr);
 		});
 	});

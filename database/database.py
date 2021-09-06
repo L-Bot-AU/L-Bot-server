@@ -4,9 +4,18 @@ from sqlalchemy.orm import validates, sessionmaker
 
     
 def genDatabase():
+    """
+    Generates the tables of the database for other subroutines to use
+
+    :return: A tuple containing the engine used for accessing the database, the Base for the 
+             defining of tables and a series of objects which each map to a database table
+    """
+
+    # create an engine to the database file
     engine = create_engine("sqlite:///library_usage.db", echo=False, connect_args={"check_same_thread": False})
     Base = declarative_base()
     
+    # initialise classes for each table 
     class Data(Base):
         __tablename__ = "data"
 
