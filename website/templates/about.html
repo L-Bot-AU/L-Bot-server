@@ -14,7 +14,8 @@
 					{% for day in ["monday", "tuesday", "wednesday", "thursday", "friday"] %}
 						<tr class="text-align: center;">
 							<td style="width: 110px; text-align: left">{{ day | capitalize }}:</td>
-							<td style="text-align:left" id='{{ lib }}{{ day }}'>...am - ...pm</td>
+							<td style="text-align:left" id='{{ lib }}{{ day }}opening'>...am</td>
+							<td style="text-align:right" id='{{ lib }}{{ day }}closing'>-...pm</td>
 						</tr>
 					{% endfor %}
 				</table>
