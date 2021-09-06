@@ -7,7 +7,7 @@ import datetime
 import os
 import csv
 import time
-
+from loguru import logger
 
 engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
 # if a constant is set, restart the database with default, hard-coded values.
@@ -251,13 +251,13 @@ def update_loop():
     session.add(new_data)
     session.commit()
 
-print(__name__, "Reset database")
+logger.info("Reset database")
 while True:
     # waits until it's 1am
     time.sleep(secsUntilNextDay())
     
     # get new predictions
-    print(__name__, "Getting new predictions")
+    logger.info("Getting new predictions")
     get_new_predictions()
     
     # wait until the library is open
@@ -266,7 +266,7 @@ while True:
     
     # while the library is open, record the occupancy every minute
     while libraryOpen():
-        print(__name__, "Entering update loop")
+        logger.info("Entering update loop")
         update_loop()
         
         time.sleep(DATABASE_TASKS_TIMEOUT)

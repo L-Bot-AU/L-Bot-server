@@ -6,6 +6,7 @@ import socketio
 import datetime
 import eventlet
 import platform
+from loguru import logger
 
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio)
@@ -20,7 +21,7 @@ def connect(sid, environ):
     :return:
     """
 
-    print(__name__, "Connected", sid)
+    logger.info(f"Connected {sid}")
     sendStaticData() # send static data which doesn't update
     sendDynamicData() # send dynamic data which regularly updates
     
@@ -31,7 +32,7 @@ def disconnect(sid):
     :return:
     """
 
-    print(__name__, "Disconnected", sid)
+    logger.info(f"Disconnected {sid}")
 
 def update():
     """

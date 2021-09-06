@@ -60,8 +60,8 @@
         <div>
             <h3>Preview</h3>
             <canvas id="librarian-graph"></canvas>
-            <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
-            <script type="text/javascript" src="{{ url_for('static', filename='librarian.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/librarian.js') }}"></script> <!-- repeated on line 103? -->
             <script>
                 var ctx = document.getElementById("librarian-graph").getContext("2d");
 
@@ -100,7 +100,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='librarian.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/librarian.js') }}"></script>
     <script>
         console.log("Graph data: {{ graphData | safe }}");
         update_graph({{ graphData | safe }});

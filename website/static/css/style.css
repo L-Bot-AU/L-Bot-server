@@ -1,5 +1,6 @@
 /* GENERAL STUFF */
-@import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');*/
+
 /*Both the light and dark themes inherit all values in this.
 This is used for shared values like interface sizing, and fonts*/
 [class*="theme-"] {

@@ -5,12 +5,12 @@
 			{% block page_title %}{% endblock %}
 		{% endblock %}
 	</title>
-	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
-	<script type="text/javascript" src="{{ url_for('static', filename='popper.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/fa-all.css') }}">
+	<script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script>
 		document.documentElement.hidden = true;
 	</script>
@@ -20,7 +20,7 @@
         <div class="container-fluid" style="padding-left: 10px">
             <div class="navbar-header">
                 <a class="navbar-brand header-size" href="/">
-					<span><img src="/static/logo.png" class="logo-size"></span>
+					<span><img src="/static/images/logo.png" class="logo-size"></span>
 					L-Bot
 				</a>
             </div>
@@ -43,10 +43,10 @@
         </div>
     </nav>
 	
-	<script type="text/javascript" src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
 	<script>
 		
-		const sio = io(`${window.origin}:2910`);
+		const sio = io(`${window.origin}:{{ WEBSITE_CLIENT_PORT }}`);
 	</script>
     
 	
@@ -56,7 +56,7 @@
     </div>
 	
 	
-	<script type="text/javascript" src="{{ url_for('static', filename='themetoggle.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/themetoggle.js') }}"></script>
 	<script>
 		// smart fix for FOUC (Flash Of Unstyled Content) where the raw, unstyled page would generate before the final one.
 		document.documentElement.hidden = false;
