@@ -78,9 +78,13 @@ window.predictionGraph = {};
 			var bar = document.createElement("div");
 			bar.setAttribute("style", `width: ${val[1]*5}px;`);
 			td2.appendChild(bar);
+			var td3 = document.createElement("td");
+			td3.appendChild(document.createTextNode(val[1]));
+			td3.setAttribute("style", "vertical-align: middle")
 			
 			tr.appendChild(td1);
 			tr.appendChild(td2);
+			tr.appendChild(td3)
 			
 			table.appendChild(tr);
 		});

@@ -5,6 +5,7 @@ from constants import DAYS, TIMES, OPENING_TIMES, CLOSING_TIMES, MAX_CAPS, LIBRA
 from sqlalchemy.orm import sessionmaker
 import datetime
 import os
+import csv
 import time
 
 
@@ -89,6 +90,13 @@ def get_new_predictions():
     # start session with database
     Session = sessionmaker(bind=engine)
     session = Session()
+    
+
+    with open("school_day.csv", "r", newline="") as f:
+        reader = csv.reader(f)
+        date = next(reader)
+        while date[:-2] != "21":
+
 
     week = 1 # TODO: find way of getting week of term from date
     term = 1 # TODO: find way of getting term today
@@ -111,8 +119,19 @@ def update_loop():
 
     # get information today
     today = datetime.datetime.now()
-    term = 1 # TODO: find way of getting week of term from date
-    week = 1 # TODO: find way of getting term today
+    term = 0
+    with open("school_day.csv", newline="") as f:
+        next(f)
+        reader = csv.reader(f,delimiter=',',
+                                quotechar='|') # initialise csv reader
+
+        for start_date, end_date in reader: # loop through the start and end dates of each term
+            if start_date[:-2] == today.year[:-2]: # check only term dates for the current year
+                term += 1 # increment to represent the next term
+                if today >= datetime.datetime.strptime(start_date, "%d-%m-%Y"): # if the current date is now in the term we are checking
+                    break
+
+        week = (today - start_date) // 7 + 1
 
     # add new record to past data
     new_data = PastData(

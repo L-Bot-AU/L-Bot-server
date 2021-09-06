@@ -138,7 +138,7 @@ def librarian_edit():
                 timesRecord.openinghour, timesRecord.openingminute = opening_times[day]
                 timesRecord.closinghour, timesRecord.closingminute = closing_times[day]
             dbsession.query(MaxSeats).filter_by(library=library).first().seats = max_seats
-            dbsession.query(Librarians).delete()
+            dbsession.query(Librarians).filter_by(library=library).delete()
             for name in librarians:
                 librarianRecord = Librarians(
                     library=library,
@@ -147,7 +147,7 @@ def librarian_edit():
                 dbsession.add(librarianRecord)
         elif tab == "events":
             events = request.json.get("events")
-            dbsession.query(Events).delete()
+            dbsession.query(Events).filter_by(library=library).delete()
             for event in events:
                 eventRecord = Events(
                     library=library,
@@ -157,7 +157,7 @@ def librarian_edit():
                 dbsession.add(eventRecord)
         elif tab == "alerts":
             alerts = request.json.get("alerts")
-            dbsession.query(Alerts).delete()
+            dbsession.query(Alerts).filter_by(library=library).delete()
             for alert in alerts:
                 alertRecord = Alerts(
                     library=library,
