@@ -1,34 +1,43 @@
 from database import database
 from sqlalchemy.orm import sessionmaker
 from flask import send_file, send_from_directory
+from datetime import date
 import xlsxwriter
 
 
-def gen_days(start_date, end_date, data_frequency):
+def gen_days(start_date, end_date, data_frequency, mode):
+    numDays = (end_date - start_date).days + 1
+    if mode == "preview":
+        if numDays <= 5:
+            data_frequency = "period"
+        elif numDays <= 70:
+            data_frequency = "day"
+        else:
+            data_frequency = "week"
+    # days = [0, 1, 2, 3, 4]
     days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
     return days
 
-def gen_times(data_frequency):
-    times = ["Morning", "Break 1", "Break 2"]
-    return times
-
 def get_data(start_date, end_date, data_frequency, lib, mode):
-    DAYS = gen_days(start_date, end_date, data_frequency)
-    TIMES = gen_times(data_frequency)
+    DAYS = gen_days(start_date, end_date, data_frequency, mode)
+    TIMES = ["Morning", "Break 1", "Break 2"]
 
     # connect to database
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    trends = {
-        "dates": DAYS,
+    data = {
+        "dates": [],
         "values": []
     }
+
+
+
     for day in DAYS:
         day_trends = []
         for time in TIMES:
-            # data = session.query(PastData).filter_by(time=time).first()
-            data = session.query(Data).filter_by(day=day, time=time).first()
+            # data = session.query(PastData).filter_by(time=time).all()
+            data = session.query(Data).filter_by(day=day, time=time).all()
             if lib == "Junior":
                 # pred = data.jnrcount
                 pred = data.jnr_expected
@@ -36,8 +45,8 @@ def get_data(start_date, end_date, data_frequency, lib, mode):
                 # pred = data.snrcount
                 pred = data.snr_expected
             day_trends.append(pred)
-        trends["values"].append(sum(day_trends)//len(day_trends))
-    return trends
+        data["values"].append(sum(day_trends)//len(day_trends))
+    return data
 
 
 def create_excel_spreadsheet(data):
