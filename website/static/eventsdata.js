@@ -1,8 +1,9 @@
+// takes data from server via socketio, to display events of in order of decreasing importance
 sio.on("events", data => {
 	console.log(data);
 	//data = [{"text": "foo bar", "impact": "high", "library": "jnr"}, {"text": "baz", "impact": "low", "library": "snr"}]
 	var ul = document.getElementById("list");
-	ul.innerHTML = "";
+	ul.innerHTML = ""; // clear the current events, so that events are not display multiple times
 	data.forEach(value => {
 		var ul = document.getElementById("list");
 		var li = document.createElement("li");
@@ -12,6 +13,7 @@ sio.on("events", data => {
 	});
 });
 
+// set visibility of events, when a user toggles the clickbox
 function toggleEvents(cb) {
 	console.log(cb);
 	var list = document.getElementsByClassName(cb.name);
