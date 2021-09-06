@@ -98,10 +98,8 @@ def librarian_statistics():
         if end_date >= date.today():
             form.end_date.errors.append("End date must be before current date.")
             valid_dates = False
-        if start_date >= end_date:
+        if start_date > end_date:
             form.end_date.errors.append("End date must be after Start date.")
-            form.end_date.errors.append("blah blah blah etc.") # For testing purposes
-            form.end_date.errors.append("blah blah blah etc.")
             valid_dates = False
 
         # Apply necessary action
@@ -148,6 +146,7 @@ def librarian_edit():
                 dbsession.add(librarianRecord)
         elif tab == "events":
             events = request.json.get("events")
+            print(events)
         elif tab == "alerts":
             alerts = request.json.get("alerts")
         else:

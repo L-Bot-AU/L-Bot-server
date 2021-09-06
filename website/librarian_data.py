@@ -1,36 +1,42 @@
-from constants import DAYS, TIMES
 from database import database
 from sqlalchemy.orm import sessionmaker
 from flask import send_file, send_from_directory
 import xlsxwriter
 
 
+def gen_days(start_date, end_date, data_frequency):
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+    return days
+
+def gen_times(data_frequency):
+    times = ["Morning", "Break 1", "Break 2"]
+    return times
+
 def get_data(start_date, end_date, data_frequency, lib, mode):
-    data = {
-        "dates": [f"{i}/7" for i in range(1, 11)],
-        "values": [10*i for i in range(1, 11)]
-    }
-    # return data
+    DAYS = gen_days(start_date, end_date, data_frequency)
+    TIMES = gen_times(data_frequency)
 
     # connect to database
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    print(TIMES)
     trends = {
-        "dates": TIMES,
+        "dates": DAYS,
         "values": []
     }
     for day in DAYS:
         day_trends = []
         for time in TIMES:
+            # data = session.query(PastData).filter_by(time=time).first()
             data = session.query(Data).filter_by(day=day, time=time).first()
             if lib == "Junior":
+                # pred = data.jnrcount
                 pred = data.jnr_expected
             elif lib == "Senior":
+                # pred = data.snrcount
                 pred = data.snr_expected
             day_trends.append(pred)
-        trends["values"].append(round(sum(day_trends)/len(day_trends), 2))
+        trends["values"].append(sum(day_trends)//len(day_trends))
     return trends
 
 
