@@ -45,8 +45,11 @@
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
 	<script>
-		
-		const sio = io(`${window.origin}:{{ WEBSITE_CLIENT_PORT }}`);
+		// previously, it didnt deal with cases such as window.origin = "192.168.1.243:88"
+		var origin = window.origin;
+		origin = origin.split(":");
+		origin[2] = "{{ WEBSITE_CLIENT_PORT }}"
+		const sio = io(origin.join(":"));
 	</script>
     
 	
