@@ -18,7 +18,7 @@ from loguru import logger
 
 
 app = Flask(__name__)
-app.secret_key = "super secret" #TODO: Store secret key in .env
+app.secret_key = "super secret" 
 bootstrap = Bootstrap(app)
 engine, Base, Data, Count, PastData, LibraryTimes, MaxSeats, Librarians, Events, Alerts = database.genDatabase()
 

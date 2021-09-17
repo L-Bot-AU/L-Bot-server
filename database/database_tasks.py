@@ -211,7 +211,8 @@ def get_new_predictions():
 
     # loop through each day of the week and update the predicted value on that day
     for day in range(1, 6):
-        predData = getData(term, week, day)
+        predData = getData(term, week+1, day)
+        print(predData)
         for i, time in enumerate(TIMES):
             # Get the expected usage record for the provided day and time
             data = session.query(Data).filter_by(day=DAYS[day-1], time=time).first()

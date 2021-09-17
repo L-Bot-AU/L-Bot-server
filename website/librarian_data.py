@@ -9,8 +9,7 @@ import xlsxwriter
 def normalise_day(date):
     # Documentation from https://www.dataquest.io/blog/python-datetime-tutorial/
     weekday = date.weekday()
-    if weekday > 4:
-        date = date - timedelta(3)
+    date = date - timedelta(weekday)
     return date
 
 
@@ -18,7 +17,7 @@ def gen_days(start_date, end_date, data_frequency, mode):
     numDays = (end_date - start_date).days + 1
     print("days:", numDays)
     days = [] # Documentation from https://stackoverflow.com/questions/1060279/iterating-through-a-range-of-dates-in-python
-    if mode == "preview":
+    if mode:
         if numDays <= 5:
             data_frequency = "period"
             for single_date in (start_date + timedelta(n) for n in range(numDays)):
@@ -47,14 +46,13 @@ def collate_periods(DAYS, lib):
 
     for day in DAYS:
         data = session.query(PastData).filter_by(day=day[0].day, month=day[0].month, year=day[0].year, time=day[1]).first()
-        print(data)
         if data is not None:
             print("okay")
             if lib == "Junior":
                 pred = data.jnrcount
             elif lib == "Senior":
                 pred = data.snrcount
-            dates.append(f'{day[1]} {day.day}/{day.month}/{day.year}')
+            dates.append(f'{day[1]} {day[0].day}/{day[0].month}/{day[0].year}')
             values.append(pred)
         else:
             print("no datetime?")
