@@ -45,7 +45,7 @@
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
 	<script>
-		const sio = io(`${window.location.hostname}:{{ WEBSITE_CLIENT_PORT }}`);
+		const sio = io(`${window.location.protocol}//${window.location.hostname}:{{ WEBSITE_CLIENT_PORT }}`);
 	</script>
     
 	
