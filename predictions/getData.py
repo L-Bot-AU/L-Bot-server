@@ -47,7 +47,7 @@ def weightData(initial_prediction):
             count += weights[year]
 
     #Divides each summed value for each time period
-    for i in range(0,time_interval_count-1):
+    for i in range(0,time_interval_count):
         new["Jnr"][i] = round((new["Jnr"][i]/count))
 
     #Snr
@@ -60,7 +60,7 @@ def weightData(initial_prediction):
             count += weights[year]
 
     #Divides each summed value for each time period
-    for i in range(0,time_interval_count-1):
+    for i in range(0,time_interval_count):
         new["Snr"][i] = round((new["Snr"][i]/count))
 
     return new
