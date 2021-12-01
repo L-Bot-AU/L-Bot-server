@@ -1,0 +1,73 @@
+version: "3.3"
+
+services:
+        website:
+                image: "${COMPOSE_PROJECT_NAME}"
+                restart: "${RESTART_POLICY}"
+                user: "${_UID}:${_GID}"
+                volumes:
+                        - "/etc/timezone:/etc/timezone:ro"
+                        - "/etc/localtime:/etc/localtime:ro"
+                        - "${HOST_VOLUME}:${CONTAINER_VOLUME}"
+                ports:
+                        - "${WEBSITE_HOST_PORT}:${WEBSITE_CONTAINER_PORT}"
+                command:
+                        - "run_website.py"
+                container_name: "${COMPOSE_PROJECT_NAME}_website"
+
+        website_client:
+                image: "${COMPOSE_PROJECT_NAME}"
+                restart: "${RESTART_POLICY}"
+                user: "${_UID}:${_GID}"
+                volumes:
+                        - "/etc/timezone:/etc/timezone:ro"
+                        - "/etc/localtime:/etc/localtime:ro"
+                        - "${HOST_VOLUME}:${CONTAINER_VOLUME}"
+                ports:
+                        - "${WEBSITE_CLIENT_HOST_PORT}:${WEBSITE_CLIENT_CONTAINER_PORT}"
+                command:
+                        - "run_website_client_interface.py"
+                container_name: "${COMPOSE_PROJECT_NAME}_website_client"
+
+
+        database_tasks:
+                image: "${COMPOSE_PROJECT_NAME}"
+                restart: "${RESTART_POLICY}"
+                user: "${_UID}:${_GID}"
+                volumes:
+                        - "/etc/timezone:/etc/timezone:ro"
+                        - "/etc/localtime:/etc/localtime:ro"
+                        - "${HOST_VOLUME}:${CONTAINER_VOLUME}"
+                command:
+                        - "run_database_tasks.py"
+                container_name: "${COMPOSE_PROJECT_NAME}_database_tasks"
+
+
+        camera_jnr:
+                image: "${COMPOSE_PROJECT_NAME}"
+                restart: "${RESTART_POLICY}"
+                user: "${_UID}:${_GID}"
+                volumes:
+                        - "/etc/timezone:/etc/timezone:ro"
+                        - "/etc/localtime:/etc/localtime:ro"
+                        - "${HOST_VOLUME}:${CONTAINER_VOLUME}"
+                ports:
+                        - "${CAMERA_JNR_HOST_PORT}:${CAMERA_JNR_CONTAINER_PORT}"
+                command:
+                        - "run_camera_system_interface_jnr.py"
+                container_name: "${COMPOSE_PROJECT_NAME}_camera_jnr"
+
+        camera_snr:
+                image: "${COMPOSE_PROJECT_NAME}"
+                restart: "${RESTART_POLICY}"
+                user: "${_UID}:${_GID}"
+                volumes:
+                        - "/etc/timezone:/etc/timezone:ro"
+                        - "/etc/localtime:/etc/localtime:ro"
+                        - "${HOST_VOLUME}:${CONTAINER_VOLUME}"
+                ports:
+                        - "${CAMERA_SNR_HOST_PORT}:${CAMERA_SNR_CONTAINER_PORT}"
+                command:
+                        - "run_camera_system_interface_snr.py"
+                container_name: "${COMPOSE_PROJECT_NAME}_camera_snr"
+

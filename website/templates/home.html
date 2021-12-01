@@ -3,7 +3,7 @@
 {% block page_title %}Home{% endblock %}
 
 {% block page_content %}
-	<script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
 	
 	<button type="button" class="focusbtn" onclick="setFocus('jnrtab')">Junior</button>
 	<button type="button" class="focusbtn" onclick="setFocus('snrtab')">Senior</button>
@@ -42,7 +42,7 @@
 			{% endfor %}
 		</tr>
 	</table>
-	<script type="text/javascript" src="{{ url_for('static', filename='homedata.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/homedata.js') }}"></script>
 	
 	<script>
 		function setFocus(newFocus) {

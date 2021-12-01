@@ -1,5 +1,6 @@
 /* GENERAL STUFF */
-@import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Carme&family=Roboto&display=swap');*/
+
 /*Both the light and dark themes inherit all values in this.
 This is used for shared values like interface sizing, and fonts*/
 [class*="theme-"] {
@@ -400,6 +401,10 @@ a.navbar-text:hover {
 	transition: none;
 }
 
+.popover-arrow {
+	transition: none;
+}
+
 .periodFullnessBar {
 	float: left;
 	margin: 1em;
@@ -447,6 +452,58 @@ a.navbar-text:hover {
 }
 .lowimpact::marker {
 	color: green;
+}
+
+.tgl {
+	display: none;
+}
+.tgl-btn {
+	width: 12em;
+	height: 2em;
+	position: relative;
+	cursor: pointer;
+	margin: 10px;
+}
+.tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+	display: inline-block;
+	transition: all 0.4s ease;
+	width: 100%;
+	text-align: center;
+	line-height: 2em;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+	left: 0;
+	-webkit-backface-visibility: hidden;
+		  backface-visibility: hidden;
+	border-radius: 4px;
+}
+.tgl + .tgl-btn:after {
+	content: attr(data-tg-on);
+	background: #02C66F;
+	transform: rotateY(-180deg);
+}
+.tgl + .tgl-btn:before {
+	background: #FF3A19;
+	content: attr(data-tg-off);
+}
+.tgl + .tgl-btn:active:before {
+	transform: rotateY(-20deg);
+}
+.tgl:checked + .tgl-btn:before {
+	transform: rotateY(180deg);
+}
+.tgl:checked + .tgl-btn:after {
+	transform: rotateY(0);
+	left: 0;
+	background: #7FC6A6;
+}
+.tgl:checked + .tgl-btn:active:after {
+	transform: rotateY(20deg);
+}
+
+.impact-choice:hover {
+	cursor: pointer;
 }
 
 /* ABOUT */
@@ -634,13 +691,7 @@ a.navbar-text:hover {
 	margin-right: 10px;
 }
 
-.exclamation-triangle {
-	display: inline;
-	margin-right: 10px;
-	font-size: 28px;
-}
-
-.information {
+.alert-icon {
 	display: inline;
 	margin-right: 10px;
 	font-size: 28px;
@@ -669,3 +720,4 @@ a.navbar-text:hover {
 	margin-top: 20px;
 	height: 170px;
 }
+.popover-title { display: none }

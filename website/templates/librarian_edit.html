@@ -6,16 +6,19 @@
 	<button type="button" class="focusbtn settab" onclick="setFocus('general', this)">General</button>
 	<button type="button" class="focusbtn" onclick="setFocus('events', this)">Events</button>
 	<button type="button" class="focusbtn" onclick="setFocus('alerts', this)">Alerts</button><br><br>
-	
+	<div id="notification" hidden style="background-color: #1b9420; color: white; position: fixed; z-index: 100; top: 90px; right: 20px;  border-radius: 5px; padding: 12px">
+		<i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i>
+	 	Your changes have been saved!
+	</div>
 	<table class="edit-tabwrapper"><tr valign="top">
 	<!-- GENERAL -->
 	<th class="tab generaltab">
 	<div class="form-inline edit-line">
     <label class="bold-this edit-label" for="day"> Day: </label>
-	<select class="form-control edit-input" onchange="changeTimes(this)" id="day" name="day" required>
+	<select class="form-control edit-input" style="appearance: auto" onchange="changeTimes(this)" id="day" name="day" required>
 		<option value="Monday"> Monday </option>
 		<option value="Tuesday"> Tuesday </option>
-		<option value="Wednesyday"> Wednesday </option>
+		<option value="Wednesday"> Wednesday </option>
 		<option value="Thursday"> Thursday </option>
 		<option value="Friday"> Friday </option>
 	</select>
@@ -30,17 +33,17 @@
 	</div>
 	<div class="form-inline edit-line">
 	<label class="bold-this edit-label" for="maxSeats"> Maximum seats: </label>
-	<input style="width: 80px; margin-right: 170px; display: inline" type="number" class="form-control" id="maxSeats" name="maxSeats" onchange=changeMaxSeats(this) required>
+	<input style="width: 80px; margin-right: 170px; display: inline" type="number" class="form-control" id="maxSeats" name="maxSeats" value={{ max_seats }} required>
 	</div>
 	<div class="edit-line" style="width: 364px; margin: auto; margin-top: 20px;"> <label style=" text-align: left; margin-right: 300px; padding-right: 10px" class="bold-this edit-label"> Librarians: </label><br>
 	<div id="librarians">
 		{% for librarian in librarians %}
-			<li class="edit-list-line bold-this" id="librarian{{ loop.index0 }}> <input class="form-control edit-list" type="text" value="{{ librarian }}" onchange=changeLibrarian({{ loop.index0 }})> <button class="btn btn-primary remove-button" onclick=destroyLibrarian({{ loop.index0 }})> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button> </li>
+			<li class="edit-list-line bold-this"> <input class="form-control edit-list" type="text" value="{{ librarian.name }}"> <button class="btn btn-primary remove-button" onclick=this.parentElement.remove()> <i style="font-family: 'Font Awesome 5 Pro' !important; color: white;" class="fas fa-times-circle"> </i> Remove </button></li>
 		{% endfor %}
-		<button style="margin-left: -292px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addLibrarian()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button>
 	</div>
+	<button style="margin-left: -292px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addLibrarian(this.parentElement)"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button>
 	</div>
-	<button class="btn btn-primary save-button" style="margin-right: 112px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	<button class="btn btn-primary save-button" style="margin-right: 112px;" onclick="saveGeneral()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button" onclick=window.location.reload()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</th>
 	
 	<!-- EVENTS TAB -->
@@ -50,80 +53,29 @@
 		<li class="moderateimpact"> Moderate impact </li>
 		<li class="lowimpact"> Low impact </li>
 	</ul>
-	<div class="event-tooltip">
-		<ul class="tooltip-list">
-			<li class="highimpact"></li>
-			<li class="moderateimpact"></li>
-			<li class="lowimpact"></li>
-		</ul>
-	</div>
 	<ul class="list" id="events">
-		<li onclick="makeEdit(event)" class="edit-hover highimpact bold-this"> <input class="form-control edit-event" type="text" value="Year 11 exams"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-				<li onclick="makeEdit(event)" class="edit-hover highimpact bold-this"> <input class="form-control edit-event" type="text" value="Year 10 excursion"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-		<li onclick="makeEdit(event)" class="edit-hover moderateimpact bold-this"> <input class="form-control edit-event" type="text" value="Shortage of seats"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-				<li onclick="makeEdit(event)" class="edit-hover lowimpact bold-this"> <input class="form-control edit-event" type="text" value="Bogabilla fundraising BBQ"> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
-		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+		{% for event in events %}
+			<li data-bs-placement="left" class="edit-hover {{ event.impact }}impact bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="<ul class='list'><li class='highimpact impact-choice'></li><li class='moderateimpact impact-choice'></li><li class='lowimpact impact-choice'></li></ul>"> <input class="form-control edit-event" type="text" value="{{ event.event }}"> <button class="btn btn-primary remove-button" onclick=this.parentElement.remove()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		{% endfor %}
 	</ul>
+	<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addEvent()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
+	<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;" onclick="saveEvents()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button" onclick="window.location.reload()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</th>
 	
 	<!-- ALERTS TAB -->
 	<th class="tab alertstab">
-	<div class="alert-tooltip">
-		<ul class="alert-list">
-			<li class="exclamation-triangle">⚠</li>
-			<li class="information">ℹ</li>
-		</ul>
-	</div>
-	<ul class="alert-list" id="events">
-		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="exclamation-triangle">⚠</div><textarea class="form-control alert-box"> Library is under construction </textarea><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="exclamation-triangle">⚠</div><textarea class="form-control alert-box"> Library overtaken by monkeys! </textarea><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-		<li onclick="makeEdit(event)" class="form-inline bold-this"><div class="information">ℹ</div><textarea class="form-control alert-box"> Please by mindful of the wet paint smile </textarea> <button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
-		<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" > <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
-		<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
+	<ul class="alert-list" id="alerts">
+		{% for alert in alerts %}
+			<li data-bs-placement="left" class="form-inline bold-this" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="<div class='list'><span class='impact-choice'>⚠</span><br><span class='impact-choice'>ℹ</span><br></div>"><div class="alert-icon">{{'⚠' if alert.type == "warning" else 'ℹ' }}</div><textarea class="form-control alert-box"> {{ alert.alert }} </textarea><button class="btn btn-primary remove-button" onclick=this.parentElement.remove()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-times-circle"></i> Remove </button></li>
+		{% endfor %}
 	</ul>
+	<button style="margin-left: -15px; margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary submit-button" onclick="addAlert()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-plus-circle"></i> Add </button><br>
+	<button class="btn btn-primary save-button" style="margin-left: -15px; margin-right: 10px;" onclick=saveAlerts()> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-check-circle"></i> Save changes </button><button class="btn btn-primary remove-button" onclick="window.location.reload()"> <i style='font-family: "Font Awesome 5 Pro" !important; color: white;' class="fas fa-redo-alt"></i> Cancel changes </button>
 	</th>
 	</tr></table>
 	<script>
-		var opening_times = {{ opening_times }};
-		var closing_times = {{ closing_times }}
-		var max_seats = {{ max_seats }};
-		var librarians = {{ librarians }};
-		
-		var currentDay = new Date().getDay() - 1;
-		if (currentDay == -1 || currentDay == 5) {
-			currentDay = 0;
-		}
-		var selectedDay = document.getElementById("day");
-		day.value = [...day.options].map(option => option.value)[selectedDay];
-		changeTimes(day);
-		
-		function setFocus(newFocus, obj) {
-			document.getElementsByClassName("settab")[0].classList.remove("settab");
-			obj.classList.add("settab");
-			switch (newFocus) {
-				case "general":
-					document.body.classList.remove("focuscenter");
-					document.body.classList.remove("focusright");
-					break;
-				case "events":
-					document.body.classList.remove("focusright");
-					document.body.classList.add("focuscenter");
-					break;
-				case "alerts":
-					document.body.classList.remove("focuscenter");
-					document.body.classList.add("focusright");
-					break;
-			}
-		}
-		
-		function changeTimes(dayElement) {
-			var day = this.day;
-			var openingTime = document.getElementById("openingTime");
-			var closingTime = document.getElementById("closingTime");
-			openingTime.value = opening_times[day];
-			closingTime.value = closing_times[day];
-		}
-		
+		var opening_times = {{ opening_times | safe }};
+		var closing_times = {{ closing_times | safe }};
 	</script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/editdata.js') }}"></script>
 {% endblock %}

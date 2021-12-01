@@ -3,6 +3,13 @@
 {% block page_title %}Events{% endblock %}
 
 {% block page_content %}
+	<div style="padding-bottom: 15px">
+		<input class="tgl tgl-flip" id="jnrenabled" type="checkbox" name="jnrevent" onclick="toggleEvents(this);" checked>
+		<label class="tgl-btn" data-tg-off="Hiding junior events" data-tg-on="Viewing junior events" for="jnrenabled"></label>
+		
+		<input class="tgl tgl-flip" id="snrenabled" type="checkbox" name="snrevent" onclick="toggleEvents(this);" checked>
+		<label class="tgl-btn" data-tg-off="Hiding senior events" data-tg-on="Viewing senior events" for="snrenabled"></label>
+	</div>
 	<ul class="key list">
 		<li class="highimpact">High Impact</li>
 		<li class="moderateimpact">Moderate Impact</li>
@@ -12,5 +19,5 @@
 	<ul class="list" id="list">
 	</ul>
 	
-	<script type="text/javascript" src="{{ url_for('static', filename='eventsdata.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/eventsdata.js') }}"></script>
 {% endblock %}

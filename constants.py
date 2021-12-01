@@ -1,7 +1,10 @@
+from dotenv import dotenv_values
+config = dotenv_values("project.env")
+
 CAMERA_SYSTEM_INTERFACE_DEBUG = True
 CAMERA_SYSTEM_PORTS = {
-    "jnr": 9482,
-    "snr": 11498
+    "jnr": int(config["CAMERA_JNR_CONTAINER_PORT"]),
+    "snr": int(config["CAMERA_SNR_CONTAINER_PORT"])
 }
 CAMERA_KEY = b"automate_egggggg"
 
@@ -46,17 +49,17 @@ MAX_CAPS  = {
 }
 
 LIBRARIANS = {
-    "jnr": ["Ms Meredith", "Mr Wiramihardja"],
-    "snr": ["Ms Crothers"]
+    "jnr": ["Ms Crothers"],
+    "snr": ["Ms Meredith", "Mr Wiramihardja"]
 }
 
-WEBSITE_CLIENT_PORT = 2910
+WEBSITE_CLIENT_PORT = int(config["WEBSITE_CLIENT_CONTAINER_PORT"])
 WEBSITE_UPDATE_TIMEOUT = 10.0 # time between each dynamic data update (in seconds)
 DATABASE_TASKS_TIMEOUT = 60
 
 WEBSITE_HOST = "0.0.0.0"
-WEBSITE_PORT = 80
+WEBSITE_PORT = int(config["WEBSITE_CONTAINER_PORT"])
 WEBSITE_DEBUG = True
 
 
-DO_RESTARTDB = True
+DO_RESTARTDB = False

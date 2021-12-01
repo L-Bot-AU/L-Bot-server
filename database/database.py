@@ -1,12 +1,21 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import validates, sessionmaker
-
+from constants import MAX_CAPS
     
 def genDatabase():
+    """
+    Generates the tables of the database for other subroutines to use
+
+    :return: A tuple containing the engine used for accessing the database, the Base for the 
+             defining of tables and a series of objects which each map to a database table
+    """
+
+    # create an engine to the database file
     engine = create_engine("sqlite:///library_usage.db", echo=False, connect_args={"check_same_thread": False})
     Base = declarative_base()
     
+    # initialise classes for each table 
     class Data(Base):
         __tablename__ = "data"
 
@@ -19,16 +28,11 @@ def genDatabase():
 
         @validates("jnr_expected")
         def validate_jnrexpected(self, key, count):
-            if count < 0:
-                return 0
-            return count
-
+            return min(MAX_CAPS["jnr"], max(0, count))
 
         @validates("snr_expected")
         def validate_snrexpected(self, key, count):
-            if count < 0:
-                return 0
-            return count
+            return min(MAX_CAPS["snr"], max(0, count))
         
     class Count(Base):
         __tablename__ = "count"
@@ -37,19 +41,13 @@ def genDatabase():
         snrvalue = Column(Integer, default=0)
         jnrvalue = Column(Integer, default=0)
 
-
-        @validates("snrvalue")
-        def valid_snrvalue(self, key, count):
-            if count < 0:
-                return 0
-            return count
-
-
         @validates("jnrvalue")
         def valid_jnrvalue(self, key, count):
-            if count < 0:
-                return 0
-            return count
+            return min(MAX_CAPS["jnr"], max(0, count))
+        
+        @validates("snrvalue")
+        def valid_snrvalue(self, key, count):
+            return min(MAX_CAPS["snr"], max(0, count))
         
     class PastData(Base):
         __tablename__ = "pastdata"
